@@ -1,11 +1,11 @@
-import dbConnect from "@/lib/dbConnect";
-import { appRequireAuth } from "@/lib/serverUtils";
+// import { appRequireAuth } from "@/lib/serverUtils";
 import Listing from "../../../models/Listing";
+import dbConnect from "../../../lib/dbConnect";
 
 export async function GET(request) {
   await dbConnect();
-  const { authQuery } = await appRequireAuth();
-
+  // const { authQuery } = await appRequireAuth();
+  const authQuery = {};
   try {
     const listings = await Listing.find({ ...authQuery }).lean();
     const data = listings.map(({ _id, ...listing }) => ({
@@ -15,10 +15,7 @@ export async function GET(request) {
     return Response.json({ success: true, data });
   } catch (error) {
     console.error(error);
-    return Response.json(
-      { success: false, error: error.message },
-      { status: 400 },
-    );
+    return Response.json({ success: false, error: error.message }, { status: 400 });
   }
 }
 
@@ -38,9 +35,6 @@ export async function POST(request) {
     //   error.message = "This listing already exists"; // Return code for unique index constraint violation
     // }
     console.error(error);
-    return Response.json(
-      { success: false, error: error.message },
-      { status: 400 },
-    );
+    return Response.json({ success: false, error: error.message }, { status: 400 });
   }
 }
