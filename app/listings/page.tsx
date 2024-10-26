@@ -7,7 +7,7 @@ import { ListingCard } from "@/components/listingCard";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 
-export default async function TestPage() {
+export default async function ListingsPage() {
   await dbConnect();
   const listings = (await Listing.find({})).map((doc) => doc.toObject({ flattenObjectIds: true }));
 
