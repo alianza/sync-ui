@@ -26,7 +26,6 @@ export async function createListing(prevState: unknown, formData: FormData): Pro
   try {
     await dbConnect();
     const listing = await Listing.create(rawFormData);
-    revalidatePath("/test");
     return {
       data: serialize(listing),
       message: `Successfully created listing with title '${rawFormData.title}'`,
@@ -43,7 +42,6 @@ export async function deleteListing(id: string): Promise<ListingResponse> {
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndDelete(id);
-    revalidatePath("/test");
     return {
       data: serialize(listing),
       message: `Successfully deleted listing with title '${listing?.title}'`,
@@ -71,8 +69,7 @@ export async function updateListing(prevState: unknown, formData: FormData): Pro
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndUpdate(rawFormData._id, rawFormData, { new: true });
-    console.log(`updated`, listing);
-    revalidatePath("/test");
+    revalidatePath(`/listings/${listing._id}`);
     return {
       data: serialize(listing),
       message: `Successfully updated listing with title '${rawFormData.title}'`,
