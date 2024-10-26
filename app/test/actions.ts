@@ -17,7 +17,7 @@ export async function createListing(
   };
 
   Object.entries(rawFormData).forEach(([key, value]) => {
-    if (!value) return { error: `Please provide a value for the field '${key}'` };
+    if (!value) return { error: `Please provide a value for the field '${key}'` }; // return early if any field value is falsy
   });
 
   try {

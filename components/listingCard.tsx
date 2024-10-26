@@ -12,19 +12,25 @@ interface ListingCardProps {
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
   return (
-    <Card className="flex justify-between rounded-lg bg-white shadow-lg dark:bg-neutral-700">
+    <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
       <CardHeader>
         <CardTitle>{listing.title}</CardTitle>
         <CardDescription>{listing.description}</CardDescription>
       </CardHeader>
       <button
         onClick={async () => {
+          setIsDeleting(true);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
           const { error, message } = await deleteListing(listing._id);
           if (message) toast.success(message);
           if (error) toast.error(error);
+          setIsDeleting(false);
         }}
-        className="scale-hover-xl cursor-pointer self-start p-2"
+        className={`cursor-pointer self-start p-2`}
+        disabled={isDeleting}
       >
         <XIcon className="size-6 text-neutral-500 dark:text-neutral-400" />
       </button>
