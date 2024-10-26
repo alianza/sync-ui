@@ -43,6 +43,7 @@ export async function deleteListing(id: string): Promise<ListingResponse> {
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndDelete(id);
+    revalidatePath(`/listings`);
     return {
       data: serialize(listing),
       message: `Successfully deleted listing with title '${listing?.title}'`,
