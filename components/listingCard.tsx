@@ -39,9 +39,11 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
             await new Promise((resolve) => setTimeout(resolve, 1000));
             const { error, message } = await deleteListing(listing._id);
             if (message) toast.success(message);
-            if (error) toast.error(error);
+            if (error) {
+              toast.error(error);
+              setIsDeleting(false);
+            }
             if (redirectAfterDelete) router.replace(redirectAfterDelete);
-            setIsDeleting(false);
           }}
           className={`scale-hover-xl cursor-pointer p-2`}
           disabled={isDeleting}

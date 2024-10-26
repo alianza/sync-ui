@@ -10,6 +10,7 @@ export type ListingResponse = {
   data?: ListingType;
   message?: string;
   error?: string;
+  // todo: add success boolean
 };
 
 export async function createListing(prevState: unknown, formData: FormData): Promise<ListingResponse> {
