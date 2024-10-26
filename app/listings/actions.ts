@@ -72,6 +72,7 @@ export async function updateListing(prevState: unknown, formData: FormData): Pro
     await dbConnect();
     const listing = await Listing.findByIdAndUpdate(rawFormData._id, rawFormData, { new: true });
     revalidatePath(`/listings/${listing._id}`);
+    revalidatePath(`/listings`);
     return {
       data: serialize(listing),
       message: `Successfully updated listing with title '${rawFormData.title}'`,
