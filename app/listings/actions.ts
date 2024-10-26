@@ -70,7 +70,6 @@ export async function updateListing(prevState: unknown, formData: FormData): Pro
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndUpdate(rawFormData._id, rawFormData, { new: true });
-    revalidatePath(`/listings/${listing._id}/edit`);
     revalidatePath(`/listings/${listing._id}`);
     return {
       data: serialize(listing),
