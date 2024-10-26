@@ -1,9 +1,10 @@
-import Listing from "@/models/Listing";
-import dbConnect from "@/lib/dbConnect";
 import { Header } from "@/components/layout/header";
 import { ListingCard } from "@/components/listingCard";
 import { Footer } from "@/components/layout/footer";
+import Listing from "@/models/Listing";
+import dbConnect from "@/lib/dbConnect";
 import { ListingType } from "@/types/listing";
+import { ListingForm } from "@/components/forms/listingForm";
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
@@ -21,7 +22,7 @@ export async function generateStaticParams() {
   return listings.map((listing) => ({ id: listing._id }));
 }
 
-export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
+export default async function EditListingPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   await dbConnect();
   const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingType;
@@ -44,6 +45,9 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
               <ListingCard key={listing._id} listing={listing} redirectAfterDelete="/listings" />
             </div>
           </div>
+        </section>
+        <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+          <ListingForm listing={listing} />
         </section>
       </main>
       <Footer />

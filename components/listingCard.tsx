@@ -7,13 +7,16 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import React from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ListingCardProps {
   listing: ListingType;
+  redirectAfterDelete?: string;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) {
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const router = useRouter();
 
   return (
     <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
@@ -33,6 +36,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             const { error, message } = await deleteListing(listing._id);
             if (message) toast.success(message);
             if (error) toast.error(error);
+            if (redirectAfterDelete) router.replace(redirectAfterDelete);
             setIsDeleting(false);
           }}
           className={`scale-hover-xl cursor-pointer p-2`}

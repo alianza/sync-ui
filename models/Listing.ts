@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export const TYPES = {
+export const LISTING_TYPES = {
   standalone: "Standalone",
   flat: "Flat",
   apartment: "Apartment",
@@ -14,7 +14,7 @@ interface ListingInterface {
   description: string;
 }
 
-const TYPES_ENUM = Object.values(TYPES);
+const TYPES_ENUM = Object.values(LISTING_TYPES);
 
 const ListingSchema = new mongoose.Schema<ListingInterface>(
   {
