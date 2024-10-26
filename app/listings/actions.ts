@@ -6,10 +6,13 @@ import { revalidatePath } from "next/cache";
 import { ListingType } from "@/types/listing";
 import { serialize } from "@/lib/server.utils";
 
-export async function createListing(
-  prevState: unknown,
-  formData: FormData,
-): Promise<{ data?: ListingType; message?: string; error?: string }> {
+export type ListingResponse = {
+  data?: ListingType;
+  message?: string;
+  error?: string;
+};
+
+export async function createListing(prevState: unknown, formData: FormData): Promise<ListingResponse> {
   const rawFormData = {
     title: formData.get("title"),
     description: formData.get("description"),
@@ -36,7 +39,7 @@ export async function createListing(
   }
 }
 
-export async function deleteListing(id: string): Promise<{ data?: ListingType; message?: string; error?: string }> {
+export async function deleteListing(id: string): Promise<ListingResponse> {
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndDelete(id);
@@ -53,10 +56,7 @@ export async function deleteListing(id: string): Promise<{ data?: ListingType; m
   }
 }
 
-export async function updateListing(
-  prevState: unknown,
-  formData: FormData,
-): Promise<{ data?: ListingType; message?: string; error?: string }> {
+export async function updateListing(prevState: unknown, formData: FormData): Promise<ListingResponse> {
   const rawFormData = {
     _id: formData.get("_id"),
     title: formData.get("title"),

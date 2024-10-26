@@ -11,8 +11,6 @@ export default async function TestPage() {
   await dbConnect();
   const listings = (await Listing.find({})).map((doc) => doc.toObject({ flattenObjectIds: true }));
 
-  console.log(`listings`, listings);
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -35,7 +33,7 @@ export default async function TestPage() {
             </div>
           </div>
         </section>
-        <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+        <section className="w-full bg-neutral-200 py-12 md:py-24 lg:py-32 dark:bg-neutral-900">
           <ListingForm />
         </section>
       </main>

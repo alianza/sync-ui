@@ -1,8 +1,8 @@
 "use client";
 
 import Form from "next/form";
-import React, { useActionState } from "react";
-import { createListing, updateListing } from "@/app/listings/actions";
+import React, { useActionState, useEffect } from "react";
+import { createListing, ListingResponse, updateListing } from "@/app/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ export const initialState = {
   },
   message: "",
   error: "",
-};
+} satisfies ListingResponse;
 
 export function ListingForm({ listing }: Props) {
   const editMode = Boolean(listing);
@@ -43,8 +43,10 @@ export function ListingForm({ listing }: Props) {
   return (
     <Card className="mx-auto max-w-screen-sm">
       <CardHeader>
-        <CardTitle>Add a new listing</CardTitle>
-        <CardDescription>Fill in the required fields to create a new listing.</CardDescription>
+        <CardTitle>{editMode ? `Edit "${listing?.title || state?.data?.title}"` : "Create a new listing"}</CardTitle>
+        <CardDescription>
+          {editMode ? "Edit the details of the listing" : "Fill in the details of the new listing"}
+        </CardDescription>
       </CardHeader>
       <Form action={action}>
         <CardContent>
@@ -55,8 +57,8 @@ export function ListingForm({ listing }: Props) {
                 id="title"
                 name="title"
                 placeholder="Enter the title"
+                defaultValue={editMode ? listing?.title || state?.data?.title : undefined}
                 required
-                defaultValue={listing?.title || state?.data?.title}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -65,13 +67,13 @@ export function ListingForm({ listing }: Props) {
                 id="description"
                 name="description"
                 placeholder="Enter the description"
+                defaultValue={editMode ? listing?.description || state?.data?.description : undefined}
                 required
-                defaultValue={listing?.description || state?.data?.description}
               />
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="type">Type</Label>
-              <Select required name="type" defaultValue={listing?.type || state?.data?.type}>
+              <Select name="type" defaultValue={editMode ? listing?.type || state?.data?.type : undefined} required>
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select a type" />
                 </SelectTrigger>

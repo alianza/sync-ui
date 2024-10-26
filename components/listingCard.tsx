@@ -8,6 +8,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LISTING_TYPES } from "@/models/Listing";
 
 interface ListingCardProps {
   listing: ListingType;
@@ -27,6 +28,9 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
           </Link>
         </CardTitle>
         <CardDescription>{listing.description}</CardDescription>
+        <CardDescription className="text-xs">
+          {LISTING_TYPES[listing.type as keyof typeof LISTING_TYPES]}
+        </CardDescription>
       </CardHeader>
       <div className="flex flex-col items-center justify-between">
         <button

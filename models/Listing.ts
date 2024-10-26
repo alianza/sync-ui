@@ -14,7 +14,7 @@ interface ListingInterface {
   description: string;
 }
 
-const TYPES_ENUM = Object.values(LISTING_TYPES);
+const TYPES_ENUM = Object.keys(LISTING_TYPES);
 
 const ListingSchema = new mongoose.Schema<ListingInterface>(
   {
@@ -24,7 +24,7 @@ const ListingSchema = new mongoose.Schema<ListingInterface>(
     },
     type: {
       type: String,
-      required: [true, "Please provide your preferred stance"],
+      required: [true, "Please provide a type for this listing"],
       enum: {
         values: TYPES_ENUM,
         message: '"{VALUE}" is not a listing type',
