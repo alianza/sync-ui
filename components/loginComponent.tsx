@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { signInAction } from "@/app/login/actions";
 import Form from "next/form";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import Interceptors from "undici-types/interceptors";
 
 const initialState = {
   message: "",
@@ -29,11 +31,15 @@ export default function LoginComponent() {
       <CardContent>
         <Form
           action={async (formData) => {
+            setState(initialState);
             try {
-              setState(initialState);
-              return await signInAction(formData);
+              await signInAction(formData);
             } catch (error) {
-              setState({ message: "Invalid credentials. Please try again." });
+              console.log(`error`, error);
+              if (isRedirectError(error)) {
+                throw error;
+              }
+              setState({ message: "Invalid credentials. Please try again!" });
             }
           }}
         >
@@ -89,7 +95,7 @@ export default function LoginComponent() {
             Sign up
           </Link>
         </div>
-        {state?.message && <p className="text-sm text-neutral-700">{state.message}</p>}
+        {state.message && <p className="text-sm text-neutral-700">{state.message}</p>}
       </CardFooter>
     </Card>
   );

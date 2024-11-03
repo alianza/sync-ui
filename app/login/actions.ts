@@ -44,6 +44,13 @@ export async function signInAction(formData: FormData) {
   //     message: `Invalid credentials. Please try again.`,
   //   };
   // }
+
+  // return signIn("credentials", {
+  //   email: formData.get("email"),
+  //   password: formData.get("password"),
+  //   redirectTo: "/",
+  // });
+
   return signIn("credentials", formData);
 }
 
