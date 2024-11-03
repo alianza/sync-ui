@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
-import { login } from "@/app/login/actions";
+import { signInAction } from "@/app/login/actions";
 import Form from "next/form";
 
 const initialState = {
@@ -17,7 +17,8 @@ const initialState = {
 
 export default function LoginComponent() {
   const [showPassword, setShowPassword] = useState(false);
-  const [state, action] = useActionState(login, initialState);
+  const [state, setState] = useState(initialState);
+  // const [state, action] = useActionState(signInAction, initialState);
 
   return (
     <Card className="mx-auto w-full max-w-md">
@@ -26,7 +27,16 @@ export default function LoginComponent() {
         <CardDescription className="text-center">Enter your email and password to access your account</CardDescription>
       </CardHeader>
       <CardContent>
-        <Form action={action}>
+        <Form
+          action={async (formData) => {
+            try {
+              setState(initialState);
+              return await signInAction(formData);
+            } catch (error) {
+              setState({ message: "Invalid credentials. Please try again." });
+            }
+          }}
+        >
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -59,11 +69,7 @@ export default function LoginComponent() {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? (
-                    <EyeOffIcon className="h-4 w-4 text-background" />
-                  ) : (
-                    <EyeIcon className="h-4 w-4 text-background" />
-                  )}
+                  {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
