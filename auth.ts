@@ -44,19 +44,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // return user object with their profile data
         return {
-          // id: user._id,
+          id: user._id,
           email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
+          // alias: `${user.firstName}+${user.lastName}`,
+          name: `${user.firstName}+${user.lastName}`,
         };
       },
     }),
   ],
+  callbacks: {
+    session({ session, token, user }) {
+      session.user.id = token.sub as string;
+      return session;
+    },
+  },
 });
-
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
 
-  const user = await User.findOne<IUser>({ email }).lean();
+  const user = (await User.findOne<IUser>({ email }).lean()) as IUser;
 
   if (!user) return null;
 
