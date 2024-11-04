@@ -9,6 +9,11 @@ export interface IUser {
   role: string;
 }
 
+export enum Roles {
+  Realtor = "realtor",
+  Buyer = "buyer",
+}
+
 const UserSchema = new mongoose.Schema<IUser>(
   {
     firstName: {
@@ -27,10 +32,11 @@ const UserSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       required: [true, "Please provide a password."],
+      minlength: [6, "Password must be at least 6 characters long."],
     },
     role: {
       type: String,
-      enum: ["realtor", "buyer"],
+      enum: Object.values(Roles),
       default: "buyer",
     },
   },
