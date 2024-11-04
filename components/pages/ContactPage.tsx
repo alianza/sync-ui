@@ -1,6 +1,6 @@
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { ContactComponent } from "@/components/contactComponent";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { ContactComponent } from "@/components/ContactComponent";
 
 export function ContactPage() {
   return (

@@ -1,7 +1,7 @@
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { PricingComponent } from "@/components/pricingComponent";
-import { ContactComponent } from "@/components/contactComponent";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { PricingComponent } from "@/components/PricingComponent";
+import { ContactComponent } from "@/components/ContactComponent";
 
 export function PricingPage() {
   return (
@@ -15,14 +15,14 @@ export function PricingPage() {
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
                   HuizenHub Pricing
                 </h1>
-                <p className="mx-auto max-w-[700px] text-neutral-500 dark:text-neutral-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
                   Choose the perfect plan for your real estate business and get started today.
                 </p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full bg-neutral-100 py-12 dark:bg-neutral-800 md:py-24 lg:py-32">
+        <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
           <PricingComponent />
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">

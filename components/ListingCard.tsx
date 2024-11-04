@@ -36,7 +36,6 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
         <button
           onClick={async () => {
             setIsDeleting(true);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             const { error, message } = await deleteListing(listing._id);
             if (message) toast.success(message);
             if (error) {

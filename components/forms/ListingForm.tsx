@@ -2,11 +2,11 @@
 
 import Form from "next/form";
 import React, { useActionState } from "react";
-import { createListing, ListingResponse, updateListing } from "@/app/listings/actions";
+import { createListing, updateListing } from "@/app/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/submitButton";
+import { SubmitButton } from "@/components/SubmitButton";
 import { Textarea } from "@/components/ui/textarea";
 import { ListingType } from "@/types/listing";
 import { LISTING_TYPES } from "@/models/Listing";
@@ -19,26 +19,16 @@ import {
   SelectValue,
   SelectTrigger,
 } from "@/components/ui/select";
+import { initialActionState } from "@/lib/types";
 
 interface Props {
   listing?: ListingType;
 }
 
-export const initialState = {
-  data: {
-    _id: "",
-    title: "",
-    description: "",
-    type: "",
-  },
-  message: "",
-  error: "",
-} satisfies ListingResponse;
-
 export function ListingForm({ listing }: Props) {
   const editMode = Boolean(listing);
 
-  const [state, action] = useActionState(editMode ? updateListing : createListing, initialState);
+  const [state, action] = useActionState(editMode ? updateListing : createListing, initialActionState);
 
   return (
     <Card className="mx-auto max-w-screen-sm">
@@ -73,7 +63,12 @@ export function ListingForm({ listing }: Props) {
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="type">Type</Label>
-              <Select name="type" defaultValue={editMode ? listing?.type || state?.data?.type : undefined} required>
+              <Select
+                key={new Date().getTime()} // Force re-render to reset the select value
+                name="type"
+                defaultValue={editMode ? listing?.type || state?.data?.type : undefined}
+                required
+              >
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select a type" />
                 </SelectTrigger>

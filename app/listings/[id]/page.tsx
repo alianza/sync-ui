@@ -1,9 +1,9 @@
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
-import { Header } from "@/components/layout/header";
-import { ListingCard } from "@/components/listingCard";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/Header";
+import { ListingCard } from "@/components/ListingCard";
 import { ListingType } from "@/types/listing";
+import { Footer } from "@/components/layout/Footer";
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home } from "lucide-react";
 
-function HeaderLogo() {
+export function HeaderLogo() {
   const pathname = usePathname();
 
   return (
@@ -13,5 +13,3 @@ function HeaderLogo() {
     </Link>
   );
 }
-
-export default HeaderLogo;

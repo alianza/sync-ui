@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calendar, Home, Users } from "lucide-react";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Header } from "@/components/layout/header";
+import { Header } from "@/components/layout/Header";
 
 export function LandingPage() {
   return (
@@ -33,7 +33,7 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full bg-neutral-100 py-12 dark:bg-neutral-800 md:py-24 lg:py-32">
+        <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
           <div className="mx-auto max-w-screen-xl px-4 md:px-6">
             <h2 className="mb-12 scroll-m-8 text-center text-3xl font-bold tracking-tighter sm:text-5xl" id="features">
               Key Features
@@ -80,7 +80,7 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full bg-neutral-50 py-12 dark:bg-neutral-900 md:py-24 lg:py-32">
+        <section className="w-full bg-neutral-50 py-12 md:py-24 lg:py-32 dark:bg-neutral-900">
           <div className="px-4 md:px-6">
             <h2 className="mb-8 text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
               Frequently Asked Questions
@@ -131,7 +131,7 @@ export function LandingPage() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Join HuizenHub Today</h2>
-                <p className="max-w-[900px] text-neutral-500 dark:text-neutral-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
                   Whether you're a realtor looking to streamline your sales process or a home buyer searching for your
                   dream property, HuizenHub has you covered. Sign up now and experience the future of Dutch real estate.
                 </p>

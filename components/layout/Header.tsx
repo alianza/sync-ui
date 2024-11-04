@@ -1,7 +1,7 @@
-import NavLink from "@/components/navLink";
-import HeaderLogo from "@/components/layout/headerLogo";
+import NavLink from "@/components/NavLink";
+import { HeaderLogo } from "@/components/layout/HeaderLogo";
 import { auth } from "@/auth";
-import SignOutButton from "@/components/signOutButton";
+import SignOutButton from "@/components/SignOutButton";
 
 export async function Header() {
   const session = await auth();

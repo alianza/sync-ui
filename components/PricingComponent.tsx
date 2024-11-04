@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
 const tiers = [
@@ -14,12 +7,7 @@ const tiers = [
     name: "Starter",
     price: "€49",
     description: "Perfect for individual realtors or small agencies",
-    features: [
-      "Up to 20 active listings",
-      "Basic viewing scheduler",
-      "Email support",
-      "Standard analytics",
-    ],
+    features: ["Up to 20 active listings", "Basic viewing scheduler", "Email support", "Standard analytics"],
   },
   {
     name: "Professional",
@@ -53,10 +41,8 @@ export function PricingComponent() {
     <div className="mx-auto max-w-screen-xl px-4 md:px-6">
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         <div className="space-y-2">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-            Pricing Plans
-          </h2>
-          <p className="max-w-[900px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Pricing Plans</h2>
+          <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             Choose the perfect plan for your real estate business
           </p>
         </div>
@@ -70,11 +56,7 @@ export function PricingComponent() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold">{tier.price}</div>
-              {tier.name !== "Enterprise" && (
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  per month
-                </div>
-              )}
+              {tier.name !== "Enterprise" && <div className="text-sm text-gray-500 dark:text-gray-400">per month</div>}
               <ul className="mt-4 space-y-2">
                 {tier.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center">
@@ -85,9 +67,7 @@ export function PricingComponent() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">
-                {tier.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-              </Button>
+              <Button className="w-full">{tier.name === "Enterprise" ? "Contact Sales" : "Get Started"}</Button>
             </CardFooter>
           </Card>
         ))}

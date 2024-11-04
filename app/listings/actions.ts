@@ -4,7 +4,7 @@ import dbConnect from "@/lib/dbConnect";
 import Listing, { LISTING_TYPES } from "@/models/Listing";
 import { revalidatePath } from "next/cache";
 import { ListingType } from "@/types/listing";
-import { serialize } from "@/lib/server.utils";
+import { serializeDoc } from "@/lib/server.utils";
 
 export type ListingResponse = {
   data?: ListingType;
@@ -13,7 +13,7 @@ export type ListingResponse = {
   // todo: add success boolean
 };
 
-export async function createListing(prevState: unknown, formData: FormData): Promise<ListingResponse> {
+export async function createListing(prevState: unknown, formData: FormData) {
   const rawFormData = {
     title: formData.get("title"),
     description: formData.get("description"),
@@ -29,7 +29,7 @@ export async function createListing(prevState: unknown, formData: FormData): Pro
     const listing = await Listing.create(rawFormData);
     revalidatePath(`/listings`);
     return {
-      data: serialize(listing),
+      data: serializeDoc(listing),
       message: `Successfully created listing with title '${rawFormData.title}'`,
     };
   } catch (error) {
@@ -46,7 +46,7 @@ export async function deleteListing(id: string): Promise<ListingResponse> {
     const listing = await Listing.findByIdAndDelete(id);
     revalidatePath(`/listings`);
     return {
-      data: serialize(listing),
+      data: serializeDoc(listing),
       message: `Successfully deleted listing with title '${listing?.title}'`,
     };
   } catch (error) {
@@ -75,7 +75,7 @@ export async function updateListing(prevState: unknown, formData: FormData): Pro
     revalidatePath(`/listings/${listing._id}`);
     revalidatePath(`/listings`);
     return {
-      data: serialize(listing),
+      data: serializeDoc(listing),
       message: `Successfully updated listing with title '${rawFormData.title}'`,
     };
   } catch (error) {

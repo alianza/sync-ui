@@ -160,3 +160,9 @@ export const getDate = (date = null): string => {
   const dateInstance = date ? new Date(date) : new Date();
   return dateInstance.toISOString().split("T")[0];
 };
+
+/**
+ * Get a user-friendly name from an alias
+ * @param alias
+ */
+export const getNameFromAlias = (alias?: string): string => (alias ? alias.split("+").join(" ") : "");

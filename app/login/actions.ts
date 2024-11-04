@@ -1,59 +1,25 @@
 "use server";
 
 import { signIn, signOut } from "@/auth";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { failResponse, successResponse } from "@/lib/server.utils";
 
-// export async function login(prevState: unknown, formData: FormData) {
-//   const rawFormData = {
-//     email: formData.get("email"),
-//     password: formData.get("password"),
-//   };
-//
-//   console.log(`rawFormData`, rawFormData);
-//
-//   // Send the form data to the API or email service
-//   try {
-//     const user = await signIn("credentials", formData);
-//     const session = await auth();
-//     console.log(`session`, session);
-//     console.log(`user`, user);
-//     return {
-//       message: `Successfully logged in!`,
-//     };
-//   } catch (error) {
-//     return {
-//       message: `Invalid credentials. Please try again.`,
-//     };
-//   }
-//
-//   // revalidatePath("/pricing");
-//
-//   return {
-//     message: `Received the form data: ${JSON.stringify(rawFormData, null, 2)}`,
-//   };
-// }
-
-export async function signInAction(formData: FormData) {
-  // try {
-  //   const user = await signIn("credentials", formData);
-  //
-  //   console.log(`actionUser`, user);
-  //
-  //   return user;
-  // } catch (error) {
-  //   return {
-  //     message: `Invalid credentials. Please try again.`,
-  //   };
-  // }
-
-  // return signIn("credentials", {
-  //   email: formData.get("email"),
-  //   password: formData.get("password"),
-  //   redirectTo: "/",
-  // });
-
-  return signIn("credentials", formData);
+export async function signInAction(prevState: unknown, formData: FormData) {
+  try {
+    const email = formData.get("email");
+    const password = formData.get("password");
+    await signIn("credentials", { email, password, redirectTo: "/" });
+    return successResponse({ message: "Successfully logged in!" });
+  } catch (error) {
+    console.log("error", error);
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return failResponse({ message: "Invalid credentials. Please try again!" });
+  }
 }
 
 export async function signOutAction() {
-  return signOut();
+  await signOut();
+  return successResponse({ message: "Successfully logged out!" });
 }

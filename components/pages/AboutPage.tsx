@@ -15,14 +15,14 @@ export function AboutPage() {
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
                   About HuizenHub
                 </h1>
-                <p className="mx-auto max-w-[700px] text-neutral-500 dark:text-neutral-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto max-w-[700px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
                   Revolutionizing the Dutch housing market with innovative technology and seamless experiences.
                 </p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full bg-neutral-100 py-12 dark:bg-neutral-800 md:py-24 lg:py-32">
+        <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
           <div className="mx-auto max-w-screen-xl px-4 md:px-6">
             <div className="grid gap-10 lg:grid-cols-3">
               <Card>
@@ -68,7 +68,7 @@ export function AboutPage() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Our Team</h2>
-                <p className="max-w-[900px] text-neutral-500 dark:text-neutral-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
                   Meet the passionate individuals behind HuizenHub, dedicated to transforming the Dutch housing market.
                 </p>
               </div>

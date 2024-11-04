@@ -1,8 +1,8 @@
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import LoginComponent from "@/components/loginComponent";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { LoginComponent } from "@/components/LoginComponent";
 
-export async function LoginPage() {
+export function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

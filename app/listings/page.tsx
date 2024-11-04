@@ -1,11 +1,11 @@
+import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { ListingForm } from "@/components/forms/listingForm";
-import { ListingCard } from "@/components/listingCard";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import React from "react";
+import { Header } from "@/components/layout/Header";
+import { ListingCard } from "@/components/ListingCard";
+import { ListingForm } from "@/components/forms/ListingForm";
+import { Footer } from "@/components/layout/Footer";
 
 export default async function ListingsPage() {
   await dbConnect();
