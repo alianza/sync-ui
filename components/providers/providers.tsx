@@ -1,6 +1,7 @@
 "use client";
 
-// import { SessionProvider } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react";
+
 const NextNProgress = dynamic(() => import("next-nprogress-bar").then((mod) => mod.AppProgressBar), {
   loading: () => <></>,
   ssr: false,
@@ -17,8 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {children}
-      {/*<SessionProvider session={session}>{children}</SessionProvider>*/}
+      {/*{children}*/}
+      <SessionProvider>{children}</SessionProvider>
       <NextNProgress
         height="3px"
         color="#eee"
