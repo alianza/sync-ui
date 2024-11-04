@@ -1,0 +1,48 @@
+"use client";
+
+import { initialActionState, ResponseStatus } from "@/lib/types";
+import React, { useActionState, useEffect } from "react";
+import { signInAction } from "@/app/login/actions";
+import { SubmitButton } from "@/components/SubmitButton";
+import { FormInput } from "@/components/forms/input/FormInput";
+import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
+import { handleAction } from "@/lib/client.utils";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+
+function LoginForm() {
+  const [state, action] = useActionState(signInAction, initialActionState);
+  const searchParams = useSearchParams();
+
+  const signUp = searchParams.get("signup") === "true";
+
+  useEffect(() => {
+    if (!signUp) return;
+    toast.success("Sign up successful! Please log in to continue.");
+  }, [signUp]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-4">
+        <FormInput
+          label="Email"
+          id="email"
+          name="email"
+          placeholder="m.example@huizenhub.nl"
+          type="email"
+          autoCapitalize="none"
+          autoComplete="email"
+          autoCorrect="off"
+          required
+        />
+        <PasswordInputToggle minLength={8} label="Password" id="password" required />
+        <SubmitButton label="Log in" loadingLabel="Logging in..." />
+        {state.status !== ResponseStatus.pending && <p className="text-sm text-muted-foreground">{state.message}</p>}
+      </div>
+    </form>
+  );
+}
+
+export default LoginForm;
