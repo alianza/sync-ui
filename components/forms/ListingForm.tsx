@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import React, { useActionState } from "react";
-import { createListing, updateListing } from "@/app/listings/actions";
+import { createListing, updateListing } from "@/app/dashboard/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

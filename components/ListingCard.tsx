@@ -2,7 +2,7 @@
 
 import { PencilIcon, XIcon } from "lucide-react";
 import { ListingType } from "@/types/listing";
-import { deleteListing } from "@/app/listings/actions";
+import { deleteListing } from "@/app/dashboard/listings/actions";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
     <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
       <CardHeader>
         <CardTitle>
-          <Link className="underline-hover" href={`/listings/${listing._id}`}>
+          <Link className="underline-hover" href={`/dashboard/listings/${listing._id}`}>
             {listing.title}
           </Link>
         </CardTitle>
@@ -49,7 +49,7 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
         >
           <XIcon className="size-6 text-neutral-500 dark:text-neutral-400" />
         </button>
-        <Link href={`/listings/${listing._id}/edit`} className="scale-hover-xl cursor-pointer p-2">
+        <Link href={`/dashboard/listings/${listing._id}/edit`} className="scale-hover-xl cursor-pointer p-2">
           <PencilIcon className="size-5 text-neutral-500 dark:text-neutral-400" />
         </Link>
       </div>
