@@ -1,0 +1,55 @@
+import React, { useState } from "react";
+import { Input as ShadCnInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+
+export function PasswordInputToggle({
+  id,
+  name,
+  label,
+  required = false,
+  onChange = () => {},
+  minLength,
+}: {
+  id: string;
+  label: string;
+  name?: string;
+  required?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  minLength?: number;
+}) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Label htmlFor={id}>
+        {label}
+        {required && <span className="text-muted-foreground">*</span>}
+      </Label>
+      <div className="relative">
+        <ShadCnInput
+          id={id}
+          name={id || name}
+          type={showPassword ? "text" : "password"}
+          autoCapitalize="none"
+          autoComplete="new-password"
+          autoCorrect="off"
+          required={required}
+          onChange={onChange}
+          minLength={minLength}
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+        </Button>
+      </div>
+    </div>
+  );
+}
