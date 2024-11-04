@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { Header } from "@/components/layout/header";
+import { Header } from "@/components/layout/Header";
 
 export function AboutPage() {
   return (
