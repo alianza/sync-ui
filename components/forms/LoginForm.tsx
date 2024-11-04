@@ -1,7 +1,7 @@
 "use client";
 
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import React, { useActionState, useEffect } from "react";
+import React, { Suspense, useActionState, useEffect } from "react";
 import { signInAction } from "@/app/login/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { FormInput } from "@/components/forms/input/FormInput";
@@ -12,14 +12,6 @@ import { toast } from "react-toastify";
 
 function LoginForm() {
   const [state, action] = useActionState(signInAction, initialActionState);
-  const searchParams = useSearchParams();
-
-  const signUp = searchParams.get("signup") === "true";
-
-  useEffect(() => {
-    if (!signUp) return;
-    toast.success("Sign up successful! Please log in to continue.");
-  }, [signUp]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
 
@@ -41,8 +33,24 @@ function LoginForm() {
         <SubmitButton label="Log in" loadingLabel="Logging in..." />
         {state.status !== ResponseStatus.pending && <p className="text-sm text-muted-foreground">{state.message}</p>}
       </div>
+      <Suspense fallback={null}>
+        <SuccessComponent />
+      </Suspense>
     </form>
   );
+}
+
+function SuccessComponent() {
+  const searchParams = useSearchParams();
+
+  const signUp = searchParams.get("signup") === "true";
+
+  useEffect(() => {
+    if (!signUp) return;
+    toast.success("Sign up successful! Please log in to continue.");
+  }, [signUp]);
+
+  return <></>;
 }
 
 export default LoginForm;
