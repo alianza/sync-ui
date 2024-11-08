@@ -2,7 +2,7 @@
 
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import React, { Suspense, useActionState, useEffect } from "react";
-import { signInAction } from "@/app/login/actions";
+import { signInAction } from "@/app/(home)/login/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { FormInput } from "@/components/forms/input/FormInput";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";

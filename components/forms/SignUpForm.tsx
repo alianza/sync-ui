@@ -3,7 +3,7 @@
 import React, { useActionState, useEffect, useState } from "react";
 import { SubmitButton } from "@/components/SubmitButton";
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import { SignUpAction } from "@/app/signup/actions";
+import { SignUpAction } from "@/app/(home)/signup/actions";
 import { FormInput } from "@/components/forms/input/FormInput";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import Link from "next/link";

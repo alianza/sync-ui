@@ -18,7 +18,6 @@ import "react-toastify/dist/ReactToastify.css";
 function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/*{children}*/}
       <SessionProvider>{children}</SessionProvider>
       <NextNProgress
         height="3px"

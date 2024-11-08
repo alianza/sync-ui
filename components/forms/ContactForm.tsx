@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useActionState } from "react";
-import { createContact } from "@/app/contact/actions";
+import { createContact } from "@/app/(home)/contact/actions";
 import { initialActionState } from "@/lib/types";
 import Form from "next/form";
 import { CardContent, CardFooter } from "@/components/ui/card";

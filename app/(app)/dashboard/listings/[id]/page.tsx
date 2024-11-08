@@ -1,9 +1,7 @@
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
-import { Header } from "@/components/layout/Header";
 import { ListingCard } from "@/components/ListingCard";
 import { ListingType } from "@/types/listing";
-import { Footer } from "@/components/layout/Footer";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 

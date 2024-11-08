@@ -1,4 +1,4 @@
-import { Header } from "@/components/layout/Header";
+import { HomeHeader } from "@/components/layout/HomeHeader";
 import { ListingCard } from "@/components/ListingCard";
 import { Footer } from "@/components/layout/Footer";
 import Listing from "@/models/Listing";

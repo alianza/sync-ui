@@ -2,13 +2,13 @@
 
 import { PencilIcon, XIcon } from "lucide-react";
 import { ListingType } from "@/types/listing";
-import { deleteListing } from "@/app/dashboard/listings/actions";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LISTING_TYPES } from "@/models/Listing";
+import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 
 interface ListingCardProps {
   listing: ListingType;
