@@ -1,4 +1,4 @@
-import { HomeHeader } from "@/components/layout/HomeHeader";
+import { HomeHeader } from "@/components/layout/Header/home/HomeHeader";
 import { Footer } from "@/components/layout/Footer";
 import React from "react";
 

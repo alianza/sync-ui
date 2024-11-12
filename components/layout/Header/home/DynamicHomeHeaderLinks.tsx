@@ -4,7 +4,7 @@ import NavLink from "@/components/NavLink";
 import SignOutButton from "@/components/SignOutButton";
 import { useCurrentSession } from "@/lib/client.utils";
 
-export function DynamicLinks() {
+export function DynamicHomeHeaderLinks() {
   const { session, status } = useCurrentSession();
 
   return (

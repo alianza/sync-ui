@@ -12,7 +12,7 @@ function SignOutButton() {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-center">
-      <button type="submit" className="underline-hover text-sm font-medium underline-offset-4">
+      <button type="submit" className="underline-hover p-2 text-sm font-medium underline-offset-4">
         Logout
       </button>
     </form>
