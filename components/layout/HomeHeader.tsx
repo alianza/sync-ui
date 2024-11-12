@@ -1,13 +1,8 @@
 import NavLink from "@/components/NavLink";
 import { HeaderLogo } from "@/components/layout/HeaderLogo";
-import { auth } from "@/auth";
-import SignOutButton from "@/components/SignOutButton";
+import { DynamicLinks } from "@/components/layout/DynamicHeaderlInks";
 
-export async function HomeHeader() {
-  const session = await auth();
-
-  console.log(`session`, session);
-
+export function HomeHeader() {
   return (
     <header className="flex shrink flex-wrap items-center gap-8 bg-background p-4 shadow dark:border-b-2">
       <HeaderLogo />
@@ -16,8 +11,7 @@ export async function HomeHeader() {
         <NavLink href="/pricing" label="Pricing" />
         <NavLink href="/about" label="About" />
         <NavLink href="/contact" label="Contact" />
-        {session && <NavLink href="/dashboard" label="Dashboard" />}
-        {session ? <SignOutButton /> : <NavLink href="/login" label="Login" />}
+        <DynamicLinks />
       </nav>
     </header>
   );
