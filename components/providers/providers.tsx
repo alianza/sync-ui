@@ -14,11 +14,22 @@ const ToastContainer = dynamic(() => import("react-toastify").then((mod) => mod.
 import React from "react";
 import dynamic from "next/dynamic";
 import "react-toastify/dist/ReactToastify.css";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSideBar";
 
-function Providers({ children }: { children: React.ReactNode }) {
+function Providers({ children, appMode = false }: { children: React.ReactNode; appMode?: boolean }) {
   return (
     <>
-      <SessionProvider>{children}</SessionProvider>
+      {appMode ? (
+        <SessionProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            {children}
+          </SidebarProvider>
+        </SessionProvider>
+      ) : (
+        <SessionProvider>{children}</SessionProvider>
+      )}
       <NextNProgress
         height="3px"
         color="#eee"
