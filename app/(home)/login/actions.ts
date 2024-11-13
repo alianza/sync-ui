@@ -8,7 +8,7 @@ export async function signInAction(prevState: unknown, formData: FormData) {
   try {
     const email = formData.get("email");
     const password = formData.get("password");
-    await signIn("credentials", { email, password, redirectTo: "/" });
+    await signIn("credentials", { email, password, redirectTo: "/dashboard" });
     return successResponse({ message: "Successfully logged in!" });
   } catch (error) {
     console.log("error", error);
