@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Input as ShadCnInput } from "@/components/ui/input";
-import { Textarea as ShadCnTextArea } from "@/components/ui/textarea";
+import { Textarea as ShadCnTextArea, TextareaProps } from "@/components/ui/textarea";
 
 import React from "react";
 
@@ -29,7 +29,7 @@ export function FormInput({
   label,
   minLength,
   ...props
-}: Props) {
+}: Props & React.ComponentProps<"input"> & TextareaProps & React.RefAttributes<HTMLTextAreaElement>) {
   const InputTag = type === "multiline" ? ShadCnTextArea : ShadCnInput;
 
   return (
