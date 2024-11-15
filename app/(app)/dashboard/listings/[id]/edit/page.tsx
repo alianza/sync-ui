@@ -1,9 +1,6 @@
-import { HomeHeader } from "@/components/layout/Header/home/HomeHeader";
 import { ListingCard } from "@/components/ListingCard";
-import { Footer } from "@/components/layout/Footer";
-import Listing from "@/models/Listing";
+import Listing, { IListing } from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
-import { ListingType } from "@/types/listing";
 import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
@@ -27,13 +24,11 @@ export async function generateStaticParams() {
 export default async function EditListingPage(props: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
-  if (!session) {
-    redirect("/login");
-  }
+  if (!session) redirect("/login");
 
   const params = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingType;
+  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as IListing;
 
   return (
     <>
