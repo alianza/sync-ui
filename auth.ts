@@ -7,14 +7,10 @@ import dbConnect from "./lib/dbConnect";
 export async function saltAndHashPassword(password: string) {
   const saltLength = 10;
   const salt = bcryptjs.genSaltSync(saltLength);
-  const hash = bcryptjs.hashSync(password, salt);
-  return hash;
+  return bcryptjs.hashSync(password, salt);
 }
 
-export async function verifyPassword(password: string, hash: string) {
-  const isMatch = bcryptjs.compareSync(password, hash);
-  return isMatch;
-}
+export const verifyPassword = async (password: string, hash: string) => bcryptjs.compareSync(password, hash);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
