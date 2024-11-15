@@ -1,23 +1,23 @@
 "use client";
 
 import { PencilIcon, XIcon } from "lucide-react";
-import { ListingType } from "@/types/listing";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
-import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LISTING_TYPES } from "@/models/Listing";
+import { LISTING_TYPES, IListing } from "@/models/Listing";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
+import { useToast } from "@/hooks/use-toast";
 
 interface ListingCardProps {
-  listing: ListingType;
+  listing: IListing;
   redirectAfterDelete?: string;
 }
 
 export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) {
   const [isDeleting, setIsDeleting] = React.useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   return (
     <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
@@ -37,9 +37,9 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
           onClick={async () => {
             setIsDeleting(true);
             const { error, message } = await deleteListing(listing._id);
-            if (message) toast.success(message);
+            if (message) toast({ title: message });
             if (error) {
-              toast.error(error);
+              toast({ description: error, variant: "destructive" });
               setIsDeleting(false);
             }
             if (redirectAfterDelete) router.replace(redirectAfterDelete);

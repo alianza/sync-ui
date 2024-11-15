@@ -17,7 +17,7 @@ const NavLink = ({ href, exact, label }: NavLinkProps) => {
   return (
     <Link
       href={href}
-      className={`underline-hover p-2 text-sm font-bold underline-offset-4 ${isActive ? "underline !decoration-inherit" : "no-underline"}`}
+      className={`underline-hover flex p-2 text-sm font-bold underline-offset-4 ${isActive ? "underline !decoration-inherit" : "no-underline"}`}
     >
       {label}
     </Link>
