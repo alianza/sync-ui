@@ -1,21 +1,23 @@
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
-import Listing from "@/models/Listing";
+import Listing, { IListing } from "@/models/Listing";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ListingCard } from "@/components/ListingCard";
 import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
+export const revalidate = 60;
+
 export default async function ListingsPage() {
   const session = await auth();
 
-  if (!session) {
-    redirect("/login");
-  }
+  if (!session) redirect("/login");
 
   await dbConnect();
-  const listings = (await Listing.find({})).map((doc) => doc.toObject({ flattenObjectIds: true }));
+  const listings = (await Listing.find({ userId: session.user?.id })).map((doc) =>
+    doc.toObject({ flattenObjectIds: true }),
+  ) as IListing[];
 
   return (
     <>
@@ -25,7 +27,7 @@ export default async function ListingsPage() {
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Listings</h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                Check out the latest listings from our users.
+                These are your listings. You can edit or delete them here.
               </p>
             </div>
           </div>
