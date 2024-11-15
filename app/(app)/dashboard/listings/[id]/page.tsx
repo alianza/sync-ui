@@ -1,7 +1,6 @@
-import Listing from "@/models/Listing";
+import Listing, { IListing } from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingCard } from "@/components/ListingCard";
-import { ListingType } from "@/types/listing";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
@@ -24,13 +23,11 @@ export async function generateStaticParams() {
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
-  if (!session) {
-    redirect("/login");
-  }
+  if (!session) redirect("/login");
 
   const params = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingType;
+  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as IListing;
 
   return (
     <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
