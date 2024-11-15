@@ -1,4 +1,4 @@
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, MongooseError } from "mongoose";
 import { ResponseStatus } from "@/lib/types";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
@@ -36,3 +36,7 @@ export const failResponse = <T>({ message, data }: { message?: string; data?: T 
  * @param message
  */
 export const errorResponse = <T>(message: T) => ({ status: ResponseStatus.error, message: String(message) });
+
+export const isMongooseDuplicateKeyError = (error: unknown) => {
+  return typeof error === "object" && error !== null && "code" in error && error.code === 11000;
+};
