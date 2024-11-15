@@ -1,12 +1,11 @@
 "use server";
 
-import { errorResponse, failResponse, serializeDoc, successResponse } from "@/lib/server.utils";
+import { errorResponse, failResponse, isMongooseDuplicateKeyError } from "@/lib/server.utils";
 import User, { Roles } from "@/models/User";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
 import { redirect } from "next/navigation";
-import { MongooseError } from "mongoose";
 
 const registerSchema = z.object({
   firstName: z.string().min(1),
@@ -22,8 +21,6 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
       Object.fromEntries(formData),
     );
 
-    console.log(`Object.fromEntries(formData)`, Object.fromEntries(formData));
-
     if (password !== confirmPassword) return failResponse({ message: "Passwords do not match" });
 
     const hashedPassword = await saltAndHashPassword(password);
@@ -36,8 +33,8 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
       return failResponse({ message: "Invalid form data", data: error.flatten() });
     }
 
-    if (typeof error === "object" && error !== null && "code" in error && error.code === 11000) {
-      return failResponse({ message: "This email is already in use, please log in" }); // duplicate key error
+    if (isMongooseDuplicateKeyError(error)) {
+      return failResponse({ message: "This email is already in use, please log in" });
     }
 
     return errorResponse(error);

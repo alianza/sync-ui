@@ -11,7 +11,7 @@ export async function signInAction(prevState: unknown, formData: FormData) {
     await signIn("credentials", { email, password, redirectTo: "/dashboard" });
     return successResponse({ message: "Successfully logged in!" });
   } catch (error) {
-    console.log("error", error);
+    // console.log("error", error);
     if (isRedirectError(error)) {
       throw error;
     }
