@@ -8,7 +8,7 @@ import { FormInput } from "@/components/forms/input/FormInput";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import { handleAction } from "@/lib/client.utils";
 import { useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
+import { useToast } from "@/hooks/use-toast";
 
 function LoginForm() {
   const [state, action] = useActionState(signInAction, initialActionState);
@@ -42,13 +42,14 @@ function LoginForm() {
 
 function SuccessComponent() {
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const signUp = searchParams.get("signup") === "true";
 
   useEffect(() => {
     if (!signUp) return;
-    toast.success("Sign up successful! Please log in to continue.");
-  }, [signUp]);
+    toast({ title: "Sign up successful!", description: " Please log in to continue." });
+  }, [signUp, toast]);
 
   return <></>;
 }
