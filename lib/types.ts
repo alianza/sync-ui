@@ -10,3 +10,10 @@ export const initialActionState = {
   message: "",
   data: undefined,
 };
+
+export type ServerResponse<T> = {
+  data?: T;
+  message?: string;
+  error?: string;
+  status: ResponseStatus;
+};
