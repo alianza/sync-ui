@@ -1,18 +1,7 @@
 import mongoose from "mongoose";
+import { IUser, Roles } from "@/models/User.type";
 
-export interface IUser {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: string;
-}
-
-export enum Roles {
-  Realtor = "realtor",
-  Buyer = "buyer",
-}
+import "server-only";
 
 const UserSchema = new mongoose.Schema<IUser>(
   {

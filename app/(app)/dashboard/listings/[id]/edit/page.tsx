@@ -1,5 +1,6 @@
 import { ListingCard } from "@/components/ListingCard";
-import Listing, { IListing } from "@/models/Listing";
+import { IListing } from "@/models/Listing.type";
+import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";

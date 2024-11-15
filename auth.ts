@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import User, { IUser } from "@/models/User";
+import User from "@/models/User";
+import { IUser } from "@/models/User.type";
 import dbConnect from "./lib/dbConnect";
 
 export async function saltAndHashPassword(password: string) {

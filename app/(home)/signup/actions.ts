@@ -1,7 +1,8 @@
 "use server";
 
 import { errorResponse, failResponse, isMongooseDuplicateKeyError } from "@/lib/server.utils";
-import User, { Roles } from "@/models/User";
+import User from "@/models/User";
+import { Roles } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";

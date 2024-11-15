@@ -1,11 +1,12 @@
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
-import Listing, { IListing } from "@/models/Listing";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ListingCard } from "@/components/ListingCard";
 import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Listing from "@/models/Listing";
+import { IListing } from "@/models/Listing.type";
 
 export const revalidate = 60;
 

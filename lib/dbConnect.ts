@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+import "server-only";
+
 if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local",
-  );
+  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 }
 
 /**
@@ -29,13 +29,9 @@ async function dbConnect() {
   if (!cached.promise) {
     console.log("Creating new database connection 😢");
     if (!MONGODB_URI) {
-      throw new Error(
-        "Please define the MONGODB_URI environment variable inside .env.local",
-      );
+      throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
     }
-    cached.promise = mongoose
-      .connect(MONGODB_URI, { bufferCommands: false })
-      .then((mongoose) => mongoose);
+    cached.promise = mongoose.connect(MONGODB_URI, { bufferCommands: false }).then((mongoose) => mongoose);
   }
 
   try {

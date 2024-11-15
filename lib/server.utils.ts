@@ -1,5 +1,7 @@
-import { HydratedDocument, MongooseError } from "mongoose";
+import { HydratedDocument } from "mongoose";
 import { ResponseStatus } from "@/lib/types";
+
+import "server-only";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
   if (Array.isArray(doc)) {

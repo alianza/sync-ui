@@ -1,7 +1,8 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import Listing, { LISTING_TYPES, IListing, listingSchema } from "@/models/Listing";
+import Listing, { listingSchema } from "@/models/Listing";
+import { LISTING_TYPES, IListing } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import { errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
 import { ServerResponse } from "@/lib/types";

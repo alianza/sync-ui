@@ -5,7 +5,7 @@ import { createListing, updateListing } from "@/app/(app)/dashboard/listings/act
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/SubmitButton";
-import { LISTING_TYPES, IListing } from "@/models/Listing";
+import { LISTING_TYPES, IListing } from "@/models/Listing.type";
 import {
   Select,
   SelectContent,
@@ -59,7 +59,7 @@ export function ListingForm({ listing }: Props) {
               required
             />
 
-            <FieldSet>
+            <FieldSet label="Address">
               <FormInput
                 id="streetName"
                 label="Street Name"
@@ -112,7 +112,7 @@ export function ListingForm({ listing }: Props) {
               required
             />
 
-            <FieldSet>
+            <FieldSet label="Details">
               <FormInput
                 id="askingPrice"
                 label="Asking Price"

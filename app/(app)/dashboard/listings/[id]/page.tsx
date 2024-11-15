@@ -1,4 +1,5 @@
-import Listing, { IListing } from "@/models/Listing";
+import Listing from "@/models/Listing";
+import { IListing } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
 import { ListingCard } from "@/components/ListingCard";
 import { auth } from "@/auth";
