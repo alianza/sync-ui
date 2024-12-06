@@ -2,10 +2,10 @@
 
 import NavLink from "@/components/NavLink";
 import SignOutButton from "@/components/SignOutButton";
-import { useCurrentSession } from "@/lib/client.utils";
+import { useSession } from "next-auth/react";
 
 export function DynamicAppHeaderLinks() {
-  const { session, status } = useCurrentSession();
+  const { data: session, status } = useSession()
 
   return <>{session ? <SignOutButton /> : <NavLink href="/login" label="Login" />}</>;
 }
