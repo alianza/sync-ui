@@ -1,4 +1,4 @@
-export interface IUser {
+export interface UserDoc {
   _id: string;
   firstName: string;
   lastName: string;
@@ -6,6 +6,7 @@ export interface IUser {
   password: string;
   role: string;
   verified: boolean;
+  __v?: number;
 }
 
 export enum Roles {

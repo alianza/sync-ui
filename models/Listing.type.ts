@@ -1,4 +1,4 @@
-import { IUser } from "./User.type";
+import { UserDoc } from "./User.type";
 
 export const LISTING_TYPES = {
   standalone: "Standalone",
@@ -21,5 +21,5 @@ export interface IListing {
   yearBuilt: number;
   squareMeters: number;
   description: string;
-  userId: IUser;
+  userId: UserDoc;
 }

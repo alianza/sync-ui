@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { IUser, Roles } from "@/models/User.type";
+import { UserDoc, Roles } from "@/models/User.type";
 
 import "server-only";
 
-const UserSchema = new mongoose.Schema<IUser>(
+const UserSchema = new mongoose.Schema<UserDoc>(
   {
     firstName: {
       type: String,
@@ -31,9 +31,9 @@ const UserSchema = new mongoose.Schema<IUser>(
     verified: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   { timestamps: true },
 );
 
-export default mongoose.models?.User || mongoose.model<IUser>("User", UserSchema);
+export default mongoose.models?.User || mongoose.model<UserDoc>("User", UserSchema);

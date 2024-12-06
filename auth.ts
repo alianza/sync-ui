@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import User from "@/models/User";
-import { IUser } from "@/models/User.type";
+import { UserDoc } from "@/models/User.type";
 import dbConnect from "./lib/dbConnect";
 
 export async function saltAndHashPassword(password: string) {
@@ -59,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
 
-  const user = (await User.findOne<IUser>({ email }).lean()) as IUser;
+  const user = (await User.findOne<UserDoc>({ email }).lean()) as UserDoc;
 
   if (!user) return null;
 
