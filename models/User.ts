@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema<IUser>(
       enum: Object.values(Roles),
       default: "buyer",
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true },
 );

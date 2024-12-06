@@ -5,9 +5,11 @@ export interface IUser {
   email: string;
   password: string;
   role: string;
+  verified: boolean;
 }
 
 export enum Roles {
   Realtor = "realtor",
   Buyer = "buyer",
+  Admin = "admin",
 }
