@@ -2,13 +2,13 @@
 
 import dbConnect from "@/lib/dbConnect";
 import Listing, { listingSchema } from "@/models/Listing";
-import { LISTING_TYPES, IListing } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import { errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
 import { ServerResponse } from "@/lib/types";
 import { auth } from "@/auth";
 
-export async function createListing(prevState: unknown, formData: FormData): Promise<ServerResponse<IListing>> {
+export async function createListing(prevState: unknown, formData: FormData): Promise<ServerResponse<ListingDoc>> {
   const defaultType = Object.keys(LISTING_TYPES).find((key) => key === LISTING_TYPES.apartment)!;
   formData.set("type", formData.get("type") || defaultType);
 
@@ -30,7 +30,7 @@ export async function createListing(prevState: unknown, formData: FormData): Pro
   }
 }
 
-export async function deleteListing(id: string): Promise<ServerResponse<IListing>> {
+export async function deleteListing(id: string): Promise<ServerResponse<ListingDoc>> {
   try {
     await dbConnect();
     const listing = await Listing.findByIdAndDelete(id);
@@ -45,7 +45,7 @@ export async function deleteListing(id: string): Promise<ServerResponse<IListing
   }
 }
 
-export async function updateListing(prevState: unknown, formData: FormData): Promise<ServerResponse<IListing>> {
+export async function updateListing(prevState: unknown, formData: FormData): Promise<ServerResponse<ListingDoc>> {
   const rawFormData = {
     _id: formData.get("_id"),
     title: formData.get("title"),

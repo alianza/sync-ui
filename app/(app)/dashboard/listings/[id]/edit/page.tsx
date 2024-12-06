@@ -1,5 +1,5 @@
 import { ListingCard } from "@/components/ListingCard";
-import { IListing } from "@/models/Listing.type";
+import { ListingDoc } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
@@ -29,7 +29,7 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
 
   const params = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as IListing;
+  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingDoc;
 
   return (
     <>

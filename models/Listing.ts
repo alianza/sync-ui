@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import z from "zod";
 
 import "server-only";
-import { IListing, LISTING_TYPES } from "@/models/Listing.type";
+import { ListingDoc, LISTING_TYPES } from "@/models/Listing.type";
 
 const postalCodeRegex = /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i;
 
@@ -23,7 +23,7 @@ export const listingSchema = z.object({
   // userId: z.string(),
 });
 
-const ListingSchema = new mongoose.Schema<IListing>(
+const ListingSchema = new mongoose.Schema<ListingDoc>(
   {
     title: {
       type: String,
@@ -100,4 +100,4 @@ const ListingSchema = new mongoose.Schema<IListing>(
   { timestamps: true },
 );
 
-export default mongoose.models?.Listing || mongoose.model<IListing>("Listing", ListingSchema);
+export default mongoose.models?.Listing || mongoose.model<ListingDoc>("Listing", ListingSchema);

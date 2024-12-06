@@ -8,7 +8,7 @@ export const LISTING_TYPES = {
   boat: "Boat",
 };
 
-export interface IListing {
+export interface ListingDoc {
   _id: string;
   title: string;
   streetName: string;

@@ -5,7 +5,7 @@ import { createListing, updateListing } from "@/app/(app)/dashboard/listings/act
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/SubmitButton";
-import { LISTING_TYPES, IListing } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import {
   Select,
   SelectContent,
@@ -21,7 +21,7 @@ import { FieldSet } from "@/components/forms/input/FieldSet";
 import { FormInput } from "@/components/forms/input/FormInput";
 
 interface Props {
-  listing?: IListing;
+  listing?: ListingDoc;
 }
 
 export function ListingForm({ listing }: Props) {

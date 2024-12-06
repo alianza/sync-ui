@@ -7,10 +7,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 import { useToast } from "@/hooks/use-toast";
-import { IListing, LISTING_TYPES } from "@/models/Listing.type";
+import { ListingDoc, LISTING_TYPES } from "@/models/Listing.type";
 
 interface ListingCardProps {
-  listing: IListing;
+  listing: ListingDoc;
   redirectAfterDelete?: string;
 }
 

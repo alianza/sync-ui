@@ -1,5 +1,5 @@
 import Listing from "@/models/Listing";
-import { IListing } from "@/models/Listing.type";
+import { ListingDoc } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
 import { ListingCard } from "@/components/ListingCard";
 import { auth } from "@/auth";
@@ -28,7 +28,7 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
 
   const params = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as IListing;
+  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingDoc;
 
   return (
     <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">

@@ -6,7 +6,7 @@ import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Listing from "@/models/Listing";
-import { IListing } from "@/models/Listing.type";
+import { ListingDoc } from "@/models/Listing.type";
 
 export const revalidate = 60;
 
@@ -18,7 +18,7 @@ export default async function ListingsPage() {
   await dbConnect();
   const listings = (await Listing.find({ userId: session.user?.id })).map((doc) =>
     doc.toObject({ flattenObjectIds: true }),
-  ) as IListing[];
+  ) as ListingDoc[];
 
   return (
     <>
