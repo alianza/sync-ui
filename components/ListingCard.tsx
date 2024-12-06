@@ -7,7 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 import { useToast } from "@/hooks/use-toast";
-import { ListingDoc, LISTING_TYPES } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { ResponseStatus } from "@/lib/types";
 
 interface ListingCardProps {
   listing: ListingDoc;
@@ -36,13 +37,18 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
         <button
           onClick={async () => {
             setIsDeleting(true);
-            const { error, message } = await deleteListing(listing._id);
-            if (message) toast({ title: message });
-            if (error) {
-              toast({ description: error, variant: "destructive" });
-              setIsDeleting(false);
+            const { message, status } = await deleteListing(listing._id);
+            if (message) {
+              if (status === ResponseStatus.error) {
+                toast({ description: message, variant: "destructive" });
+                setIsDeleting(false);
+                return;
+              }
+
+              if (redirectAfterDelete) router.replace(redirectAfterDelete);
+
+              toast({ title: message });
             }
-            if (redirectAfterDelete) router.replace(redirectAfterDelete);
           }}
           className={`scale-hover-xl cursor-pointer p-2`}
           disabled={isDeleting}
