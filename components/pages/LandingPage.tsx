@@ -126,7 +126,7 @@ export function LandingPage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Join HuizenHub Today</h2>
-              <p className="max-w-[900px] text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
+              <p className="max-w-4xl text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
                 Whether you're a realtor looking to streamline your sales process or a home buyer searching for your
                 dream property, HuizenHub has you covered. Sign up now and experience the future of Dutch real estate.
               </p>

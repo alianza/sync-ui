@@ -1,5 +1,5 @@
 import { HydratedDocument } from "mongoose";
-import { ResponseStatus } from "@/lib/types";
+import { ResponseStatus, ServerResponse } from "@/lib/types";
 
 import "server-only";
 
@@ -16,7 +16,7 @@ export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]
  * @param message
  * @param data
  */
-export const successResponse = <T>({ message, data }: { message?: string; data?: T }) => ({
+export const successResponse = <T>({ message, data }: { message?: string; data?: T }): ServerResponse<T> => ({
   status: ResponseStatus.success,
   message,
   data,
@@ -27,7 +27,7 @@ export const successResponse = <T>({ message, data }: { message?: string; data?:
  * @param message
  * @param data
  */
-export const failResponse = <T>({ message, data }: { message?: string; data?: T }) => ({
+export const failResponse = <T>({ message, data }: { message?: string; data?: T }): ServerResponse<T> => ({
   status: ResponseStatus.fail,
   message,
   data,
