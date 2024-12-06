@@ -109,7 +109,6 @@ export function ListingForm({ listing }: Props) {
               placeholder="Enter the description"
               type="multiline"
               defaultValue={editMode ? listing?.description || state?.data?.description : undefined}
-              required
             />
 
             <FieldSet label="Details">
@@ -131,7 +130,7 @@ export function ListingForm({ listing }: Props) {
                 required
                 type="number"
                 min={1800}
-                max={new Date().getFullYear()}
+                max={new Date().getFullYear()} // Allow future years???
               />
 
               <FormInput
@@ -172,8 +171,11 @@ export function ListingForm({ listing }: Props) {
         </CardContent>
         <CardFooter className="flex justify-between gap-4">
           <SubmitButton label={editMode ? "Update" : undefined} />
-          {state?.message && <p className="text-sm text-neutral-700">{state.message}</p>}
-          {state?.error && <p className="text-sm text-red-900">{state.error}</p>}
+          {state?.message && (
+            <p className={`text-sm ${state.status === ResponseStatus.error ? "text-red-700" : "text-neutral-700"} `}>
+              {state.message}
+            </p>
+          )}
         </CardFooter>
       </form>
     </Card>

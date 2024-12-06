@@ -6,6 +6,7 @@ export interface UserDoc {
   password: string;
   role: string;
   verified: boolean;
+  clients?: string[];
   __v?: number;
 }
 

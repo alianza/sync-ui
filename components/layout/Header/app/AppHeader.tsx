@@ -4,11 +4,12 @@ import { DynamicAppHeaderLinks } from "@/components/layout/Header/app/DynamicApp
 import { MobileNav } from "@/components/layout/Header/MobileNav";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Home, ScrollText } from "lucide-react";
+import { Home, ScrollText, Users } from "lucide-react";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
   { href: "/dashboard/listings", label: "Listings", icon: ScrollText },
+  { href: "/dashboard/clients", label: "Clients", icon: Users },
 ];
 
 export async function AppHeader() {

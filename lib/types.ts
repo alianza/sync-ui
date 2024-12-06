@@ -14,6 +14,5 @@ export const initialActionState = {
 export type ServerResponse<T> = {
   data?: T;
   message?: string;
-  error?: string;
   status: ResponseStatus;
 };

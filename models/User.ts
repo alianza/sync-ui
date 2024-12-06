@@ -26,7 +26,11 @@ const UserSchema = new mongoose.Schema<UserDoc>(
     role: {
       type: String,
       enum: Object.values(Roles),
-      default: "buyer",
+      default: Roles.Buyer,
+    },
+    clients: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
     },
     verified: {
       type: Boolean,

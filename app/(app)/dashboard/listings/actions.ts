@@ -33,7 +33,9 @@ export async function createListing(prevState: unknown, formData: FormData): Pro
 export async function deleteListing(id: string): Promise<ServerResponse<ListingDoc>> {
   try {
     await dbConnect();
-    const listing = await Listing.findByIdAndDelete(id);
+    const session = await auth();
+    if (!session) return errorResponse("You must be logged in to delete a listing");
+    const listing = await Listing.findOneAndDelete({ _id: id, userId: session?.user?.id });
     revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
@@ -59,7 +61,9 @@ export async function updateListing(prevState: unknown, formData: FormData): Pro
 
   try {
     await dbConnect();
-    const listing = await Listing.findByIdAndUpdate(rawFormData._id, rawFormData, { new: true });
+    const session = await auth();
+    if (!session) return errorResponse("You must be logged in to update a listing");
+    const listing = await Listing.findOneAndUpdate({ _id: rawFormData._id, userId: session?.user?.id }, { new: true });
     revalidatePath(`/dashboard/listings/${listing._id}`);
     revalidatePath(`/dashboard/listings`);
     return successResponse({
