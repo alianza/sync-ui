@@ -1,7 +1,9 @@
 import { HydratedDocument } from "mongoose";
 import { ResponseStatus, ServerResponse } from "@/lib/types";
+import { ZodError, ZodIssue } from "zod";
 
 import "server-only";
+import { capitalize } from "@/lib/common.utils";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
   if (Array.isArray(doc)) {
@@ -37,8 +39,31 @@ export const failResponse = <T>({ message, data }: { message?: string; data?: T 
  * Error response with message
  * @param message
  */
-export const errorResponse = <T>(message: T) => ({ status: ResponseStatus.error, message: String(message) });
+export const errorResponse = <T>(message: T): ServerResponse<undefined> => ({
+  status: ResponseStatus.error,
+  message: String(message),
+});
 
 export const isMongooseDuplicateKeyError = (error: unknown) => {
   return typeof error === "object" && error !== null && "code" in error && error.code === 11000;
+};
+
+const formatZodIssue = (issue: ZodIssue): string => {
+  const { path, message } = issue;
+  const pathString = path.join(".");
+
+  return `${capitalize(pathString)}: ${message}`;
+};
+
+// Format the Zod error message with only the current error
+export const formatZodError = (error: ZodError) => {
+  const { issues } = error;
+
+  const errors = [];
+
+  for (const currentIssue of issues) {
+    errors.push(formatZodIssue(currentIssue));
+  }
+
+  return errors.join(", ");
 };
