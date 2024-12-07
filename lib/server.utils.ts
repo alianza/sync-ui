@@ -1,9 +1,9 @@
 import { HydratedDocument } from "mongoose";
 import { ResponseStatus, ServerResponse } from "@/lib/types";
 import { ZodError, ZodIssue } from "zod";
+import { capitalize } from "@/lib/common.utils";
 
 import "server-only";
-import { capitalize } from "@/lib/common.utils";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
   if (Array.isArray(doc)) {
