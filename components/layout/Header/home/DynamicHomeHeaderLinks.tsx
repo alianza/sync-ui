@@ -5,7 +5,7 @@ import SignOutButton from "@/components/SignOutButton";
 import { useSession } from "next-auth/react";
 
 export function DynamicHomeHeaderLinks() {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
 
   return (
     <>
