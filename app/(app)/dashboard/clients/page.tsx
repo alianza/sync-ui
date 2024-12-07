@@ -38,7 +38,7 @@ export default async function ClientsPage() {
             </div>
           </div>
           <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
-            {dbUser.clients.length ? (
+            {dbUser.clients.length > 0 ? (
               dbUser.clients.map((client) => <ClientCard key={client._id} client={client} />)
             ) : (
               <EmptyCard />
@@ -46,7 +46,7 @@ export default async function ClientsPage() {
           </div>
         </div>
         <div className="flex w-full items-center">
-          {dbUser.clients.length && (
+          {dbUser.clients.length > 0 && (
             <Button asChild className="mx-auto">
               <Link href="/dashboard/clients/new">
                 <Plus /> Invite a client
