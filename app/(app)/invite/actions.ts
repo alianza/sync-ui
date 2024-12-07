@@ -38,12 +38,9 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     ).populate<UserDoc>("inviter");
 
     if (!invite) return failResponse({ message: "Invite not found" });
-
     if (invite.inviteeEmail !== email) return failResponse({ message: "Sent email and invite email do not match" });
 
     const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: Roles.buyer });
-
-    // add user the client list of the inviter
 
     await User.updateOne({ _id: invite.inviter._id }, { $push: { clients: user._id } });
 
