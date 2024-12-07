@@ -1,5 +1,3 @@
-import { HomeHeader } from "@/components/layout/Header/home/HomeHeader";
-import { Footer } from "@/components/layout/Footer";
 import { ContactComponent } from "@/components/ContactComponent";
 
 export function ContactPage() {
