@@ -1,23 +1,24 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import Listing, { listingSchema } from "@/models/Listing";
-import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import Listing, { listingCreateSchema, listingUpdateSchema } from "@/models/Listing";
+import { LISTING_TYPES, LISTING_TYPES_ENUM } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
-import { errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
-import { ServerResponse } from "@/lib/types";
+import { errorResponse, failResponse, formatZodError, serializeDoc, successResponse } from "@/lib/server.utils";
 import { auth } from "@/auth";
+import z from "zod";
 
-export async function createListing(prevState: unknown, formData: FormData): Promise<ServerResponse<ListingDoc>> {
-  const defaultType = Object.keys(LISTING_TYPES).find((key) => key === LISTING_TYPES.apartment)!;
-  formData.set("type", formData.get("type") || defaultType);
-
-  const listingData = listingSchema.parse(Object.fromEntries(formData));
-
+export async function createListing(prevState: unknown, formData: FormData) {
   try {
-    await dbConnect();
+    const defaultType = Object.keys(LISTING_TYPES).find((key) => key === LISTING_TYPES_ENUM.apartment)!;
+    formData.set("type", formData.get("type") || defaultType);
+
+    const listingData = listingCreateSchema.parse(Object.fromEntries(formData));
+
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to create a listing");
+
+    await dbConnect();
     const listing = await Listing.create({ ...listingData, userId: session?.user?.id });
     revalidatePath(`/dashboard/listings`);
     return successResponse({
@@ -25,16 +26,21 @@ export async function createListing(prevState: unknown, formData: FormData): Pro
       message: `Successfully created listing with title '${listing.title}'`,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return failResponse({ message: formatZodError(error) });
+    }
+
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse(`An error occurred while creating the listing: ${message}`);
   }
 }
 
-export async function deleteListing(id: string): Promise<ServerResponse<ListingDoc>> {
+export async function deleteListing(id: string) {
   try {
-    await dbConnect();
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to delete a listing");
+
+    await dbConnect();
     const listing = await Listing.findOneAndDelete({ _id: id, userId: session?.user?.id });
     revalidatePath(`/dashboard/listings`);
     return successResponse({
@@ -47,30 +53,28 @@ export async function deleteListing(id: string): Promise<ServerResponse<ListingD
   }
 }
 
-export async function updateListing(prevState: unknown, formData: FormData): Promise<ServerResponse<ListingDoc>> {
-  const rawFormData = {
-    _id: formData.get("_id"),
-    title: formData.get("title"),
-    description: formData.get("description"),
-    type: formData.get("type") || Object.entries(LISTING_TYPES).find(([key]) => key === LISTING_TYPES.apartment),
-  };
-
-  Object.entries(rawFormData).forEach(([key, value]) => {
-    if (!value) return { error: `Please provide a value for the field '${key}'` }; // return early if any field value is falsy
-  });
-
+export async function updateListing(prevState: unknown, formData: FormData) {
   try {
-    await dbConnect();
+    const updateData = listingUpdateSchema.parse(Object.fromEntries(formData));
+
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to update a listing");
-    const listing = await Listing.findOneAndUpdate({ _id: rawFormData._id, userId: session?.user?.id }, { new: true });
+
+    await dbConnect();
+    const listing = await Listing.findOneAndUpdate({ _id: updateData._id, userId: session?.user?.id }, updateData, {
+      new: true,
+    });
     revalidatePath(`/dashboard/listings/${listing._id}`);
     revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
-      message: `Successfully updated listing with title '${rawFormData.title}'`,
+      message: `Successfully updated listing with title '${updateData.title}'`,
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return failResponse({ message: formatZodError(error) });
+    }
+
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse(`An error occurred while updating the listing: ${message}`);
   }

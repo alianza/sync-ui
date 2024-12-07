@@ -1,5 +1,7 @@
 "use server";
 
+import { successResponse } from "@/lib/server.utils";
+
 export async function createContact(prevState: unknown, formData: FormData) {
   const rawFormData = {
     name: formData.get("name"),
@@ -14,8 +16,7 @@ export async function createContact(prevState: unknown, formData: FormData) {
 
   // revalidatePath("/pricing");
 
-  return {
-    message:
-      "Your message has been sent successfully! Thank you, We will get back to you soon!",
-  };
+  return successResponse({
+    message: "Your message has been sent successfully! Thank you, We will get back to you soon!",
+  });
 }
