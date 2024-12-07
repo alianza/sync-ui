@@ -9,6 +9,11 @@ import Listing from "@/models/Listing";
 import { ListingDoc } from "@/models/Listing.type";
 import User from "@/models/User";
 import { UserDoc } from "@/models/User.type";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ClientCard } from "@/components/ClientCard";
+import { MergeType } from "mongoose";
 
 export const revalidate = 60;
 
@@ -18,31 +23,40 @@ export default async function ClientsPage() {
   if (!session) redirect("/login");
 
   await dbConnect();
-  const dbUser = await User.findById<UserDoc>(session.user?.id).populate("clients");
+  const dbUser = (await User.findById(session.user?.id).populate("clients")).toObject({
+    flattenObjectIds: true,
+  }) as MergeType<UserDoc, { clients: UserDoc[] }>;
 
   if (!dbUser) redirect("/login");
 
-  console.log(`dbUser`, dbUser);
-
   return (
     <>
-      <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+      <section className="flex w-full flex-col gap-8 bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Listings</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Clients</h2>
               <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                 These are your clients. You can add, edit, and delete them as you see fit.
               </p>
             </div>
           </div>
           <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
-            {/*{dbUser.clients.length > 0 ? (*/}
-            {/*  dbUser.clients.map((client) => <ListingCard key={client._id} listing={client as ListingDoc} />)*/}
-            {/*) : (*/}
-            {/*  <EmptyCard />*/}
-            {/*)}*/}
+            {dbUser.clients.length ? (
+              dbUser.clients.map((client) => <ClientCard key={client._id} client={client} />)
+            ) : (
+              <EmptyCard />
+            )}
           </div>
+        </div>
+        <div className="flex w-full items-center">
+          {dbUser.clients.length && (
+            <Button asChild className="mx-auto">
+              <Link href="/dashboard/clients/new">
+                <Plus /> Invite a client
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
     </>
@@ -57,6 +71,11 @@ function EmptyCard() {
         <CardDescription>
           You have no clients on your file yet. You can create an invite for a new client here!
         </CardDescription>
+        <Button asChild>
+          <Link href="/dashboard/clients/new">
+            <Plus /> Invite a client
+          </Link>
+        </Button>
       </CardHeader>
     </Card>
   );
