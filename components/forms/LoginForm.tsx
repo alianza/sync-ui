@@ -7,13 +7,19 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { FormInput } from "@/components/forms/input/FormInput";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import { handleAction } from "@/lib/client.utils";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 
 function LoginForm() {
   const [state, action] = useActionState(signInAction, initialActionState);
+  const { data: session } = useSession();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
+
+  if (session) {
+    redirect("/dashboard");
+  }
 
   return (
     <form onSubmit={handleSubmit}>

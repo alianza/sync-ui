@@ -172,7 +172,7 @@ export function ListingForm({ listing }: Props) {
         <CardFooter className="flex justify-between gap-4">
           <SubmitButton label={editMode ? "Update" : undefined} />
           {state?.message && (
-            <p className={`text-sm ${state.status === ResponseStatus.error ? "text-red-700" : "text-neutral-700"} `}>
+            <p className={`text-sm ${state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700"} `}>
               {state.message}
             </p>
           )}
