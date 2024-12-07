@@ -40,7 +40,7 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
             const { message, status } = await deleteListing(listing._id);
             if (message) {
               if (status === ResponseStatus.error) {
-                toast({ description: message, variant: "destructive" });
+                toast({ title: "error", description: message, variant: "destructive" });
                 setIsDeleting(false);
                 return;
               }

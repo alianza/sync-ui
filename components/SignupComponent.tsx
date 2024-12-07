@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import SignUpForm from "@/components/forms/SignUpForm";
@@ -7,7 +5,7 @@ import SignUpForm from "@/components/forms/SignUpForm";
 function SignupComponent() {
   return (
     <Card className="mx-auto w-full max-w-md">
-      <CardHeader className="space-y-1">
+      <CardHeader>
         <CardTitle className="text-center text-2xl font-bold">Create an account</CardTitle>
         <CardDescription className="text-center">Enter your details below to create your account</CardDescription>
       </CardHeader>

@@ -6,7 +6,7 @@ import LoginForm from "@/components/forms/LoginForm";
 export function LoginComponent() {
   return (
     <Card className="mx-auto w-full max-w-md">
-      <CardHeader className="space-y-1">
+      <CardHeader>
         <CardTitle className="text-center text-2xl font-bold">Login to HuizenHub</CardTitle>
         <CardDescription className="text-center">Enter your email and password to access your account</CardDescription>
       </CardHeader>

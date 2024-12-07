@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/ContactForm";
 
@@ -12,20 +12,14 @@ export function ContactComponent() {
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         <div className="space-y-2">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Contact Us</h2>
-          <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+          <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
             Have questions about HuizenHub? We're here to help. Reach out to us using the form below or through our
             contact information.
           </p>
         </div>
       </div>
       <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Send us a message</CardTitle>
-            <CardDescription>We'll get back to you as soon as possible.</CardDescription>
-          </CardHeader>
-          <ContactForm />
-        </Card>
+        <ContactForm />
         <Card>
           <CardHeader>
             <CardTitle>Contact Information</CardTitle>
