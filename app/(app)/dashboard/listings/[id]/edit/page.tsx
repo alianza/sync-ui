@@ -29,7 +29,7 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
 
   const params = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id)).toObject({ flattenObjectIds: true }) as ListingDoc;
+  const listing = (await Listing.findById(params.id))?.toObject({ flattenObjectIds: true }) as ListingDoc;
 
   return (
     <>

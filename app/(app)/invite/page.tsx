@@ -23,7 +23,7 @@ export default async function Invite({ searchParams }: Props) {
 
   await dbConnect();
 
-  const invite = (await ClientInvite.findOne({ _id: id }).populate("inviter")).toObject({
+  const invite = (await ClientInvite.findOne({ _id: id }).populate("inviter"))?.toObject({
     flattenObjectIds: true,
   }) as MergeType<ClientInviteDoc, UserDoc>;
 

@@ -1,12 +1,8 @@
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ListingCard } from "@/components/ListingCard";
-import { ListingForm } from "@/components/forms/ListingForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import Listing from "@/models/Listing";
-import { ListingDoc } from "@/models/Listing.type";
 import User from "@/models/User";
 import { UserDoc } from "@/models/User.type";
 import { Plus } from "lucide-react";
@@ -23,7 +19,7 @@ export default async function ClientsPage() {
   if (!session) redirect("/login");
 
   await dbConnect();
-  const dbUser = (await User.findById(session.user?.id).populate("clients")).toObject({
+  const dbUser = (await User.findById(session.user?.id).populate("clients"))?.toObject({
     flattenObjectIds: true,
   }) as MergeType<UserDoc, { clients: UserDoc[] }>;
 
