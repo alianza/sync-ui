@@ -1,5 +1,5 @@
 // https://github.com/nextauthjs/next-auth/issues/9504 - WTF is this?
-import { useCallback, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -35,3 +35,27 @@ export const useCurrentSession = () => {
 
   return { session, status };
 };
+
+export function useResettableActionState<State, Payload>(
+  action: (state: Awaited<State>, payload: Payload) => State | Promise<State>,
+  initialState: Awaited<State>,
+  permalink?: string,
+): [state: Awaited<State>, dispatch: (payload: Payload | null) => void, reset: () => void, isPending: boolean] {
+  const [state, submit, isPending] = useActionState(
+    async (state: Awaited<State>, payload: Payload | null) => {
+      if (payload === null) {
+        return initialState;
+      }
+
+      return action(state, payload);
+    },
+    initialState,
+    permalink,
+  );
+
+  const reset = () => {
+    submit(null);
+  };
+
+  return [state, submit, reset, isPending];
+}
