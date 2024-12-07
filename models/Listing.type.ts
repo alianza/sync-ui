@@ -8,6 +8,14 @@ export const LISTING_TYPES = {
   boat: "Boat",
 };
 
+export enum LISTING_TYPES_ENUM {
+  standalone = "standalone",
+  flat = "flat",
+  apartment = "apartment",
+  house = "house",
+  boat = "boat",
+}
+
 export interface ListingDoc {
   _id: string;
   title: string;
@@ -16,7 +24,7 @@ export interface ListingDoc {
   postalCode: string;
   city: string;
   district: string;
-  type: string;
+  type: LISTING_TYPES_ENUM;
   askingPrice: number;
   yearBuilt: number;
   squareMeters: number;

@@ -15,6 +15,9 @@ const UserSchema = new mongoose.Schema<UserDoc>(
     },
     email: {
       type: String,
+      validator: function (value: string) {
+        return /\S+@\S+\.\S+/.test(value);
+      },
       required: [true, "Please provide your email."],
       unique: true,
     },
@@ -22,11 +25,12 @@ const UserSchema = new mongoose.Schema<UserDoc>(
       type: String,
       required: [true, "Please provide a password."],
       minlength: [6, "Password must be at least 6 characters long."],
+      select: false,
     },
     role: {
       type: String,
       enum: Object.values(Roles),
-      default: Roles.Buyer,
+      default: Roles.buyer,
     },
     clients: {
       type: [mongoose.Schema.Types.ObjectId],

@@ -7,11 +7,13 @@ export interface UserDoc {
   role: string;
   verified: boolean;
   clients?: string[];
+  createdAt: Date;
+  updatedAt: Date;
   __v?: number;
 }
 
 export enum Roles {
-  Realtor = "realtor",
-  Buyer = "buyer",
-  Admin = "admin",
+  realtor = "realtor",
+  buyer = "buyer",
+  admin = "admin",
 }

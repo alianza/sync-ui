@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import z from "zod";
 
 import "server-only";
-import { ListingDoc, LISTING_TYPES } from "@/models/Listing.type";
+import { ListingDoc, LISTING_TYPES, LISTING_TYPES_ENUM } from "@/models/Listing.type";
 
 const postalCodeRegex = /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i;
 
 const TYPES_ENUM = Object.keys(LISTING_TYPES);
 
-export const listingSchema = z.object({
+export const listingCreateSchema = z.object({
   title: z.string().min(1),
   streetName: z.string().min(1),
   streetNumber: z.string().min(1),
@@ -21,6 +21,11 @@ export const listingSchema = z.object({
   squareMeters: z.coerce.number().min(1),
   description: z.string().max(500),
   // userId: z.string(),
+});
+
+export const listingUpdateSchema = z.object({
+  ...listingCreateSchema.shape,
+  _id: z.string(),
 });
 
 const ListingSchema = new mongoose.Schema<ListingDoc>(
@@ -58,6 +63,7 @@ const ListingSchema = new mongoose.Schema<ListingDoc>(
     type: {
       type: String,
       required: [true, "Please provide a type for this listing"],
+      default: LISTING_TYPES_ENUM.house,
       enum: {
         values: TYPES_ENUM,
         message: '"{VALUE}" is not a listing type',
