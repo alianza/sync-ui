@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-
   #nprogress .bar {
     background: var(--foreground);
   }
