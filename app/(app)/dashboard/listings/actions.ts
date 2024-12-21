@@ -2,7 +2,7 @@
 
 import dbConnect from "@/lib/dbConnect";
 import Listing, { listingCreateSchema, listingUpdateSchema } from "@/models/Listing";
-import { LISTING_TYPES, LISTING_TYPES_ENUM } from "@/models/Listing.type";
+import { LISTING_TYPES_ENUM } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import { errorResponse, failResponse, formatZodError, serializeDoc, successResponse } from "@/lib/server.utils";
 import { auth } from "@/auth";
@@ -10,10 +10,13 @@ import z from "zod";
 
 export async function createListing(prevState: unknown, formData: FormData) {
   try {
-    const defaultType = Object.keys(LISTING_TYPES).find((key) => key === LISTING_TYPES_ENUM.apartment)!;
-    formData.set("type", formData.get("type") || defaultType);
+    formData.set("type", formData.get("type") || LISTING_TYPES_ENUM.house);
 
-    const listingData = listingCreateSchema.parse(Object.fromEntries(formData));
+    const data = Object.fromEntries(formData);
+
+    const listingData = listingCreateSchema.parse(data);
+
+    // const nestedFormData = createNestedObject(listingData); // Nested paths are handles by Mongoose automatically
 
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to create a listing");
@@ -55,7 +58,9 @@ export async function deleteListing(id: string) {
 
 export async function updateListing(prevState: unknown, formData: FormData) {
   try {
-    const updateData = listingUpdateSchema.parse(Object.fromEntries(formData));
+    const data = Object.fromEntries(formData);
+
+    const updateData = listingUpdateSchema.parse(data);
 
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to update a listing");

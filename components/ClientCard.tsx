@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ResponseStatus } from "@/lib/types";
 import { UserDoc } from "@/models/User.type";
 import { deleteClient } from "@/app/(app)/dashboard/clients/actions";
+import { cn } from "@/lib/utils";
 
 interface ListingCardProps {
   client: UserDoc;
@@ -21,7 +22,7 @@ export function ClientCard({ client, redirectAfterDelete }: ListingCardProps) {
   const { toast } = useToast();
 
   return (
-    <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
+    <Card className={cn("flex justify-between transition-opacity", { "pointer-events-none opacity-50": isDeleting })}>
       <CardHeader>
         <CardTitle>
           <Link className="underline-hover" href={`/dashboard/clients/${client._id}`}>

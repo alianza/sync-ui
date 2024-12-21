@@ -166,3 +166,29 @@ export const getDate = (date = null): string => {
  * @param alias
  */
 export const getNameFromAlias = (alias?: string): string => (alias ? alias.split("+").join(" ") : "");
+
+type NestedObject = {
+  [key: string]: unknown | NestedObject;
+};
+
+export function createNestedObject(obj: Record<string, unknown>): NestedObject {
+  const result: NestedObject = {};
+
+  for (const key in obj) {
+    const keys = key.split(".");
+    let current: NestedObject = result;
+
+    keys.forEach((k, index) => {
+      if (index === keys.length - 1) {
+        current[k] = obj[key]; // Assign the value if at the last key
+      } else {
+        if (!current[k] || typeof current[k] !== "object") {
+          current[k] = {}; // Create a new object if it doesn't exist
+        }
+        current = current[k] as NestedObject;
+      }
+    });
+  }
+
+  return result;
+}

@@ -3,22 +3,15 @@
 import React, { useActionState, useEffect } from "react";
 import { createListing, updateListing } from "@/app/(app)/dashboard/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/SubmitButton";
-import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectValue,
-  SelectTrigger,
-} from "@/components/ui/select";
+import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { handleAction } from "@/lib/client.utils";
 import { FieldSet } from "@/components/forms/input/FieldSet";
 import { FormInput } from "@/components/forms/input/FormInput";
+import { cn } from "@/lib/utils";
+import FormSelect from "@/components/forms/input/FormSelect";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 interface Props {
   listing?: ListingDoc;
@@ -43,9 +36,11 @@ export function ListingForm({ listing }: Props) {
   return (
     <Card className="mx-auto max-w-screen-sm">
       <CardHeader>
-        <CardTitle>{editMode ? `Edit "${listing?.title || state?.data?.title}"` : "Create a new listing"}</CardTitle>
+        <CardTitle>
+          {editMode ? `Bewerk "${listing?.title || state?.data?.title}"` : "Maak een nieuwe woning aan"}
+        </CardTitle>
         <CardDescription>
-          {editMode ? "Edit the details of the listing" : "Fill in the details of the new listing"}
+          {editMode ? "Bewerk de details van de woning" : "Vul de details van de nieuwe woning in"}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit} ref={formRef}>
@@ -53,17 +48,17 @@ export function ListingForm({ listing }: Props) {
           <div className="flex flex-col gap-4">
             <FormInput
               id="title"
-              label="Title"
-              placeholder="Enter the title"
+              label="Titel"
+              placeholder="Voer de titel in"
               defaultValue={editMode ? listing?.title || state?.data?.title : undefined}
               required
             />
 
-            <FieldSet label="Address">
+            <FieldSet label="Adres">
               <FormInput
                 id="streetName"
-                label="Street Name"
-                placeholder="Enter the street name"
+                label="Straatnaam"
+                placeholder="Voer de straatnaam in"
                 defaultValue={editMode ? listing?.streetName || state?.data?.streetName : undefined}
                 pattern="[a-zA-Z0-9 ]+" // Only allow letters, numbers, and spaces
                 required
@@ -71,16 +66,16 @@ export function ListingForm({ listing }: Props) {
 
               <FormInput
                 id="streetNumber"
-                label="Street Number"
-                placeholder="Enter the street number"
+                label="Huisnummer"
+                placeholder="Voer het huisnummer in"
                 defaultValue={editMode ? listing?.streetNumber || state?.data?.streetNumber : undefined}
                 required
               />
 
               <FormInput
                 id="postalCode"
-                label="Postal Code"
-                placeholder="Enter the postal code"
+                label="Postcode"
+                placeholder="Voer de postcode in"
                 defaultValue={editMode ? listing?.postalCode || state?.data?.postalCode : undefined}
                 pattern="[1-9][0-9]{3}(?!SA|SD|SS)[A-Z]{2}" // Dutch postal code format
                 required
@@ -88,16 +83,16 @@ export function ListingForm({ listing }: Props) {
 
               <FormInput
                 id="city"
-                label="City"
-                placeholder="Enter the city"
+                label="Stad"
+                placeholder="Voer de stad in"
                 defaultValue={editMode ? listing?.city || state?.data?.city : undefined}
                 required
               />
 
               <FormInput
                 id="district"
-                label="District"
-                placeholder="Enter the district"
+                label="Stadsdeel"
+                placeholder="Voer de Stadsdeel in"
                 defaultValue={editMode ? listing?.district || state?.data?.district : undefined}
                 required
               />
@@ -105,8 +100,8 @@ export function ListingForm({ listing }: Props) {
 
             <FormInput
               id="description"
-              label="Description"
-              placeholder="Enter the description"
+              label="Beschrijving"
+              placeholder="Voer de beschrijving in"
               type="multiline"
               defaultValue={editMode ? listing?.description || state?.data?.description : undefined}
             />
@@ -114,65 +109,269 @@ export function ListingForm({ listing }: Props) {
             <FieldSet label="Details">
               <FormInput
                 id="askingPrice"
-                label="Asking Price"
-                placeholder="Enter the asking price"
+                label="Vraagprijs"
+                placeholder="Voer de vraagprijs in"
                 defaultValue={editMode ? listing?.askingPrice || state?.data?.askingPrice : undefined}
+                required
+                type="number"
+                min={0}
+                suffix="€"
+              />
+
+              <FormInput
+                id="yearBuilt"
+                label="Bouwjaar"
+                placeholder="Voer het bouwjaar in"
+                defaultValue={editMode ? listing?.yearBuilt || state?.data?.yearBuilt : undefined}
+                required
+                type="number"
+                min={1800}
+                max={new Date().getFullYear()} // Allow future years??
+              />
+            </FieldSet>
+
+            <FormSelect
+              id="type"
+              label="Type"
+              placeholder="Selecteer het type"
+              key={resetKey + 1}
+              items={Object.entries(LISTING_TYPES).map(([value, key]) => ({ key, value }))}
+              defaultValue={editMode ? listing?.type || state?.data?.type : undefined}
+              required
+            />
+
+            <FormInput
+              id="roofType"
+              label="Soort dak"
+              placeholder="Voer het soort dak in"
+              defaultValue={editMode ? listing?.roofType || state?.data?.roofType : undefined}
+              required
+            />
+
+            <FieldSet label="Afmetingen">
+              <FormInput
+                id="measurements.squareMetersTotal"
+                label="Vierkante meters"
+                placeholder="Voer het oppervlakte in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.squareMetersTotal || state?.data?.measurements.squareMetersTotal
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m²"
+              />
+
+              <FormInput
+                id="measurements.squareMetersLiving"
+                label="Vierkante meters woonruimte"
+                placeholder="Voer het oppervlakte in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.squareMetersLiving || state?.data?.measurements.squareMetersLiving
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m²"
+              />
+
+              <FormInput
+                id="measurements.squareMetersOther"
+                label="Vierkante meters andere ruimte"
+                placeholder="Voer het oppervlakte in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.squareMetersOther || state?.data?.measurements.squareMetersOther
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m²"
+              />
+
+              <FormInput
+                id="measurements.squareMetersOutdoor"
+                label="Vierkante meters buitenruimte"
+                placeholder="Voer het oppervlakte in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.squareMetersOutdoor || state?.data?.measurements.squareMetersOutdoor
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m²"
+              />
+
+              <FormInput
+                id="measurements.squareMetersProperty"
+                label="Vierkante meters eigendom"
+                placeholder="Voer het oppervlakte in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.squareMetersProperty || state?.data?.measurements.squareMetersProperty
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m²"
+              />
+
+              <FormInput
+                id="measurements.cubicMetersVolume"
+                label="Kubieke meters volume"
+                placeholder="Voer het volume in"
+                defaultValue={
+                  editMode
+                    ? listing?.measurements.cubicMetersVolume || state?.data?.measurements.cubicMetersVolume
+                    : undefined
+                }
+                required
+                type="number"
+                min={0}
+                suffix="m³"
+              />
+            </FieldSet>
+
+            <FieldSet label="Kamers">
+              <FormInput
+                id="rooms.roomCount"
+                label="Aantal kamers"
+                placeholder="Voer het aantal kamers in"
+                defaultValue={editMode ? listing?.rooms.roomCount || state?.data?.rooms.roomCount : undefined}
                 required
                 type="number"
                 min={0}
               />
 
               <FormInput
-                id="yearBuilt"
-                label="Year Built"
-                placeholder="Enter the year built"
-                defaultValue={editMode ? listing?.yearBuilt || state?.data?.yearBuilt : undefined}
+                id="rooms.bedRoomCount"
+                label="Aantal slaapkamers"
+                placeholder="Voer het aantal slaapkamers in"
+                defaultValue={editMode ? listing?.rooms.bedRoomCount || state?.data?.rooms.bedRoomCount : undefined}
                 required
                 type="number"
-                min={1800}
-                max={new Date().getFullYear()} // Allow future years???
+                min={0}
               />
-
               <FormInput
-                id="squareMeters"
-                label="Square Meters"
-                placeholder="Enter the square meters"
-                defaultValue={editMode ? listing?.squareMeters || state?.data?.squareMeters : undefined}
+                id="rooms.bathroomCount"
+                label="Aantal badkamers"
+                placeholder="Voer het aantal badkamers in"
+                defaultValue={editMode ? listing?.rooms.bathroomCount || state?.data?.rooms.bathroomCount : undefined}
+                required
+                type="number"
+                min={0}
+              />
+              <FormInput
+                id="rooms.toiletCount"
+                label="Aantal toiletten"
+                placeholder="Voer het aantal toiletten in"
+                defaultValue={editMode ? listing?.rooms.toiletCount || state?.data?.rooms.toiletCount : undefined}
                 required
                 type="number"
                 min={0}
               />
             </FieldSet>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="type">Type</Label>
-              <Select
-                key={resetKey} // Force re-render to reset the select value
-                name="type"
-                defaultValue={editMode ? listing?.type || state?.data?.type : undefined}
+
+            <FormInput
+              id="stories"
+              label="Aantal verdiepingen"
+              placeholder="Voer het aantal verdiepingen in"
+              defaultValue={editMode ? listing?.stories || state?.data?.stories : undefined}
+              required
+            />
+
+            <MultiSelect
+              key={resetKey + 2}
+              id="features"
+              label="Kenmerken"
+              placeholder="Selecteer kenmerken..."
+              items={Object.entries(FEATURES).map(([value, key]) => ({ key, value }))}
+              defaultValue={
+                editMode
+                  ? (listing?.features || state?.data?.features || []).map((feature: keyof typeof FEATURES) => ({
+                      value: feature,
+                      key: FEATURES[feature],
+                    }))
+                  : undefined
+              }
+            />
+
+            <FieldSet label="Energie">
+              <FormSelect
+                key={resetKey + 3}
+                id="energy.energyLabel"
+                label="Energielabel"
+                placeholder="Selecteer het energielabel"
+                items={Object.entries(ENERGY_LABELS).map(([value, key]) => ({ key, value }))}
+                defaultValue={editMode ? listing?.energy.energyLabel || state?.data?.energy.energyLabel : undefined}
                 required
-              >
-                <SelectTrigger id="type">
-                  <SelectValue placeholder="Select a type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Type</SelectLabel>
-                    {Object.entries(LISTING_TYPES).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              />
+
+              <MultiSelect
+                key={resetKey + 4}
+                id="energy.insulation"
+                label="Isolatie"
+                placeholder="Selecteer isolatie..."
+                items={Object.entries(INSULATION).map(([value, key]) => ({ key, value }))}
+                defaultValue={
+                  editMode
+                    ? (listing?.energy.insulation || state?.data?.energy.insulation || []).map(
+                        (insulation: keyof typeof INSULATION) => ({
+                          value: insulation,
+                          key: INSULATION[insulation],
+                        }),
+                      )
+                    : undefined
+                }
+              />
+
+              <FormInput
+                id="energy.heating"
+                label="Verwarming"
+                placeholder="Voer de verwarming in"
+                defaultValue={editMode ? listing?.energy.heating || state?.data?.energy.heating : undefined}
+                required
+              />
+
+              <FormInput
+                id="energy.waterHeating"
+                label="Waterverwarming"
+                placeholder="Voer de waterverwarming in"
+                defaultValue={editMode ? listing?.energy.waterHeating || state?.data?.energy.waterHeating : undefined}
+                required
+              />
+
+              <FormInput
+                id="energy.CV"
+                label="CV"
+                placeholder="Voer de CV in"
+                defaultValue={editMode ? listing?.energy.CV || state?.data?.energy.CV : undefined}
+                required
+              />
+            </FieldSet>
+
+            <FormInput
+              id="ownership"
+              label="Eigendomstype"
+              placeholder="Voer het eigendomstype in"
+              defaultValue={editMode ? listing?.ownership || state?.data?.ownership : undefined}
+              required
+            />
           </div>
           {editMode && <input hidden name="_id" defaultValue={listing?._id || state?.data?._id} />}
         </CardContent>
         <CardFooter className="flex justify-between gap-4">
-          <SubmitButton label={editMode ? "Update" : undefined} />
+          <SubmitButton label={editMode ? "Bijwerken" : undefined} />
           {state?.message && (
-            <p className={`text-sm ${state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700"} `}>
+            <p className={cn("text-sm", state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700")}>
               {state.message}
             </p>
           )}

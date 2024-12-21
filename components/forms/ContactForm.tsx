@@ -3,10 +3,10 @@
 import React, { useActionState } from "react";
 import { createContact } from "@/app/(home)/contact/actions";
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import Form from "next/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
 import { FormInput } from "@/components/forms/input/FormInput";
+import { cn } from "@/lib/utils";
 
 export function ContactForm() {
   const [state, action] = useActionState(createContact, initialActionState);
@@ -35,7 +35,7 @@ export function ContactForm() {
         <CardFooter className="flex justify-between gap-4">
           <SubmitButton label="Send message" loadingLabel="Sending message..." />
           {state?.message && (
-            <p className={`text-sm ${state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700"} `}>
+            <p className={cn("text-sm", state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700")}>
               {state.message}
             </p>
           )}

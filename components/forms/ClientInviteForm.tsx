@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export function ClientInviteForm() {
   const [state, action] = useActionState(createClientInvite, initialActionState);
@@ -56,7 +57,7 @@ export function ClientInviteForm() {
             <SubmitButton label="Invite" loadingLabel="Inviting..." />
             {state?.message && (
               <p
-                className={`text-sm ${state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700"} `}
+                className={cn("text-sm", state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700")}
               >
                 {state.message}
               </p>

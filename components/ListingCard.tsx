@@ -9,6 +9,7 @@ import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 import { useToast } from "@/hooks/use-toast";
 import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import { ResponseStatus } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface ListingCardProps {
   listing: ListingDoc;
@@ -21,7 +22,7 @@ export function ListingCard({ listing, redirectAfterDelete }: ListingCardProps) 
   const { toast } = useToast();
 
   return (
-    <Card className={`flex justify-between transition-opacity ${isDeleting ? "pointer-events-none opacity-50" : ""}`}>
+    <Card className={cn("flex justify-between transition-opacity", { "pointer-events-none opacity-50": isDeleting })}>
       <CardHeader>
         <CardTitle>
           <Link className="underline-hover" href={`/dashboard/listings/${listing._id}`}>

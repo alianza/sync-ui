@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Input as ShadCnInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { FormInput } from "@/components/forms/input/FormInput";
 
 export function PasswordInputToggle({
   id,
@@ -16,29 +15,27 @@ export function PasswordInputToggle({
   label: string;
   name?: string;
   required?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   minLength?: number;
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const Icon = showPassword ? EyeOffIcon : EyeIcon;
+
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={id}>
-        {label}
-        {required && <span className="text-muted-foreground">*</span>}
-      </Label>
-      <div className="relative">
-        <ShadCnInput
-          id={id}
-          name={id || name}
-          type={showPassword ? "text" : "password"}
-          autoCapitalize="none"
-          autoComplete="new-password"
-          autoCorrect="off"
-          required={required}
-          onChange={onChange}
-          minLength={minLength}
-        />
+    <FormInput
+      id={id}
+      label={label}
+      name={id || name}
+      type={showPassword ? "text" : "password"}
+      autoCapitalize="none"
+      autoComplete="new-password"
+      autoCorrect="off"
+      required={required}
+      onChange={onChange}
+      minLength={minLength}
+      hideSuffixOnHover={false}
+      suffix={
         <Button
           type="button"
           variant="ghost"
@@ -47,9 +44,9 @@ export function PasswordInputToggle({
           aria-label={showPassword ? "Hide password" : "Show password"}
           onClick={() => setShowPassword(!showPassword)}
         >
-          {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+          <Icon className="h-4 w-4" />
         </Button>
-      </div>
-    </div>
+      }
+    />
   );
 }
