@@ -42,14 +42,12 @@ export const listingCreateSchema = z.object({
   "rooms.toiletCount": z.coerce.number().default(0),
   stories: z.coerce.number().default(0),
   features: z
-    .string()
-    .transform((value) => value.split(",").map(String))
-    .pipe(z.array(z.enum([FEATURES_ENUM[0], ...FEATURES_ENUM])).default([])),
+    .union([z.string(), z.array(z.enum([FEATURES_ENUM[0], ...FEATURES_ENUM])).default([])])
+    .transform((value) => (typeof value === "string" ? value.split(",").filter(Boolean).map(String) : value)),
   "energy.energyLabel": z.enum([ENERGY_LABELS_ENUM[0], ...ENERGY_LABELS_ENUM]),
   "energy.insulation": z
-    .string()
-    .transform((value) => value.split(",").map(String))
-    .pipe(z.array(z.enum([INSULATION_ENUM[0], ...INSULATION_ENUM])).default([])),
+    .union([z.string(), z.array(z.enum([INSULATION_ENUM[0], ...INSULATION_ENUM])).default([])])
+    .transform((value) => (typeof value === "string" ? value.split(",").filter(Boolean).map(String) : value)),
   "energy.heating": z.string(),
   "energy.waterHeating": z.string(),
   "energy.CV": z.string(),
