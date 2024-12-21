@@ -11,6 +11,8 @@ import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import { UserDoc } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { AcceptInviteAction } from "@/app/(app)/invite/actions";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 type Props = {
   invite: MergeType<ClientInviteDoc, UserDoc>;
@@ -22,10 +24,17 @@ function SignUpForm({ invite }: Props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [state, setState] = useState(actionState);
   const [disabled, setDisabled] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     setState(actionState);
-  }, [actionState]);
+
+    if (actionState.status === ResponseStatus.success) {
+      toast({ title: "Successfully signed up!", description: "You can now log in." });
+      setTimeout(() => router.push("/login"), 1000);
+    }
+  }, [actionState, router, toast]);
 
   useEffect(() => {
     if (password && confirmPassword && password !== confirmPassword) {

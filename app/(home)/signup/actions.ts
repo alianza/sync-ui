@@ -1,12 +1,17 @@
 "use server";
 
-import { errorResponse, failResponse, formatZodError, isMongooseDuplicateKeyError } from "@/lib/server.utils";
+import {
+  errorResponse,
+  failResponse,
+  formatZodError,
+  isMongooseDuplicateKeyError,
+  successResponse,
+} from "@/lib/server.utils";
 import User from "@/models/User";
 import { Roles } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
-import { redirect } from "next/navigation";
 
 const registerSchema = z.object({
   firstName: z.string().min(1),
@@ -41,5 +46,5 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
     return errorResponse(error);
   }
 
-  return redirect("/login?signup=true");
+  return successResponse({ message: "Successfully signed up!" });
 }

@@ -1,14 +1,13 @@
 "use client";
 
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import React, { Suspense, useActionState, useEffect } from "react";
+import React, { useActionState } from "react";
 import { signInAction } from "@/app/(home)/login/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { FormInput } from "@/components/forms/input/FormInput";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import { handleAction } from "@/lib/client.utils";
-import { redirect, useSearchParams } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 function LoginForm() {
@@ -39,25 +38,8 @@ function LoginForm() {
         <SubmitButton label="Log in" loadingLabel="Logging in..." />
         {state.status !== ResponseStatus.pending && <p className="text-sm text-muted-foreground">{state.message}</p>}
       </div>
-      <Suspense fallback={null}>
-        <SuccessComponent />
-      </Suspense>
     </form>
   );
-}
-
-function SuccessComponent() {
-  const searchParams = useSearchParams();
-  const { toast } = useToast();
-
-  const signUp = searchParams.get("signup") === "true";
-
-  useEffect(() => {
-    if (!signUp) return;
-    toast({ title: "Sign up successful!", description: " Please log in to continue." });
-  }, [signUp, toast]);
-
-  return <></>;
 }
 
 export default LoginForm;
