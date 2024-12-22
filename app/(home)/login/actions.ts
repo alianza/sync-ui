@@ -1,8 +1,8 @@
 "use server";
 
 import { signIn, signOut } from "@/auth";
-import { isRedirectError } from "next/dist/client/components/redirect";
 import { failResponse, successResponse } from "@/lib/server.utils";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export async function signInAction(prevState: unknown, formData: FormData) {
   try {
@@ -20,6 +20,6 @@ export async function signInAction(prevState: unknown, formData: FormData) {
 }
 
 export async function signOutAction() {
-  await signOut();
+  await signOut({ redirectTo: "/login" });
   return successResponse({ message: "Successfully logged out!" });
 }

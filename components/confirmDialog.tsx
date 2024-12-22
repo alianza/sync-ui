@@ -19,9 +19,10 @@ type Props = {
   cancelText?: string;
   confirmText?: string;
   children: React.ReactNode;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   onCancel?: () => void;
   className?: string;
+  customAction?: React.ReactNode;
 };
 
 function SignOutButton({
@@ -32,6 +33,7 @@ function SignOutButton({
   description,
   onConfirm = () => {},
   onCancel = () => {},
+  customAction,
   children,
 }: Props) {
   return (
@@ -44,7 +46,7 @@ function SignOutButton({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>{confirmText}</AlertDialogAction>
+          {customAction ? customAction : <AlertDialogAction onClick={onConfirm}>{confirmText}</AlertDialogAction>}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
