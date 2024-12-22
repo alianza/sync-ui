@@ -1,11 +1,8 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import Listing, { listingCreateSchema } from "@/models/Listing";
-import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import { errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
-import { ServerResponse } from "@/lib/types";
 import { auth } from "@/auth";
 import { Roles } from "@/models/User.type";
 import User from "@/models/User";
