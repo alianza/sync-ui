@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
     <Providers>
       <div className="flex min-h-screen flex-col">
         <AppHeader />
-        <main className="grow">{children}</main>
+        <main className="grow bg-neutral-100 dark:bg-neutral-900">{children}</main>
         <Toaster />
         <Footer />
       </div>

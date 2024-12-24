@@ -18,7 +18,7 @@ export function PricingPage() {
           </div>
         </div>
       </section>
-      <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+      <section className="w-full bg-neutral-200 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
         <PricingComponent />
       </section>
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">

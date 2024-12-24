@@ -16,14 +16,14 @@ function SignOutButton() {
     <ConfirmDialog
       customAction={
         <form onSubmit={handleSubmit} className="flex items-center">
-          <AlertDialogAction type="submit">Sign Out</AlertDialogAction>
+          <AlertDialogAction type="submit">Log uit</AlertDialogAction>
         </form>
       }
       title="Uitloggen"
       description="Weet je zeker dat je wilt uitloggen?"
       className="underline-hover p-2 text-sm font-bold underline-offset-4"
     >
-      Sign Out
+      Log uit
     </ConfirmDialog>
   );
 }

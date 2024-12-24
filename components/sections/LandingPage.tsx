@@ -29,7 +29,7 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+      <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
           <h2 className="mb-12 scroll-m-8 text-center text-3xl font-bold tracking-tighter sm:text-5xl" id="features">
             Key Features
@@ -76,7 +76,7 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="w-full bg-neutral-50 py-12 md:py-24 lg:py-32 dark:bg-neutral-900">
+      <section className="w-full bg-neutral-50 py-12 md:py-24 lg:py-32 dark:bg-neutral-950">
         <div className="px-4 md:px-6">
           <h2 className="mb-8 text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Frequently Asked Questions

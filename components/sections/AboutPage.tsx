@@ -18,7 +18,7 @@ export function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="w-full bg-neutral-100 py-12 md:py-24 lg:py-32 dark:bg-neutral-800">
+      <section className="w-full bg-neutral-50 py-12 md:py-24 lg:py-32 dark:bg-neutral-950">
         <div className="mx-auto max-w-screen-xl px-4 md:px-6">
           <div className="grid gap-10 lg:grid-cols-3">
             <Card>

@@ -23,6 +23,7 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   filterColumn?: string;
   filterPlaceholder?: string;
+  emptyComponent?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -31,6 +32,7 @@ export function DataTable<TData, TValue>({
   pageSize,
   filterColumn,
   filterPlaceholder,
+  emptyComponent,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -90,7 +92,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {emptyComponent || "Geen resultaten gevonden."}
                 </TableCell>
               </TableRow>
             )}

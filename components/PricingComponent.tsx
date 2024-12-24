@@ -50,25 +50,29 @@ export function PricingComponent() {
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         {tiers.map((tier, index) => (
           <Card key={index} className={index === 1 ? "border-primary" : ""}>
-            <CardHeader>
-              <CardTitle>{tier.name}</CardTitle>
-              <CardDescription>{tier.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold">{tier.price}</div>
-              {tier.name !== "Enterprise" && <div className="text-sm text-gray-500 dark:text-gray-400">per month</div>}
-              <ul className="mt-4 space-y-2">
-                {tier.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full">{tier.name === "Enterprise" ? "Contact Sales" : "Get Started"}</Button>
-            </CardFooter>
+            <div className="flex h-full flex-col justify-between">
+              <CardHeader>
+                <CardTitle>{tier.name}</CardTitle>
+                <CardDescription>{tier.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="grow">
+                <div className="text-4xl font-bold">{tier.price}</div>
+                {tier.name !== "Enterprise" && (
+                  <div className="text-sm text-gray-500 dark:text-gray-400">per month</div>
+                )}
+                <ul className="mt-4 space-y-2">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center">
+                      <Check className="mr-2 h-4 w-4 text-green-500" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full">{tier.name === "Enterprise" ? "Contact Sales" : "Get Started"}</Button>
+              </CardFooter>
+            </div>
           </Card>
         ))}
       </div>
