@@ -23,12 +23,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-        console.log(`credentials`, credentials);
-
-        // logic to salt and hash password
-        // const pwHash = await saltAndHashPassword(credentials.password?.toString() || "");
-        // console.log(`pwHash`, pwHash);
-
         const user = await getUserFromDb(credentials.email?.toString() || "", credentials.password?.toString() || "");
 
         console.log(`user`, user);
@@ -56,16 +50,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
-
-  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserDoc;
+  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserDoc & { password: string };
 
   if (!user) return null;
 
   const isMatch = await verifyPassword(password, user.password);
-
-  if (!isMatch) return null;
-
-  return user;
+  return isMatch ? user : null;
 }
