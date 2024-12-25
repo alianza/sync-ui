@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import User from "@/models/User";
@@ -13,39 +13,54 @@ export async function saltAndHashPassword(password: string) {
 
 export const verifyPassword = async (password: string, hash: string) => bcryptjs.compareSync(password, hash);
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role: string;
+    } & DefaultSession["user"]; // Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      credentials: {
-        email: {},
-        password: {},
-      },
+      credentials: { email: {}, password: {} }, // You can specify which fields should be submitted, by adding keys to the `credentials` object. e.g. domain, username, password, 2FA token, etc.
       authorize: async (credentials) => {
         const user = await getUserFromDb(credentials.email?.toString() || "", credentials.password?.toString() || "");
 
         console.log(`user`, user);
 
         if (!user) {
-          // No user found, so this is their first attempt to login
-          // Optionally, this is also the place you could do a user registration
-          throw new Error("Invalid credentials.");
+          throw new Error("Invalid credentials."); // No user found, so this is their first attempt to login. Optionally, this is also the place you could do a user registration
         }
 
-        // return user object with their profile data
         return {
           id: user._id,
           email: user.email,
+          role: user.role,
+          token: "hello",
           // alias: `${user.firstName}+${user.lastName}`,
           name: `${user.firstName}+${user.lastName}`,
-        };
+        }; // return user object with their profile data
       },
     }),
   ],
   callbacks: {
+    async jwt({ token, user, profile }) {
+      const dbUser = (await User.findOne({ email: token.email }).lean()) as UserDoc;
+
+      if (user) {
+        token.id = user.id; // User is available during sign-in
+      }
+
+      if (dbUser) {
+        token.role = dbUser.role;
+      }
+      return token;
+    },
     session({ session, token, user }) {
       session.user.id = token.sub as string;
+      session.user.role = token.role as string;
       return session;
     },
   },
