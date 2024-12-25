@@ -51,7 +51,7 @@ export default async function ListingsPage() {
         />
 
         {listings.length > 0 ? (
-          <Link href="/dashboard/listings/new">
+          <Link href="/dashboard/listings/new" className="self-start">
             <Button>
               <PlusIcon />
               Voeg een nieuwe woning toe
