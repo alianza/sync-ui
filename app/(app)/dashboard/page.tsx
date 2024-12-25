@@ -5,10 +5,7 @@ import { getNameFromAlias } from "@/lib/common.utils";
 
 export default async function Dashboard() {
   const session = await auth();
-
-  if (!session || !session.user) {
-    redirect("/login");
-  }
+  if (!session || !session.user) redirect("/login");
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">

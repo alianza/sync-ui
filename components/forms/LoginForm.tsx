@@ -16,9 +16,7 @@ function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
 
-  if (session) {
-    redirect("/dashboard");
-  }
+  if (session) redirect("/dashboard");
 
   return (
     <form onSubmit={handleSubmit}>
