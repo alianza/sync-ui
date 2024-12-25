@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import User from "@/models/User";
@@ -13,13 +13,13 @@ export async function saltAndHashPassword(password: string) {
 
 export const verifyPassword = async (password: string, hash: string) => bcryptjs.compareSync(password, hash);
 
-// declare module "next-auth" {
-//   interface Session {
-//     user: {
-//       role: string;
-//     } & DefaultSession["user"]; // Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-//   }
-// }
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role: string;
+    } & DefaultSession["user"]; // Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const user = await getUserFromDb(credentials.email?.toString() || "", credentials.password?.toString() || "");
 
-        console.log(`user`, user);
+        // console.log(`user`, user);
 
         if (!user) {
           throw new Error("Invalid credentials."); // No user found, so this is their first attempt to login. Optionally, this is also the place you could do a user registration
@@ -37,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return {
           id: user._id,
           email: user.email,
-          // role: user.role,
+          role: user.role,
           token: "hello",
           // alias: `${user.firstName}+${user.lastName}`,
           name: `${user.firstName}+${user.lastName}`,
@@ -46,21 +46,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, profile }) {
-      // const dbUser = (await User.findOne({ email: token.email }).lean()) as UserDoc;
+    async jwt({ token, user }) {
+      if (!token.account) {
+        const dbUser = (await User.findOne({ email: token.email }).lean()) as UserDoc;
+        token.account = dbUser;
+        token.role = dbUser.role;
+      } else {
+        token.role = (token.account as UserDoc).role;
+      }
 
       if (user) {
         token.id = user.id; // User is available during sign-in
       }
 
-      // if (dbUser) {
-      //   token.role = dbUser.role;
-      // }
       return token;
     },
     session({ session, token, user }) {
       session.user.id = token.sub as string;
-      // session.user.role = token.role as string;
+      session.user.role = token.role as string;
       return session;
     },
   },
