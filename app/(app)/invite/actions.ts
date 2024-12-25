@@ -34,7 +34,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
 
     const invite = await ClientInvite.findOneAndUpdate<ClientInviteDoc>(
       { _id: inviteId },
-      { $set: { status: STATUS_ENUM.ACCEPTED } },
+      { $set: { status: STATUS_ENUM.ACCEPTED, acceptedAt: new Date() } },
     ).populate<UserDoc>("inviter");
 
     if (!invite) return failResponse({ message: "Invite not found" });

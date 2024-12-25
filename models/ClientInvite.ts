@@ -37,8 +37,17 @@ const ClientInviteSchema = new mongoose.Schema<ClientInviteDoc>(
       default: STATUS_ENUM.PENDING,
       required: false,
     },
+    acceptedAt: {
+      type: Date,
+      required: false,
+    },
   },
   { timestamps: true },
 );
+
+// methods
+ClientInviteSchema.methods.findInvite = function (email: string, inviter: mongoose.Types.ObjectId) {
+  return this.findOne({ inviteeEmail: email, inviter });
+};
 
 export default mongoose.models?.ClientInvite || mongoose.model<ClientInviteDoc>("ClientInvite", ClientInviteSchema);

@@ -11,6 +11,7 @@ export interface ClientInviteDoc {
   message?: string;
   inviter: UserDoc;
   status: STATUS_ENUM;
+  acceptedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -71,7 +71,7 @@ function InputSuffixWrap({
     <div className="group relative">
       {children}
       <div
-        className={`absolute inset-y-0 right-0 flex items-center pr-3 text-sm ${
+        className={`absolute inset-y-0 right-0 flex items-center pr-2.5 text-sm ${
           hideSuffixOnHover ? "pointer-events-none group-hover:opacity-0" : ""
         }`}
       >

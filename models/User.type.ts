@@ -3,7 +3,7 @@ export interface UserDoc {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
+  password?: string;
   role: string;
   verified: boolean;
   clients?: string[];

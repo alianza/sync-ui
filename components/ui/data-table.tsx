@@ -101,22 +101,24 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="text-xs">{table.getRowCount()} resultaten</div>
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Vorige
-          </Button>
-          <span className="text-xs">
-            {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
-          </span>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Volgende
-          </Button>
-        </div>
+        {table.getRowCount() > 0 && (
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Vorige
+            </Button>
+            <span className="text-xs">
+              {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+            </span>
+            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+              Volgende
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
