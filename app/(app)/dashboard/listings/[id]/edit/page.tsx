@@ -8,28 +8,30 @@ import { redirect } from "next/navigation";
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
-export const revalidate = 60;
+// export const revalidate = 60;
 
 // We'll prerender only the params from `generateStaticParams` at build time.
 // If a request comes in for a path that hasn't been generated,
 // Next.js will server-render the page on-demand.
-export const dynamicParams = true; // or false, to 404 on unknown paths
+// export const dynamicParams = true; // or false, to 404 on unknown paths
 
-export async function generateStaticParams() {
-  await dbConnect();
-  const listings = (await Listing.find({})).map((doc) => doc.toObject({ flattenObjectIds: true }));
-
-  return listings.map((listing) => ({ id: listing._id }));
-}
+// export async function generateStaticParams() {
+//   await dbConnect();
+//   const listings = (await Listing.find({})).map((doc) => doc.toObject({ flattenObjectIds: true }));
+//
+//   return listings.map((listing) => ({ id: listing._id }));
+// }
 
 export default async function EditListingPage(props: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session) redirect("/login");
 
-  const params = await props.params;
+  const { id } = await props.params;
   await dbConnect();
-  const listing = (await Listing.findById(params.id))?.toObject({ flattenObjectIds: true }) as ListingDoc;
+  const listing = (await Listing.findOne({ _id: id, userId: session.user.id }))?.toObject({
+    flattenObjectIds: true,
+  }) as ListingDoc;
 
   return (
     <>
