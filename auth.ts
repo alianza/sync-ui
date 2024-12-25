@@ -48,6 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (!token.account) {
+        await dbConnect();
         const dbUser = (await User.findOne({ email: token.email }).lean()) as UserDoc;
         token.account = dbUser;
         token.role = dbUser.role;
