@@ -1,13 +1,15 @@
 import { UserDoc } from "./User.type";
 
 // todo: Remove the need for this duplication
+// consts are to get key value pairs from for instance for select options
+// enums are to get the ability to use TYPES.key in the code and to get the value from the key
 
 export const LISTING_TYPES = {
-  standalone: "Standalone",
+  standalone: "Alleenstaand",
   flat: "Flat",
-  apartment: "Apartment",
-  house: "House",
-  boat: "Boat",
+  apartment: "Appartement",
+  house: "Huis",
+  boat: "Boot",
 };
 
 export enum LISTING_TYPES_ENUM {

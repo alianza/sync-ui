@@ -1,4 +1,3 @@
-import { ListingCard } from "@/components/ListingCard";
 import { ListingDoc } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
@@ -42,11 +41,8 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
             {listing.description}
           </p>
         </div>
-        <div>
-          <ListingCard key={listing._id} listing={listing} redirectAfterDelete="/dashboard/listings" />
-        </div>
       </section>
-      <section className="w-full bg-neutral-200 py-12 md:py-24 lg:py-32 dark:bg-neutral-900">
+      <section className="w-full bg-neutral-200 dark:bg-neutral-900">
         <ListingForm listing={listing} />
       </section>
     </>

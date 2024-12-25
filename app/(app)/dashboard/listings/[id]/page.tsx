@@ -1,5 +1,5 @@
 import Listing from "@/models/Listing";
-import { ListingDoc } from "@/models/Listing.type";
+import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
@@ -12,32 +12,20 @@ import {
   EuroIcon,
   HomeIcon,
   KeyIcon,
+  MailIcon,
   MapPin,
   MaximizeIcon,
+  PencilIcon,
   SquareM,
   ThermometerSunIcon,
+  ToiletIcon,
   UserIcon,
 } from "lucide-react";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// // Next.js will invalidate the cache when a
-// // request comes in, at most once every 60 seconds.
-// export const revalidate = 60;
-//
-// // We'll prerender only the params from `generateStaticParams` at build time.
-// // If a request comes in for a path that hasn't been generated,
-// // Next.js will server-render the page on-demand.
-// export const dynamicParams = true; // or false, to 404 on unknown paths
-//
-// export async function generateStaticParams() {
-//   await dbConnect();
-//   const listings = (await Listing.find({})).map((doc) => doc?.toObject({ flattenObjectIds: true }));
-//
-//   return listings.map((listing) => ({ id: listing._id }));
-// }
+import Link from "next/link";
 
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -50,9 +38,9 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
     return (
       <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Invalid listing ID</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Ongeldige woning ID</h2>
           <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            The listing ID you are trying to access is invalid.
+            De woning ID die je probeert te openen is ongeldig.
           </p>
         </div>
       </section>
@@ -60,7 +48,7 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
   }
 
   await dbConnect();
-  const listing = (await Listing.findOne({ _id: id, userId: session.user.id }))?.toObject({
+  const listing = (await Listing.findOne({ _id: id, userId: session.user.id }).populate("userId"))?.toObject({
     flattenObjectIds: true,
   }) as ListingDoc;
 
@@ -68,103 +56,105 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
     return (
       <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Listing not found</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Woning niet gevonden</h2>
           <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            The listing you are trying to access does not exist.
+            De woning die je probeert te openen bestaat niet.
           </p>
         </div>
       </section>
     );
   }
 
+  const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode} ${listing.city}`;
+
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
       <div className="mx-auto flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">{listing.title}</h1>
+        <div className="flex items-center justify-between gap-2">
+          <h1 className="text-3xl font-bold">{listing.title}</h1>
+          <Link href={`/dashboard/listings/${listing._id}/edit`} title="Bewerk woning">
+            <PencilIcon className="scale-hover-xl size-6 text-neutral-500 dark:text-neutral-400" />
+          </Link>
+        </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
+          <div className="flex flex-col gap-6 md:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Property Details</CardTitle>
+                <CardTitle>Woning Details</CardTitle>
                 <CardDescription>
-                  <div className="flex items-center">
-                    <MapPin className="mr-2 h-4 w-4" />
-                    {listing.streetName} {listing.streetNumber}, {listing.postalCode} {listing.city}
-                  </div>
+                  <IconField
+                    Icon={MapPin}
+                    value={
+                      <a
+                        href={`https://www.google.nl/maps?q=${fullAddress}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline-hover"
+                      >
+                        {fullAddress}
+                      </a>
+                    }
+                  />
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <HomeIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.type}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <EuroIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.askingPrice.toLocaleString("nl-NL", { style: "currency", currency: "EUR" })}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    <span>Built in {listing.yearBuilt}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <SquareM className="mr-2 h-4 w-4" />
-                    <span>{listing.measurements.squareMetersTotal} m²</span>
-                  </div>
+                  <IconField Icon={HomeIcon} value={LISTING_TYPES[listing.type as keyof typeof LISTING_TYPES]} />
+                  <IconField
+                    Icon={EuroIcon}
+                    value={listing.askingPrice.toLocaleString("nl-NL", { style: "currency", currency: "EUR" })}
+                  />
+                  <IconField Icon={CalendarIcon} value={`Bouwjaar ${listing.yearBuilt}`} />
+                  <IconField Icon={SquareM} value={`${listing.measurements.squareMetersTotal} m²`} />
                 </div>
-                <Separator className="my-4" />
-                <p>{listing.description}</p>
+                {listing.description && (
+                  <>
+                    <Separator className="my-4" />
+                    <p>{listing.description}</p>
+                  </>
+                )}
               </CardContent>
             </Card>
 
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
-                <CardTitle>Measurements</CardTitle>
+                <CardTitle>Afmetingen</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>Living area: {listing.measurements.squareMetersLiving} m²</div>
-                  <div>Other area: {listing.measurements.squareMetersOther} m²</div>
-                  <div>Outdoor area: {listing.measurements.squareMetersOutdoor} m²</div>
-                  <div>Property area: {listing.measurements.squareMetersProperty} m²</div>
+                  <div>Woonoppervlakte: {listing.measurements.squareMetersLiving} m²</div>
+                  <div>Overige ruimte: {listing.measurements.squareMetersOther} m²</div>
+                  <div>Buitenruimte: {listing.measurements.squareMetersOutdoor} m²</div>
+                  <div>Perceelgrootte: {listing.measurements.squareMetersProperty} m²</div>
                   <div>Volume: {listing.measurements.cubicMetersVolume} m³</div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
-                <CardTitle>Rooms</CardTitle>
+                <CardTitle>Kamers</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center">
-                    <MaximizeIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.rooms.roomCount} rooms</span>
-                  </div>
-                  <div className="flex items-center">
-                    <BedIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.rooms.bedRoomCount} bedrooms</span>
-                  </div>
-                  <div className="flex items-center">
-                    <BathIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.rooms.bathroomCount} bathrooms</span>
-                  </div>
-                  <div>{listing.rooms.toiletCount} toilets</div>
-                  <div>{listing.stories} stories</div>
+                  <IconField Icon={MaximizeIcon} value={`${listing.rooms.roomCount} kamers`} />
+                  <IconField Icon={BedIcon} value={`${listing.rooms.bedRoomCount} slaapkamers`} />
+                  <IconField Icon={BathIcon} value={`${listing.rooms.bathroomCount} badkamers`} />
+                  <IconField Icon={ToiletIcon} value={`${listing.rooms.toiletCount} toiletten`} />
+                  <div>{listing.stories} verdiepingen</div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
-                <CardTitle>Features</CardTitle>
+                <CardTitle>Kenmerken</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {listing.features.map((feature, index) => (
                     <Badge key={index} variant="secondary">
-                      {feature}
+                      {FEATURES[feature as keyof typeof FEATURES]}
                     </Badge>
                   ))}
                 </div>
@@ -172,30 +162,30 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
             </Card>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Energy</CardTitle>
+                <CardTitle>Energie</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <ThermometerSunIcon className="mr-2 h-4 w-4" />
-                    <span>Energy Label: {listing.energy.energyLabel}</span>
-                  </div>
+                <div className="flex flex-col gap-2">
+                  <IconField
+                    Icon={ThermometerSunIcon}
+                    value={`Energielabel: ${ENERGY_LABELS[listing.energy.energyLabel as keyof typeof ENERGY_LABELS]}`}
+                  />
                   <div>
-                    <strong>Insulation:</strong>
+                    <strong>Isolatie:</strong>
                     <ul className="list-inside list-disc">
                       {listing.energy.insulation.map((item, index) => (
-                        <li key={index}>{item}</li>
+                        <li key={index}>{INSULATION[item as keyof typeof INSULATION]}</li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <strong>Heating:</strong> {listing.energy.heating}
+                    <strong>Verwarming:</strong> {listing.energy.heating}
                   </div>
                   <div>
-                    <strong>Water Heating:</strong> {listing.energy.waterHeating}
+                    <strong>Waterverwarming:</strong> {listing.energy.waterHeating}
                   </div>
                   <div>
                     <strong>CV:</strong> {listing.energy.CV}
@@ -204,31 +194,34 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
               </CardContent>
             </Card>
 
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
-                <CardTitle>Ownership</CardTitle>
+                <CardTitle>Eigendom</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center">
-                  <KeyIcon className="mr-2 h-4 w-4" />
-                  <span>{listing.ownership}</span>
-                </div>
+                <IconField Icon={KeyIcon} value={listing.ownership} />
               </CardContent>
             </Card>
 
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
                 <CardTitle>Contact</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    <span>{listing.userId}</span>
-                  </div>
-                  <div>{listing.userId.email}</div>
-                  <Button className="mt-4 w-full">Contact Agent</Button>
+              <CardContent className="flex flex-col gap-2">
+                <div>
+                  <IconField Icon={UserIcon} value={`${listing.userId.firstName} ${listing.userId.lastName}`} />
+                  <IconField
+                    Icon={MailIcon}
+                    value={
+                      <a className="underline-hover break-all" href={`mailto:${listing.userId.email}`}>
+                        {listing.userId.email}
+                      </a>
+                    }
+                  />
                 </div>
+                <a className="underline-hover" href={`mailto:${listing.userId.email}`}>
+                  <Button className="h-auto w-full text-wrap">Neem contact op met makelaar</Button>
+                </a>
               </CardContent>
             </Card>
           </div>
@@ -237,3 +230,10 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
     </section>
   );
 }
+
+const IconField = ({ Icon, value }: { Icon: React.ComponentType<{ className?: string }>; value: React.ReactNode }) => (
+  <div className="flex items-center gap-2">
+    <Icon className="size-4" />
+    <span>{value}</span>
+  </div>
+);
