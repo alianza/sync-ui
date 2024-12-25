@@ -47,17 +47,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (!token.account) {
-        await dbConnect();
-        const dbUser = (await User.findOne({ email: token.email }).lean()) as UserDoc;
-        token.account = dbUser;
-        token.role = dbUser.role;
-      } else {
-        token.role = (token.account as UserDoc).role;
-      }
-
       if (user) {
         token.id = user.id; // User is available during sign-in
+      }
+
+      if (!token.account) {
+        await dbConnect();
+        const dbUser = (await User.findOne({ email: token.email }).select("role").lean()) as {
+          _id: string;
+          role: string;
+          __v: number;
+        };
+        token.account = dbUser;
+        token.role = dbUser.role;
+        token.id = dbUser._id.toString();
+      } else {
+        const dbUser = token.account as UserDoc;
+        token.role = dbUser.role;
+        token.id = dbUser._id;
       }
 
       return token;
