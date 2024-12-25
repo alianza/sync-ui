@@ -34,13 +34,11 @@ export default async function ListingsPage() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container mx-auto flex flex-col gap-12 px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Woningen</h2>
-            <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-              Bekijk en bewerk hier de woningen die je hebt toegevoegd. Je kunt ook nieuwe woningen toevoegen.
-            </p>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Woningen</h2>
+          <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            Bekijk en bewerk hier de woningen die je hebt toegevoegd. Je kunt ook nieuwe woningen toevoegen.
+          </p>
         </div>
         <DataTable
           columns={columns}

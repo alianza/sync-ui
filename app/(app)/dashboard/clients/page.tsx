@@ -28,13 +28,11 @@ export default async function ClientsPage() {
   return (
     <>
       <section className="container mx-auto flex w-full flex-col gap-8 px-4 py-12 md:px-6 md:py-24 lg:py-32">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Clients</h2>
-            <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-              These are your clients. You can add, edit, and delete them as you see fit.
-            </p>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Clients</h2>
+          <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            These are your clients. You can add, edit, and delete them as you see fit.
+          </p>
         </div>
         <div className="mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
           {dbUser.clients.length > 0 ? (

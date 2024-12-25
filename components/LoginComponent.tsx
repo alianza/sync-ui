@@ -13,7 +13,7 @@ export function LoginComponent() {
       <CardContent>
         <LoginForm />
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4">
+      <CardFooter className="flex flex-col gap-4">
         <div className="text-center text-sm">
           <Link href="/forgot-password" className="underline-hover text-primary">
             Forgot your password?

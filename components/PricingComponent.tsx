@@ -39,13 +39,11 @@ const tiers = [
 export function PricingComponent() {
   return (
     <div className="mx-auto max-w-screen-xl px-4 md:px-6">
-      <div className="flex flex-col items-center justify-center space-y-4 text-center">
-        <div className="space-y-2">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Pricing Plans</h2>
-          <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            Choose the perfect plan for your real estate business
-          </p>
-        </div>
+      <div className="flex flex-col items-center justify-center gap-2 text-center">
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Pricing Plans</h2>
+        <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+          Choose the perfect plan for your real estate business
+        </p>
       </div>
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         {tiers.map((tier, index) => (
@@ -55,15 +53,17 @@ export function PricingComponent() {
                 <CardTitle>{tier.name}</CardTitle>
                 <CardDescription>{tier.description}</CardDescription>
               </CardHeader>
-              <CardContent className="grow">
-                <div className="text-4xl font-bold">{tier.price}</div>
-                {tier.name !== "Enterprise" && (
-                  <div className="text-sm text-gray-500 dark:text-gray-400">per month</div>
-                )}
-                <ul className="mt-4 space-y-2">
+              <CardContent className="flex grow flex-col gap-2">
+                <div>
+                  <div className="text-4xl font-bold">{tier.price}</div>
+                  {tier.name !== "Enterprise" && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400">per month</div>
+                  )}
+                </div>
+                <ul className="flex flex-col gap-2">
                   {tier.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-green-500" />
+                      <Check className="mr-2 size-4 text-green-500" />
                       <span>{feature}</span>
                     </li>
                   ))}

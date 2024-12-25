@@ -7,25 +7,23 @@ export function LandingPage() {
   return (
     <>
       <section className="w-full bg-[url('/placeholder.svg?height=600&width=800')] bg-cover bg-center py-12 md:py-24 lg:py-32 xl:py-48">
-        <div className="px-4 md:px-6">
-          <div className="flex flex-col items-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter text-white drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl/none">
-                Welcome to HuizenHub
-              </h1>
-              <p className="mx-auto max-w-[700px] text-xl text-white drop-shadow-md md:text-2xl">
-                The ultimate CRM for the Dutch housing market. Connecting realtors and home buyers seamlessly.
-              </p>
-            </div>
-            <div className="space-x-4">
-              <Button className="bg-white text-black hover:bg-neutral-200">Get Started</Button>
-              <Button
-                variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white hover:text-black"
-              >
-                Learn More
-              </Button>
-            </div>
+        <div className="flex flex-col items-center justify-center gap-4 px-4 md:px-6">
+          <div className="flex flex-col gap-2 text-center">
+            <h1 className="text-3xl font-bold tracking-tighter text-white drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl/none">
+              Welcome to HuizenHub
+            </h1>
+            <p className="mx-auto max-w-[700px] text-xl text-white drop-shadow-md md:text-2xl">
+              The ultimate CRM for the Dutch housing market. Connecting realtors and home buyers seamlessly.
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <Button className="bg-white text-black hover:bg-neutral-200">Get Started</Button>
+            <Button
+              variant="outline"
+              className="border-white bg-transparent text-white hover:bg-white hover:text-black"
+            >
+              Learn More
+            </Button>
           </div>
         </div>
       </section>
@@ -122,25 +120,23 @@ export function LandingPage() {
         </div>
       </section>
       <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Join HuizenHub Today</h2>
-              <p className="max-w-4xl text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
-                Whether you're a realtor looking to streamline your sales process or a home buyer searching for your
-                dream property, HuizenHub has you covered. Sign up now and experience the future of Dutch real estate.
-              </p>
-            </div>
-            <div className="w-full max-w-sm space-y-2">
-              <form className="flex items-center space-x-2">
-                <input
-                  className="flex h-10 w-full max-w-lg flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Enter your email"
-                  type="email"
-                />
-                <Button type="submit">Sign Up</Button>
-              </form>
-            </div>
+        <div className="flex flex-col items-center justify-center gap-4 px-4 md:px-6">
+          <div className="flex flex-col gap-2 text-center">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Join HuizenHub Today</h2>
+            <p className="max-w-4xl text-neutral-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-neutral-400">
+              Whether you're a realtor looking to streamline your sales process or a home buyer searching for your dream
+              property, HuizenHub has you covered. Sign up now and experience the future of Dutch real estate.
+            </p>
+          </div>
+          <div className="w-full max-w-sm">
+            <form className="flex items-center gap-2">
+              <input
+                className="flex h-10 w-full max-w-lg flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Enter your email"
+                type="email"
+              />
+              <Button type="submit">Sign Up</Button>
+            </form>
           </div>
         </div>
       </section>
