@@ -49,7 +49,7 @@ export const columns: ColumnDef<UserDoc>[] = [
       const SortedIcon = !isSorted ? ArrowUpDown : isSorted === "asc" ? SortAsc : SortDesc;
       return (
         <Button
-          className="float-end"
+          className="float-end text-[length:inherit]"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
