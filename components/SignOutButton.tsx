@@ -10,14 +10,14 @@ import ConfirmDialog from "@/components/confirmDialog";
 function SignOutButton() {
   const [state, action] = useActionState(signOutAction, initialActionState);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
+  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => handleAction(e, action);
 
   return (
     <ConfirmDialog
       customAction={
-        <form onSubmit={handleSubmit} className="flex items-center">
-          <AlertDialogAction type="submit">Log uit</AlertDialogAction>
-        </form>
+        <AlertDialogAction onClick={handleSubmit} type="submit" className="text-start">
+          Log uit
+        </AlertDialogAction>
       }
       title="Uitloggen"
       description="Weet je zeker dat je wilt uitloggen?"
