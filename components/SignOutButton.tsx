@@ -5,7 +5,7 @@ import React, { useActionState } from "react";
 import { initialActionState } from "@/lib/types";
 import { handleAction } from "@/lib/client.utils";
 import { AlertDialogAction } from "./ui/alert-dialog";
-import ConfirmDialog from "@/components/confirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 function SignOutButton() {
   const [state, action] = useActionState(signOutAction, initialActionState);

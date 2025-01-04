@@ -2,8 +2,7 @@ import { ListingDoc } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { authGuard } from "@/lib/server.utils";
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
@@ -22,9 +21,7 @@ import { redirect } from "next/navigation";
 // }
 
 export default async function EditListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard();
 
   const { id } = await props.params;
   await dbConnect();

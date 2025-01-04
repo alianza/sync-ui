@@ -57,5 +57,5 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     return errorResponse(error);
   }
 
-  return redirect("/login?signup=true");
+  return redirect("/login");
 }

@@ -1,14 +1,10 @@
 import React, { Suspense } from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import Loader from "@/components/layout/Loader";
 import ListingsTable from "@/app/(app)/dashboard/listings/listingsTable";
-
-export const revalidate = 60;
+import { authGuard } from "@/lib/server.utils";
 
 export default async function ListingsPage() {
-  const session = await auth();
-  if (!session) redirect("/login");
+  await authGuard();
 
   return (
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">

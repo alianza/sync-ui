@@ -1,14 +1,11 @@
 import dbConnect from "@/lib/dbConnect";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import User from "@/models/User";
 import { UserDoc } from "@/models/User.type";
 import { isValidObjectId } from "mongoose";
+import { authGuard } from "@/lib/server.utils";
 
 export default async function ClientsPage(props: { params: Promise<{ id: string }> }) {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  await authGuard();
 
   const { id } = await props.params;
 

@@ -1,14 +1,12 @@
 import React, { Suspense } from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import ClientsTable from "@/app/(app)/dashboard/clients/clientsTable";
 import Loader from "@/components/layout/Loader";
+import { authGuard } from "@/lib/server.utils";
 
 export const revalidate = 60;
 
 export default async function ClientsPage() {
-  const session = await auth();
-  if (!session) redirect("/login");
+  await authGuard();
 
   return (
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">

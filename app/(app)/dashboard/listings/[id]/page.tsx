@@ -1,8 +1,6 @@
 import Listing from "@/models/Listing";
 import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { isValidObjectId } from "mongoose";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,11 +24,10 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { authGuard } from "@/lib/server.utils";
 
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard();
 
   const { id } = await props.params;
 

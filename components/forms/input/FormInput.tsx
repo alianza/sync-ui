@@ -49,7 +49,7 @@ export function FormInput({
           autoCorrect={autoCorrect}
           required={required}
           minLength={minLength}
-          className={cn("hover:ring-primary-500 hover:ring-1 hover:ring-accent", props.className)}
+          className={cn("hover:ring-1 hover:ring-accent", props.className)}
           {...props}
         />
       </InputSuffixWrap>

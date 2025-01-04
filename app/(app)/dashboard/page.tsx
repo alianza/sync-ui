@@ -1,11 +1,9 @@
 import React from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { getNameFromAlias } from "@/lib/common.utils";
+import { authGuard } from "@/lib/server.utils";
 
 export default async function Dashboard() {
-  const session = await auth();
-  if (!session || !session.user) redirect("/login");
+  const session = await authGuard();
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">

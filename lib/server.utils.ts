@@ -4,6 +4,8 @@ import { ZodError, ZodIssue } from "zod";
 import { capitalize } from "@/lib/common.utils";
 
 import "server-only";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
   if (Array.isArray(doc)) {
@@ -67,3 +69,9 @@ export const formatZodError = (error: ZodError) => {
 
   return errors.join(", ");
 };
+
+export async function authGuard(redirectTo = "/login") {
+  const session = await auth();
+  if (!session || !session.user) redirect(redirectTo);
+  return session;
+}

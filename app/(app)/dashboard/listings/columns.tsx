@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Eye, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
 import Link from "next/link";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
-import ConfirmDialog from "@/components/confirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { capitalize } from "@/lib/common.utils";
 import { toast } from "@/hooks/use-toast";
 import { ResponseStatus } from "@/lib/types";

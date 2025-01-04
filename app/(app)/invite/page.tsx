@@ -8,7 +8,7 @@ import { UserDoc } from "@/models/User.type";
 type Props = { searchParams: Promise<{ id: string }> };
 
 export default async function Invite({ searchParams }: Props) {
-  const id = (await searchParams).id;
+  const { id } = await searchParams;
 
   if (!isValidObjectId(id)) {
     return (
@@ -23,7 +23,7 @@ export default async function Invite({ searchParams }: Props) {
 
   await dbConnect();
 
-  const invite = (await ClientInvite.findOne({ _id: id }).populate("inviter"))?.toObject({
+  const invite = (await ClientInvite.findById(id).populate("inviter"))?.toObject({
     flattenObjectIds: true,
   }) as MergeType<ClientInviteDoc, UserDoc>;
 

@@ -5,16 +5,13 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
 import { ListingDoc } from "@/models/Listing.type";
+import { authGuard } from "@/lib/server.utils";
 
 export default async function ListingsTable() {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard();
 
   await dbConnect();
   const listings = (await Listing.find({ userId: session.user?.id })).map((doc) =>

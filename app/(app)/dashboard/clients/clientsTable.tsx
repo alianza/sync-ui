@@ -4,18 +4,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import React from "react";
-import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import { MergeType } from "mongoose";
 import { UserDoc } from "@/models/User.type";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { authGuard } from "@/lib/server.utils";
 
 export default async function ClientsTable() {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard();
 
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
