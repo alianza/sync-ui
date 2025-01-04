@@ -21,7 +21,7 @@ function SignOutButton() {
       }
       title="Uitloggen"
       description="Weet je zeker dat je wilt uitloggen?"
-      className="underline-hover p-2 text-sm font-bold underline-offset-4"
+      className="underline-hover p-2 text-start text-sm font-bold underline-offset-4"
     >
       Log uit
     </ConfirmDialog>
