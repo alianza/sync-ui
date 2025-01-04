@@ -2,9 +2,8 @@ import NavLink from "@/components/NavLink";
 import { HeaderLogo } from "@/components/layout/Header/HeaderLogo";
 import { DynamicAppHeaderLinks } from "@/components/layout/Header/app/DynamicAppHeaderLinks";
 import { MobileNav } from "@/components/layout/Header/MobileNav";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { Home, ScrollText, Users } from "lucide-react";
+import { Suspense } from "react";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
@@ -24,9 +23,12 @@ export async function AppHeader() {
       <nav className="ml-auto hidden gap-2 md:flex">
         <AppNavItems />
       </nav>
-      <MobileNav>
-        <AppNavItems />
-      </MobileNav>
+
+      <Suspense fallback={null}>
+        <MobileNav>
+          <AppNavItems />
+        </MobileNav>
+      </Suspense>
     </header>
   );
 }
