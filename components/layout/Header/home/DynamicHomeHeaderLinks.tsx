@@ -7,16 +7,12 @@ import { useSession } from "next-auth/react";
 export function DynamicHomeHeaderLinks() {
   const { data: session, status } = useSession();
 
-  return (
+  return session ? (
     <>
-      {session ? (
-        <>
-          <NavLink href="/dashboard" label="Dashboard" />
-          <SignOutButton />
-        </>
-      ) : (
-        <NavLink href="/login" label="Login" />
-      )}
+      <NavLink href="/dashboard" label="Dashboard" />
+      <SignOutButton />
     </>
+  ) : (
+    <NavLink href="/login" label="Login" />
   );
 }
