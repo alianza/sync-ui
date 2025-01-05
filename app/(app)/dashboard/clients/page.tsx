@@ -1,12 +1,12 @@
 import React, { Suspense } from "react";
-import ClientsTable from "@/app/(app)/dashboard/clients/clientsTable";
+import AgentsTable from "@/app/(app)/dashboard/agents/agentsTable";
 import Loader from "@/components/layout/Loader";
 import { authGuard } from "@/lib/server.utils";
 
 export const revalidate = 60;
 
 export default async function ClientsPage() {
-  await authGuard();
+  await authGuard({ realtorOnly: true });
 
   return (
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">
@@ -18,7 +18,7 @@ export default async function ClientsPage() {
       </div>
 
       <Suspense fallback={<Loader className="h-auto" />}>
-        <ClientsTable />
+        <AgentsTable />
       </Suspense>
     </section>
   );

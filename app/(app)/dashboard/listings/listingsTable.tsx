@@ -18,6 +18,14 @@ export default async function ListingsTable() {
     doc.toObject({ flattenObjectIds: true }),
   ) as ListingDoc[];
 
+  const newListingButton = (
+    <Link href="/dashboard/listings/new">
+      <Button>
+        <PlusIcon /> Voeg een nieuwe woning toe
+      </Button>
+    </Link>
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <DataTable
@@ -28,22 +36,13 @@ export default async function ListingsTable() {
         emptyComponent={
           <div className="flex flex-col justify-center gap-2">
             Geen resultaten gevonden.
-            <Link href="/dashboard/listings/new">
-              <Button>
-                <PlusIcon /> Voeg een nieuwe woning toe
-              </Button>
-            </Link>
+            {newListingButton}
           </div>
         }
       />
 
       {listings.length > 0 ? (
-        <Link href="/dashboard/listings/new" className="self-start">
-          <Button>
-            <PlusIcon />
-            Voeg een nieuwe woning toe
-          </Button>
-        </Link>
+        <div className="self-start">{newListingButton}</div>
       ) : (
         <Card className="mx-auto">
           <CardHeader>
@@ -52,13 +51,7 @@ export default async function ListingsTable() {
               Je hebt nog geen woningen toegevoegd. Voeg een nieuwe woning toe om te beginnen.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Link href="/dashboard/listings/new">
-              <Button>
-                <PlusIcon /> Voeg een nieuwe woning toe
-              </Button>
-            </Link>
-          </CardContent>
+          <CardContent>{newListingButton}</CardContent>
         </Card>
       )}
     </div>

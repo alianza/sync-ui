@@ -2,10 +2,12 @@ import { HydratedDocument } from "mongoose";
 import { ResponseStatus, ServerResponse } from "@/lib/types";
 import { ZodError, ZodIssue } from "zod";
 import { capitalize } from "@/lib/common.utils";
-
-import "server-only";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { ROLES } from "@/models/User.type";
+import { Session } from "next-auth";
+
+import "server-only";
 
 export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
   if (Array.isArray(doc)) {
@@ -70,8 +72,35 @@ export const formatZodError = (error: ZodError) => {
   return errors.join(", ");
 };
 
-export async function authGuard(redirectTo = "/login") {
+export async function authGuard({
+  realtorOnly,
+  buyerOnly,
+  adminOnly,
+  redirectTo = "/login",
+}: { realtorOnly?: boolean; buyerOnly?: boolean; adminOnly?: boolean; redirectTo?: string } = {}) {
   const session = await auth();
   if (!session || !session.user) redirect(redirectTo);
+
+  // check roles
+  if (realtorOnly && session.user.role !== ROLES.REALTOR) redirect("/dashboard");
+  if (buyerOnly && session.user.role !== ROLES.BUYER) redirect("/dashboard");
+  if (adminOnly && session.user.role !== ROLES.ADMIN) redirect("/dashboard");
+
   return session;
 }
+
+export const actionAuthGuard = async (
+  session?: Session | null,
+  { realtorOnly, buyerOnly, adminOnly }: { realtorOnly?: boolean; buyerOnly?: boolean; adminOnly?: boolean } = {},
+) => {
+  if (!session || !session.user) {
+    throw new Error("Unauthorized");
+  }
+
+  // check roles
+  if (realtorOnly && session.user.role !== ROLES.REALTOR) throw new Error("Unauthorized");
+  if (buyerOnly && session.user.role !== ROLES.BUYER) throw new Error("Unauthorized");
+  if (adminOnly && session.user.role !== ROLES.ADMIN) throw new Error("Unauthorized");
+
+  return session;
+};

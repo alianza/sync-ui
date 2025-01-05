@@ -4,14 +4,18 @@ import { DynamicAppHeaderLinks } from "@/components/layout/Header/app/DynamicApp
 import { MobileNav } from "@/components/layout/Header/MobileNav";
 import { Home, ScrollText, Users } from "lucide-react";
 import { Suspense } from "react";
+import { Session } from "next-auth";
+import { ROLES } from "@/models/User.type";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
-  { href: "/dashboard/listings", label: "Listings", icon: ScrollText },
-  { href: "/dashboard/clients", label: "Clients", icon: Users },
+  { href: "/dashboard/listings", label: "Listings", icon: ScrollText, role: ROLES.REALTOR },
+  { href: "/dashboard/clients", label: "Clients", icon: Users, role: ROLES.REALTOR },
+  { href: "/dashboard/agents", label: "Makelaars", icon: Users, role: ROLES.BUYER },
+  { href: "/dashboard/leads", label: "Leads", icon: Users, role: ROLES.BUYER },
 ];
 
-export async function AppHeader() {
+export function AppHeader({ session }: { session: Session }) {
   return (
     <header className="flex items-center bg-background p-4 shadow dark:border-b-2">
       <div className="flex h-full items-center gap-2">
@@ -21,24 +25,26 @@ export async function AppHeader() {
       </div>
 
       <nav className="ml-auto hidden gap-2 md:flex">
-        <AppNavItems />
+        <AppNavItems role={session.user.role} />
       </nav>
 
       <Suspense fallback={null}>
         <MobileNav>
-          <AppNavItems />
+          <AppNavItems role={session.user.role} />
         </MobileNav>
       </Suspense>
     </header>
   );
 }
 
-function AppNavItems() {
+function AppNavItems({ role }: { role: ROLES }) {
   return (
     <>
-      {appMenuItems.map(({ href, label, exact }, index) => (
-        <NavLink key={index} href={href} label={label} exact={exact} />
-      ))}
+      {appMenuItems
+        .filter(({ role: itemRole }) => !itemRole || itemRole === role)
+        .map(({ href, label, exact }, index) => (
+          <NavLink key={index} href={href} label={label} exact={exact} />
+        ))}
       <DynamicAppHeaderLinks />
     </>
   );

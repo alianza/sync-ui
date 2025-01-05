@@ -87,7 +87,7 @@ export const columns: ColumnDef<UserDoc>[] = [
             <ConfirmDialog
               className="w-full cursor-default rounded hover:bg-muted"
               onConfirm={async () => {
-                const { message, status } = await deleteClient(client._id);
+                const { message, status } = await deleteClient(client._id, client.email);
                 if (message) {
                   if (status === ResponseStatus.error) {
                     toast({ title: "error", description: message, variant: "destructive" });

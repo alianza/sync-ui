@@ -24,6 +24,14 @@ export const columns: ColumnDef<ListingDoc>[] = [
   {
     accessorKey: "title",
     header: "Titel",
+    cell: ({ row }) => {
+      const title = row.getValue("title")?.toString();
+      return (
+        <Link className="underline-hover" href={`/dashboard/listings/${row.original._id}`}>
+          {title}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "city",

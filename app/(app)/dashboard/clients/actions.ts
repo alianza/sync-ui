@@ -2,22 +2,28 @@
 
 import dbConnect from "@/lib/dbConnect";
 import { revalidatePath } from "next/cache";
-import { errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
+import { actionAuthGuard, errorResponse, serializeDoc, successResponse } from "@/lib/server.utils";
 import { auth } from "@/auth";
-import { Roles } from "@/models/User.type";
 import User from "@/models/User";
 
-export async function deleteClient(id: string) {
+export async function deleteClient(id: string, email: string) {
   try {
     await dbConnect();
     const session = await auth();
+
+    try {
+      await actionAuthGuard(session, { realtorOnly: true });
+    } catch (error) {
+      return errorResponse("You must be logged in as a realtor to delete a client");
+    }
+
     if (!session) return errorResponse("You must be logged in to delete a client");
-    const listing = await User.findOneAndDelete({ _id: id, role: Roles.buyer });
-    revalidatePath(`/dashboard/clients/${id}`);
+    const user = await User.findByIdAndUpdate(session.user.id, { $pull: { clients: id } });
+    // revalidatePath(`/dashboard/clients/${id}`);
     revalidatePath(`/dashboard/clients`);
     return successResponse({
-      data: serializeDoc(listing),
-      message: `Successfully deleted client with email: ${listing?.email}`,
+      data: serializeDoc(user),
+      message: `Successfully deleted client with email: ${email}`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

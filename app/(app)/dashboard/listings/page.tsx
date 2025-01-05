@@ -4,7 +4,7 @@ import ListingsTable from "@/app/(app)/dashboard/listings/listingsTable";
 import { authGuard } from "@/lib/server.utils";
 
 export default async function ListingsPage() {
-  await authGuard();
+  await authGuard({ realtorOnly: true });
 
   return (
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">

@@ -27,7 +27,7 @@ import Link from "next/link";
 import { authGuard } from "@/lib/server.utils";
 
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await authGuard();
+  const session = await authGuard({ realtorOnly: true });
 
   const { id } = await props.params;
 
