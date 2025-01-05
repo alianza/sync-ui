@@ -4,9 +4,16 @@ import dbConnect from "@/lib/dbConnect";
 import Listing, { listingCreateSchema, listingUpdateSchema } from "@/models/Listing";
 import { LISTING_TYPES_ENUM } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
-import { errorResponse, failResponse, formatZodError, serializeDoc, successResponse } from "@/lib/server.utils";
-import { auth } from "@/auth";
+import {
+  actionAuthGuard,
+  errorResponse,
+  failResponse,
+  formatZodError,
+  serializeDoc,
+  successResponse,
+} from "@/lib/server.utils";
 import z from "zod";
+import { auth } from "@/auth";
 
 export async function createListing(prevState: unknown, formData: FormData) {
   try {
@@ -19,11 +26,16 @@ export async function createListing(prevState: unknown, formData: FormData) {
     // const nestedFormData = createNestedObject(listingData); // Nested paths are handles by Mongoose automatically
 
     const session = await auth();
-    if (!session) return errorResponse("You must be logged in to create a listing");
+
+    try {
+      await actionAuthGuard(session, { realtorOnly: true });
+    } catch (error) {
+      return errorResponse("You must be logged in as a realtor to create a listing");
+    }
 
     await dbConnect();
     const listing = await Listing.create({ ...listingData, userId: session?.user?.id });
-    revalidatePath(`/dashboard/listings`);
+    // revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
       message: `Successfully created listing with title '${listing.title}'`,
@@ -41,7 +53,12 @@ export async function createListing(prevState: unknown, formData: FormData) {
 export async function deleteListing(id: string) {
   try {
     const session = await auth();
-    if (!session) return errorResponse("You must be logged in to delete a listing");
+
+    try {
+      await actionAuthGuard(session, { realtorOnly: true });
+    } catch (error) {
+      return errorResponse("You must be logged in as a realtor to delete a listing");
+    }
 
     await dbConnect();
     const listing = await Listing.findOneAndDelete({ _id: id, userId: session?.user?.id });
@@ -63,14 +80,24 @@ export async function updateListing(prevState: unknown, formData: FormData) {
     const updateData = listingUpdateSchema.parse(data);
 
     const session = await auth();
-    if (!session) return errorResponse("You must be logged in to update a listing");
+
+    try {
+      await actionAuthGuard(session, { realtorOnly: true });
+    } catch (error) {
+      return errorResponse("You must be logged in as a realtor to update a listing");
+    }
 
     await dbConnect();
     const listing = await Listing.findOneAndUpdate({ _id: updateData._id, userId: session?.user?.id }, updateData, {
       new: true,
     });
+
+    if (!listing) {
+      return failResponse({ message: "Listing not found" });
+    }
+
     revalidatePath(`/dashboard/listings/${listing._id}`);
-    revalidatePath(`/dashboard/listings`);
+    // revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
       message: `Successfully updated listing with title '${updateData.title}'`,

@@ -1,25 +1,28 @@
 import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/app/(app)/dashboard/listings/columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
 import { ListingDoc } from "@/models/Listing.type";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function ListingsTable() {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard();
 
   await dbConnect();
-  const listings = (await Listing.find({ userId: session.user?.id })).map((doc) =>
-    doc.toObject({ flattenObjectIds: true }),
-  ) as ListingDoc[];
+  const listings = serializeDoc(await Listing.find({ userId: session.user?.id })) as ListingDoc[];
+
+  const newListingButton = (
+    <Link href="/dashboard/listings/new">
+      <Button>
+        <PlusIcon /> Voeg een nieuwe woning toe
+      </Button>
+    </Link>
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -31,22 +34,13 @@ export default async function ListingsTable() {
         emptyComponent={
           <div className="flex flex-col justify-center gap-2">
             Geen resultaten gevonden.
-            <Link href="/dashboard/listings/new">
-              <Button>
-                <PlusIcon /> Voeg een nieuwe woning toe
-              </Button>
-            </Link>
+            {newListingButton}
           </div>
         }
       />
 
       {listings.length > 0 ? (
-        <Link href="/dashboard/listings/new" className="self-start">
-          <Button>
-            <PlusIcon />
-            Voeg een nieuwe woning toe
-          </Button>
-        </Link>
+        <div className="self-start">{newListingButton}</div>
       ) : (
         <Card className="mx-auto">
           <CardHeader>
@@ -55,13 +49,7 @@ export default async function ListingsTable() {
               Je hebt nog geen woningen toegevoegd. Voeg een nieuwe woning toe om te beginnen.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Link href="/dashboard/listings/new">
-              <Button>
-                <PlusIcon /> Voeg een nieuwe woning toe
-              </Button>
-            </Link>
-          </CardContent>
+          <CardContent>{newListingButton}</CardContent>
         </Card>
       )}
     </div>

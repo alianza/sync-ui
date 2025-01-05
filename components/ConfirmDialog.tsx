@@ -25,7 +25,7 @@ type Props = {
   customAction?: React.ReactNode;
 };
 
-function SignOutButton({
+function ConfirmDialog({
   title = "Weet je het zeker?",
   cancelText = "Annuleren",
   confirmText = "Bevestigen",
@@ -53,4 +53,4 @@ function SignOutButton({
   );
 }
 
-export default SignOutButton;
+export default ConfirmDialog;

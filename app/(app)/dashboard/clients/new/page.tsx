@@ -1,12 +1,9 @@
 import React from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { ClientInviteForm } from "@/components/forms/ClientInviteForm";
+import { authGuard } from "@/lib/server.utils";
 
-export default async function ClientsPage() {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+export default async function NewClientPage() {
+  await authGuard({ realtorOnly: true });
 
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">

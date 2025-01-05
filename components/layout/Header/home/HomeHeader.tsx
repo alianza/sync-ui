@@ -2,6 +2,7 @@ import NavLink from "@/components/NavLink";
 import { HeaderLogo } from "@/components/layout/Header/HeaderLogo";
 import { DynamicHomeHeaderLinks } from "@/components/layout/Header/home/DynamicHomeHeaderLinks";
 import { MobileNav } from "@/components/layout/Header/MobileNav";
+import { Suspense } from "react";
 
 export const homeMenuItems = [
   { href: "/#features", label: "Features" },
@@ -17,9 +18,11 @@ export function HomeHeader() {
       <nav className="ml-auto hidden max-w-full flex-wrap gap-2 md:flex">
         <HomeNavItems />
       </nav>
-      <MobileNav>
-        <HomeNavItems />
-      </MobileNav>
+      <Suspense fallback={null}>
+        <MobileNav>
+          <HomeNavItems />
+        </MobileNav>
+      </Suspense>
     </header>
   );
 }

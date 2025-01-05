@@ -12,13 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Eye, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
+import { ArrowUpDown, Eye, MoreHorizontal, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
-import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
-import ConfirmDialog from "@/components/ConfirmDialog";
 import { capitalize } from "@/lib/common.utils";
-import { toast } from "@/hooks/use-toast";
-import { ResponseStatus } from "@/lib/types";
 
 export const columns: ColumnDef<ListingDoc>[] = [
   {
@@ -97,10 +93,10 @@ export const columns: ColumnDef<ListingDoc>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const listing = row.original;
+      const lead = row.original;
 
       return (
-        <DropdownMenu key={listing._id}>
+        <DropdownMenu key={lead._id}>
           <DropdownMenuTrigger asChild className="float-end">
             <Button variant="ghost" className="size-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -109,41 +105,35 @@ export const columns: ColumnDef<ListingDoc>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acties</DropdownMenuLabel>
-            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(listing._id)}>*/}
+            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(lead._id)}>*/}
             {/*  Kopieer link*/}
             {/*</DropdownMenuItem>*/}
             <DropdownMenuSeparator />
-            <Link href={`/dashboard/listings/${listing._id}`}>
+            <Link href={`/dashboard/leads/${lead._id}`}>
               <DropdownMenuItem>
                 <Eye className="mr-1 size-3" />
-                Bekijk woning
+                Bekijk lead
               </DropdownMenuItem>
             </Link>
-            <Link href={`/dashboard/listings/${listing._id}/edit`}>
-              <DropdownMenuItem>
-                <Pencil className="mr-1 size-3" />
-                Bewerk woning
-              </DropdownMenuItem>
-            </Link>
-            <ConfirmDialog
-              className="w-full cursor-default rounded hover:bg-muted"
-              onConfirm={async () => {
-                const { message, status } = await deleteListing(listing._id);
-                if (message) {
-                  if (status === ResponseStatus.error) {
-                    toast({ title: "error", description: message, variant: "destructive" });
-                    return;
-                  }
+            {/*<ConfirmDialog*/}
+            {/*  className="w-full cursor-default rounded hover:bg-muted"*/}
+            {/*  onConfirm={async () => {*/}
+            {/*    const { message, status } = await deleteListing(lead._id);*/}
+            {/*    if (message) {*/}
+            {/*      if (status === ResponseStatus.error) {*/}
+            {/*        toast({ title: "error", description: message, variant: "destructive" });*/}
+            {/*        return;*/}
+            {/*      }*/}
 
-                  toast({ title: message });
-                }
-              }}
-            >
-              <DropdownMenuItem className="pointer-events-none">
-                <Trash className="mr-1 size-3" />
-                Verwijderen
-              </DropdownMenuItem>
-            </ConfirmDialog>
+            {/*      toast({ title: message });*/}
+            {/*    }*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  <DropdownMenuItem className="pointer-events-none">*/}
+            {/*    <Trash className="mr-1 size-3" />*/}
+            {/*    Verwijderen*/}
+            {/*  </DropdownMenuItem>*/}
+            {/*</ConfirmDialog>*/}
           </DropdownMenuContent>
         </DropdownMenu>
       );

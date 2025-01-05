@@ -5,10 +5,11 @@ import {
   failResponse,
   formatZodError,
   isMongooseDuplicateKeyError,
+  serializeDoc,
   successResponse,
 } from "@/lib/server.utils";
 import User from "@/models/User";
-import { Roles } from "@/models/User.type";
+import { ROLES } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
@@ -32,8 +33,8 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
     const hashedPassword = await saltAndHashPassword(password);
 
     await dbConnect();
-    const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: Roles.realtor });
-    // return successResponse({ message: "Successfully signed up!", data: serializeDoc(user) });
+    const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: ROLES.REALTOR });
+    return successResponse({ message: "Successfully signed up!", data: serializeDoc(user) });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return failResponse({ message: formatZodError(error) });
@@ -45,6 +46,4 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
 
     return errorResponse(error);
   }
-
-  return successResponse({ message: "Successfully signed up!" });
 }

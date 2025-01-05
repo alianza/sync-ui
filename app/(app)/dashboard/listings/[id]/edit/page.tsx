@@ -2,8 +2,8 @@ import { ListingDoc } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
+import { isValidObjectId } from "mongoose";
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
@@ -22,29 +22,48 @@ import { redirect } from "next/navigation";
 // }
 
 export default async function EditListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await auth();
-
-  if (!session) redirect("/login");
+  const session = await authGuard({ realtorOnly: true });
 
   const { id } = await props.params;
-  await dbConnect();
-  const listing = (await Listing.findOne({ _id: id, userId: session.user.id }))?.toObject({
-    flattenObjectIds: true,
-  }) as ListingDoc;
 
-  return (
-    <>
-      <section className="container mx-auto flex w-full flex-col gap-8 px-4 py-12 md:px-6 md:py-24 lg:py-32">
+  if (!isValidObjectId(id)) {
+    return (
+      <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{listing.title}</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Ongeldige woning ID</h2>
           <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            {listing.description}
+            De woning ID die je probeert te openen is ongeldig.
           </p>
         </div>
       </section>
-      <section className="w-full bg-neutral-200 dark:bg-neutral-900">
-        <ListingForm listing={listing} />
+    );
+  }
+
+  await dbConnect();
+  const listing = serializeDoc(await Listing.findOne({ _id: id, userId: session.user.id })) as ListingDoc;
+
+  if (!listing) {
+    return (
+      <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Woning niet gevonden</h2>
+          <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            De woning die je probeert te openen bestaat niet.
+          </p>
+        </div>
       </section>
-    </>
+    );
+  }
+
+  return (
+    <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">
+      <div className="flex flex-col items-center justify-center gap-2 text-center">
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{listing.title}</h2>
+        <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+          {listing.description}
+        </p>
+      </div>
+      <ListingForm listing={listing} />
+    </section>
   );
 }

@@ -1,11 +1,13 @@
+import Listing from "@/models/Listing";
+import { ListingDoc } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
 import { isValidObjectId } from "mongoose";
+import React from "react";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
+import ListingDetails from "@/components/ListingDetails";
 
-export default async function ClientsPage(props: { params: Promise<{ id: string }> }) {
-  await authGuard({ realtorOnly: true });
+export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
+  const session = await authGuard({ buyerOnly: true });
 
   const { id } = await props.params;
 
@@ -13,9 +15,9 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
     return (
       <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Invalid client ID</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Ongeldige woning ID</h2>
           <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            The client ID you are trying to access is invalid.
+            De woning ID die je probeert te openen is ongeldig.
           </p>
         </div>
       </section>
@@ -23,15 +25,15 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
   }
 
   await dbConnect();
-  const client = serializeDoc(await User.findById(id)) as UserDoc;
+  const lead = serializeDoc(await Listing.findById(id).populate("userId")) as ListingDoc;
 
-  if (!client) {
+  if (!lead) {
     return (
       <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Client not found</h2>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Woning niet gevonden</h2>
           <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            The client you are trying to access does not exist.
+            De woning die je probeert te openen bestaat niet.
           </p>
         </div>
       </section>
@@ -40,14 +42,7 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
 
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
-      <div className="flex flex-col items-center justify-center gap-2 text-center">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-          {client.firstName} {client.lastName}
-        </h2>
-        <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-          {client.email}
-        </p>
-      </div>
+      <ListingDetails listing={lead} />
     </section>
   );
 }

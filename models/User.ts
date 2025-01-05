@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserDoc, Roles } from "@/models/User.type";
+import { ROLES, UserDoc } from "@/models/User.type";
 
 import "server-only";
 
@@ -29,8 +29,8 @@ const UserSchema = new mongoose.Schema<UserDoc>(
     },
     role: {
       type: String,
-      enum: Object.values(Roles),
-      default: Roles.buyer,
+      enum: Object.values(ROLES),
+      default: ROLES.BUYER,
     },
     clients: {
       type: [mongoose.Schema.Types.ObjectId],

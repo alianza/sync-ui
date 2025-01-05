@@ -1,27 +1,33 @@
 "use client";
 
-import { signOutAction } from "@/app/(home)/login/actions";
-import React, { useActionState } from "react";
-import { initialActionState } from "@/lib/types";
-import { handleAction } from "@/lib/client.utils";
+import React from "react";
 import { AlertDialogAction } from "./ui/alert-dialog";
-import ConfirmDialog from "@/components/confirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { signOut } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
 
 function SignOutButton() {
-  const [state, action] = useActionState(signOutAction, initialActionState);
-
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => handleAction(e, action);
+  // const [state, action] = useActionState(signOutAction, initialActionState);
+  // const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => handleAction(e, action);
 
   return (
     <ConfirmDialog
       customAction={
-        <AlertDialogAction onClick={handleSubmit} type="submit" className="text-start">
+        <AlertDialogAction
+          onClick={async () => {
+            await signOut({ redirectTo: "/login" })
+              .catch(() => toast({ title: "Failed to sign out" }))
+              .finally(() => toast({ title: "Successfully logged out!" }));
+          }}
+          type="submit"
+          className="text-start"
+        >
           Log uit
         </AlertDialogAction>
       }
       title="Uitloggen"
       description="Weet je zeker dat je wilt uitloggen?"
-      className="underline-hover p-2 text-sm font-bold underline-offset-4"
+      className="underline-hover p-2 text-start text-sm font-bold underline-offset-4"
     >
       Log uit
     </ConfirmDialog>
