@@ -23,7 +23,7 @@ export const columns: ColumnDef<ListingDoc>[] = [
     cell: ({ row }) => {
       const title = row.getValue("title")?.toString();
       return (
-        <Link className="underline-hover" href={`/dashboard/listings/${row.original._id}`}>
+        <Link className="underline-hover" href={`/dashboard/leads/${row.original._id}`}>
           {title}
         </Link>
       );
