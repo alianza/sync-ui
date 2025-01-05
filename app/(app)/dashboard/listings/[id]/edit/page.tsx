@@ -2,7 +2,7 @@ import { ListingDoc } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
-import { authGuard } from "@/lib/server.utils";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
 import { isValidObjectId } from "mongoose";
 
 // Next.js will invalidate the cache when a
@@ -40,9 +40,7 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
   }
 
   await dbConnect();
-  const listing = (await Listing.findOne({ _id: id, userId: session.user.id }))?.toObject({
-    flattenObjectIds: true,
-  }) as ListingDoc;
+  const listing = serializeDoc(await Listing.findOne({ _id: id, userId: session.user.id })) as ListingDoc;
 
   if (!listing) {
     return (

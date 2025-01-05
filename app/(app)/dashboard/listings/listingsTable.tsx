@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/app/(app)/dashboard/listings/columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
@@ -8,15 +8,13 @@ import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
 import { ListingDoc } from "@/models/Listing.type";
-import { authGuard } from "@/lib/server.utils";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function ListingsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const listings = (await Listing.find({ userId: session.user?.id })).map((doc) =>
-    doc.toObject({ flattenObjectIds: true }),
-  ) as ListingDoc[];
+  const listings = serializeDoc(await Listing.find({ userId: session.user?.id })) as ListingDoc[];
 
   const newListingButton = (
     <Link href="/dashboard/listings/new">
