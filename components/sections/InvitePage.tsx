@@ -3,6 +3,7 @@ import { UserDoc } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import InviteForm from "@/components/forms/InviteForm";
+import React from "react";
 
 type Props = {
   invite: MergeType<ClientInviteDoc, UserDoc>;

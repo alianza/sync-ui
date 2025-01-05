@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
-import AgentsTable from "@/app/(app)/dashboard/agents/agentsTable";
 import Loader from "@/components/layout/Loader";
 import { authGuard } from "@/lib/server.utils";
+import ClientsTable from "@/app/(app)/dashboard/clients/clientsTable";
 
 export const revalidate = 60;
 
@@ -18,7 +18,7 @@ export default async function ClientsPage() {
       </div>
 
       <Suspense fallback={<Loader className="h-auto" />}>
-        <AgentsTable />
+        <ClientsTable />
       </Suspense>
     </section>
   );

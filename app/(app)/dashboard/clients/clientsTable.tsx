@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/ui/data-table";
-import { columns } from "@/app/(app)/dashboard/agents/columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
