@@ -12,8 +12,8 @@ export interface UserDoc {
   __v?: number;
 }
 
-export enum Roles {
-  realtor = "realtor",
-  buyer = "buyer",
-  admin = "admin",
+export enum ROLES {
+  REALTOR = "realtor",
+  BUYER = "buyer",
+  ADMIN = "admin",
 }
