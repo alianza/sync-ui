@@ -9,7 +9,11 @@ import { Session } from "next-auth";
 
 import "server-only";
 
-export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]): T | T[] {
+export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[] | null): T | T[] {
+  if (!doc) {
+    return doc as T;
+  }
+
   if (Array.isArray(doc)) {
     return doc.map((item) => item.toObject({ flattenObjectIds: true })) as T[];
   }
