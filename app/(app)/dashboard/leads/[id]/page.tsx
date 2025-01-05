@@ -7,7 +7,7 @@ import { authGuard, serializeDoc } from "@/lib/server.utils";
 import ListingDetails from "@/components/ListingDetails";
 
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await authGuard({ realtorOnly: true });
+  const session = await authGuard({ buyerOnly: true });
 
   const { id } = await props.params;
 
@@ -25,13 +25,9 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
   }
 
   await dbConnect();
-  const listing = serializeDoc(
-    await Listing.findOne({ _id: id, userId: session.user.id }).populate("userId"),
-  ) as ListingDoc;
+  const lead = serializeDoc(await Listing.findById(id).populate("userId")) as ListingDoc;
 
-  const isOwner = session.user.id === listing.userId._id;
-
-  if (!listing) {
+  if (!lead) {
     return (
       <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
@@ -46,7 +42,7 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
 
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">
-      <ListingDetails listing={listing} isOwner={isOwner} />
+      <ListingDetails listing={lead} />
     </section>
   );
 }
