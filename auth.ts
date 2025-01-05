@@ -2,7 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
+import { ROLES, UserDoc } from "@/models/User.type";
 import dbConnect from "./lib/dbConnect";
 
 export async function saltAndHashPassword(password: string) {
@@ -16,7 +16,7 @@ export const verifyPassword = async (password: string, hash: string) => bcryptjs
 declare module "next-auth" {
   interface Session {
     user: {
-      role: string;
+      role: ROLES;
     } & DefaultSession["user"]; // Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
   }
 }
@@ -71,7 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session({ session, token, user }) {
       session.user.id = token.sub as string;
-      session.user.role = token.role as string;
+      session.user.role = token.role as ROLES;
       return session;
     },
   },
