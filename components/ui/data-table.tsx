@@ -100,7 +100,9 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-xs">{table.getRowCount()} resultaten</div>
+        <div className="text-xs">
+          {table.getRowCount()} {table.getRowCount() === 1 ? "resultaat" : "resultaten"}
+        </div>
         {table.getRowCount() > 0 && (
           <div className="flex items-center justify-end gap-2">
             <Button

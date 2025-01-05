@@ -2,7 +2,7 @@
 
 import { errorResponse, failResponse, formatZodError, isMongooseDuplicateKeyError } from "@/lib/server.utils";
 import User from "@/models/User";
-import { Roles, UserDoc } from "@/models/User.type";
+import { ROLES, UserDoc } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
@@ -40,7 +40,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     if (!invite) return failResponse({ message: "Invite not found" });
     if (invite.inviteeEmail !== email) return failResponse({ message: "Sent email and invite email do not match" });
 
-    const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: Roles.buyer });
+    const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: ROLES.BUYER });
 
     await User.updateOne({ _id: invite.inviter._id }, { $push: { clients: user._id } });
 
