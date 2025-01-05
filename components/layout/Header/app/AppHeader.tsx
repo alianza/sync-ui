@@ -7,7 +7,7 @@ import { Session } from "next-auth";
 import { ROLES } from "@/models/User.type";
 import SignOutButton from "@/components/SignOutButton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@radix-ui/react-menu";
+import { Separator } from "@/components/ui/separator";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
