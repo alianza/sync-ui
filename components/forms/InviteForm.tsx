@@ -18,7 +18,7 @@ type Props = {
   invite: MergeType<ClientInviteDoc, UserDoc>;
 };
 
-function SignUpForm({ invite }: Props) {
+function InviteForm({ invite }: Props) {
   const [actionState, action] = useActionState(AcceptInviteAction, initialActionState);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,8 +31,8 @@ function SignUpForm({ invite }: Props) {
     setState(actionState);
 
     if (actionState.status === ResponseStatus.success) {
-      toast({ title: "Successfully signed up!", description: "You can now log in." });
-      setTimeout(() => router.push("/login"), 1000);
+      toast({ title: "Successfully accepted invite!", description: "You can now log in." });
+      setTimeout(() => router.replace("/login"), 1000);
     }
   }, [actionState, router, toast]);
 
@@ -120,4 +120,4 @@ function SignUpForm({ invite }: Props) {
   );
 }
 
-export default SignUpForm;
+export default InviteForm;

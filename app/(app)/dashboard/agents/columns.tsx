@@ -17,7 +17,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "@/hooks/use-toast";
 import { ResponseStatus } from "@/lib/types";
 import { UserDoc } from "@/models/User.type";
-import { deleteClient } from "@/app/(app)/dashboard/clients/actions";
+import { deleteAgent } from "@/app/(app)/dashboard/agents/actions";
 
 export const columns: ColumnDef<UserDoc>[] = [
   {
@@ -62,10 +62,10 @@ export const columns: ColumnDef<UserDoc>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const client = row.original;
+      const agent = row.original;
 
       return (
-        <DropdownMenu key={client._id}>
+        <DropdownMenu key={agent._id}>
           <DropdownMenuTrigger asChild className="float-end">
             <Button variant="ghost" className="size-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -74,20 +74,20 @@ export const columns: ColumnDef<UserDoc>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acties</DropdownMenuLabel>
-            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(client._id)}>*/}
+            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(agent._id)}>*/}
             {/*  Kopieer link*/}
             {/*</DropdownMenuItem>*/}
             <DropdownMenuSeparator />
-            <Link href={`/dashboard/clients/${client._id}`}>
+            <Link href={`/dashboard/agents/${agent._id}`}>
               <DropdownMenuItem>
                 <Eye className="mr-1 size-3" />
-                Bekijk klant
+                Bekijk makelaar
               </DropdownMenuItem>
             </Link>
             <ConfirmDialog
               className="w-full cursor-default rounded hover:bg-muted"
               onConfirm={async () => {
-                const { message, status } = await deleteClient(client._id, client.email);
+                const { message, status } = await deleteAgent(agent._id, agent.email);
                 if (message) {
                   if (status === ResponseStatus.error) {
                     toast({ title: "error", description: message, variant: "destructive" });

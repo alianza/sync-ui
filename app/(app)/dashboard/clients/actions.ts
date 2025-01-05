@@ -19,6 +19,9 @@ export async function deleteClient(id: string, email: string) {
 
     if (!session) return errorResponse("You must be logged in to delete a client");
     const user = await User.findByIdAndUpdate(session.user.id, { $pull: { clients: id } });
+
+    if (!user) return errorResponse(`Client with email: ${email} not found`);
+
     // revalidatePath(`/dashboard/clients/${id}`);
     revalidatePath(`/dashboard/clients`);
     return successResponse({

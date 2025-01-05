@@ -3,7 +3,7 @@ import { ClientInviteForm } from "@/components/forms/ClientInviteForm";
 import { authGuard } from "@/lib/server.utils";
 
 export default async function NewClientPage() {
-  await authGuard();
+  await authGuard({ realtorOnly: true });
 
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">

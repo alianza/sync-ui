@@ -2,10 +2,10 @@ import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import { UserDoc } from "@/models/User.type";
 import { isValidObjectId } from "mongoose";
-import { authGuard } from "@/lib/server.utils";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function ClientsPage(props: { params: Promise<{ id: string }> }) {
-  await authGuard();
+  await authGuard({ realtorOnly: true });
 
   const { id } = await props.params;
 
@@ -23,7 +23,7 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
   }
 
   await dbConnect();
-  const client = (await User.findById(id))?.toObject({ flattenObjectIds: true }) as UserDoc;
+  const client = serializeDoc(await User.findById(id)) as UserDoc;
 
   if (!client) {
     return (
@@ -48,9 +48,6 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
           {client.email}
         </p>
       </div>
-      {/*<div className="mx-auto mt-12">*/}
-      {/*  <ListingCard key={client._id} listing={client} redirectAfterDelete="/dashboard/listings" />*/}
-      {/*</div>*/}
     </section>
   );
 }

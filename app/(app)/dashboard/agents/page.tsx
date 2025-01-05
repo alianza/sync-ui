@@ -3,9 +3,7 @@ import AgentsTable from "@/app/(app)/dashboard/agents/agentsTable";
 import Loader from "@/components/layout/Loader";
 import { authGuard } from "@/lib/server.utils";
 
-export const revalidate = 60;
-
-export default async function ClientsPage() {
+export default async function AgentsPage() {
   await authGuard({ buyerOnly: true });
 
   return (
