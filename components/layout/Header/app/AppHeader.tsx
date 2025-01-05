@@ -1,11 +1,11 @@
 import NavLink from "@/components/NavLink";
 import { HeaderLogo } from "@/components/layout/Header/HeaderLogo";
-import { DynamicAppHeaderLinks } from "@/components/layout/Header/app/DynamicAppHeaderLinks";
 import { MobileNav } from "@/components/layout/Header/MobileNav";
 import { Home, ScrollText, Users } from "lucide-react";
 import { Suspense } from "react";
 import { Session } from "next-auth";
 import { ROLES } from "@/models/User.type";
+import SignOutButton from "@/components/SignOutButton";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
@@ -45,7 +45,7 @@ function AppNavItems({ role }: { role: ROLES }) {
         .map(({ href, label, exact }, index) => (
           <NavLink key={index} href={href} label={label} exact={exact} />
         ))}
-      <DynamicAppHeaderLinks />
+      <SignOutButton />
     </>
   );
 }
