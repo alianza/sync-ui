@@ -19,7 +19,7 @@ interface Props {
   hideSuffixOnHover?: boolean;
 }
 
-export function FormInput({
+export function Input({
   id,
   name,
   type = "text",
@@ -71,9 +71,9 @@ function InputSuffixWrap({
     <div className="group relative">
       {children}
       <div
-        className={`absolute inset-y-0 right-0 flex items-center pr-2.5 text-sm ${
-          hideSuffixOnHover ? "pointer-events-none group-hover:opacity-0" : ""
-        }`}
+        className={cn("absolute inset-y-0 right-0 flex items-center pr-2.5 text-sm", {
+          "pointer-events-none group-hover/label:hidden group-hover:hidden": hideSuffixOnHover,
+        })}
       >
         {suffix}
       </div>
@@ -94,7 +94,7 @@ function LabelWrap({
 }) {
   if (!label) return children;
   return (
-    <Label htmlFor={htmlFor} className="flex flex-col gap-1 text-sm font-medium text-foreground">
+    <Label htmlFor={htmlFor} className="group/label flex flex-col gap-1 text-sm font-medium text-foreground">
       <span>
         {label}
         {required && <span className="text-muted-foreground">*</span>}

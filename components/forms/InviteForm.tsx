@@ -3,7 +3,7 @@
 import React, { useActionState, useEffect, useState } from "react";
 import { SubmitButton } from "@/components/SubmitButton";
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import Link from "next/link";
 import { handleAction } from "@/lib/client.utils";
@@ -51,7 +51,7 @@ function InviteForm({ invite }: Props) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
-        <FormInput
+        <Input
           label="First Name"
           id="firstName"
           name="firstName"
@@ -62,7 +62,7 @@ function InviteForm({ invite }: Props) {
           autoCorrect="off"
           required
         />
-        <FormInput
+        <Input
           label="Last Name"
           id="lastName"
           name="lastName"
@@ -73,7 +73,7 @@ function InviteForm({ invite }: Props) {
           autoCorrect="off"
           required
         />
-        <FormInput
+        <Input
           label="Email"
           id="email"
           name="email"

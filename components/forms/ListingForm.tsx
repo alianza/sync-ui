@@ -8,7 +8,7 @@ import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { handleAction } from "@/lib/client.utils";
 import { FieldSet } from "@/components/forms/input/FieldSet";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { cn } from "@/lib/utils";
 import FormSelect from "@/components/forms/input/FormSelect";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -46,7 +46,7 @@ export function ListingForm({ listing }: Props) {
       <form onSubmit={handleSubmit} ref={formRef}>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <FormInput
+            <Input
               id="title"
               label="Titel"
               placeholder="Voer de titel in"
@@ -55,7 +55,7 @@ export function ListingForm({ listing }: Props) {
             />
 
             <FieldSet label="Adres">
-              <FormInput
+              <Input
                 id="streetName"
                 label="Straatnaam"
                 placeholder="Voer de straatnaam in"
@@ -64,7 +64,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="streetNumber"
                 label="Huisnummer"
                 placeholder="Voer het huisnummer in"
@@ -72,7 +72,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="postalCode"
                 label="Postcode"
                 placeholder="Voer de postcode in"
@@ -81,7 +81,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="city"
                 label="Stad"
                 placeholder="Voer de stad in"
@@ -89,7 +89,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="district"
                 label="Stadsdeel"
                 placeholder="Voer de Stadsdeel in"
@@ -98,7 +98,7 @@ export function ListingForm({ listing }: Props) {
               />
             </FieldSet>
 
-            <FormInput
+            <Input
               id="description"
               label="Beschrijving"
               placeholder="Voer de beschrijving in"
@@ -107,7 +107,7 @@ export function ListingForm({ listing }: Props) {
             />
 
             <FieldSet label="Details">
-              <FormInput
+              <Input
                 id="askingPrice"
                 label="Vraagprijs"
                 placeholder="Voer de vraagprijs in"
@@ -118,7 +118,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="€"
               />
 
-              <FormInput
+              <Input
                 id="yearBuilt"
                 label="Bouwjaar"
                 placeholder="Voer het bouwjaar in"
@@ -140,7 +140,7 @@ export function ListingForm({ listing }: Props) {
               required
             />
 
-            <FormInput
+            <Input
               id="roofType"
               label="Soort dak"
               placeholder="Voer het soort dak in"
@@ -149,7 +149,7 @@ export function ListingForm({ listing }: Props) {
             />
 
             <FieldSet label="Afmetingen">
-              <FormInput
+              <Input
                 id="measurements.squareMetersTotal"
                 label="Vierkante meters"
                 placeholder="Voer het oppervlakte in"
@@ -164,7 +164,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="m²"
               />
 
-              <FormInput
+              <Input
                 id="measurements.squareMetersLiving"
                 label="Vierkante meters woonruimte"
                 placeholder="Voer het oppervlakte in"
@@ -179,7 +179,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="m²"
               />
 
-              <FormInput
+              <Input
                 id="measurements.squareMetersOther"
                 label="Vierkante meters andere ruimte"
                 placeholder="Voer het oppervlakte in"
@@ -194,7 +194,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="m²"
               />
 
-              <FormInput
+              <Input
                 id="measurements.squareMetersOutdoor"
                 label="Vierkante meters buitenruimte"
                 placeholder="Voer het oppervlakte in"
@@ -209,7 +209,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="m²"
               />
 
-              <FormInput
+              <Input
                 id="measurements.squareMetersProperty"
                 label="Vierkante meters eigendom"
                 placeholder="Voer het oppervlakte in"
@@ -224,7 +224,7 @@ export function ListingForm({ listing }: Props) {
                 suffix="m²"
               />
 
-              <FormInput
+              <Input
                 id="measurements.cubicMetersVolume"
                 label="Kubieke meters volume"
                 placeholder="Voer het volume in"
@@ -241,7 +241,7 @@ export function ListingForm({ listing }: Props) {
             </FieldSet>
 
             <FieldSet label="Kamers">
-              <FormInput
+              <Input
                 id="rooms.roomCount"
                 label="Aantal kamers"
                 placeholder="Voer het aantal kamers in"
@@ -251,7 +251,7 @@ export function ListingForm({ listing }: Props) {
                 min={0}
               />
 
-              <FormInput
+              <Input
                 id="rooms.bedRoomCount"
                 label="Aantal slaapkamers"
                 placeholder="Voer het aantal slaapkamers in"
@@ -260,7 +260,7 @@ export function ListingForm({ listing }: Props) {
                 type="number"
                 min={0}
               />
-              <FormInput
+              <Input
                 id="rooms.bathroomCount"
                 label="Aantal badkamers"
                 placeholder="Voer het aantal badkamers in"
@@ -269,7 +269,7 @@ export function ListingForm({ listing }: Props) {
                 type="number"
                 min={0}
               />
-              <FormInput
+              <Input
                 id="rooms.toiletCount"
                 label="Aantal toiletten"
                 placeholder="Voer het aantal toiletten in"
@@ -280,7 +280,7 @@ export function ListingForm({ listing }: Props) {
               />
             </FieldSet>
 
-            <FormInput
+            <Input
               id="stories"
               label="Aantal verdiepingen"
               placeholder="Voer het aantal verdiepingen in"
@@ -333,7 +333,7 @@ export function ListingForm({ listing }: Props) {
                 }
               />
 
-              <FormInput
+              <Input
                 id="energy.heating"
                 label="Verwarming"
                 placeholder="Voer de verwarming in"
@@ -341,7 +341,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="energy.waterHeating"
                 label="Waterverwarming"
                 placeholder="Voer de waterverwarming in"
@@ -349,7 +349,7 @@ export function ListingForm({ listing }: Props) {
                 required
               />
 
-              <FormInput
+              <Input
                 id="energy.CV"
                 label="CV"
                 placeholder="Voer de CV in"
@@ -358,7 +358,7 @@ export function ListingForm({ listing }: Props) {
               />
             </FieldSet>
 
-            <FormInput
+            <Input
               id="ownership"
               label="Eigendomstype"
               placeholder="Voer het eigendomstype in"

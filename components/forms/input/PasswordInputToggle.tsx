@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 
 export function PasswordInputToggle({
   id,
@@ -23,7 +23,7 @@ export function PasswordInputToggle({
   const Icon = showPassword ? EyeOffIcon : EyeIcon;
 
   return (
-    <FormInput
+    <Input
       id={id}
       label={label}
       name={id || name}

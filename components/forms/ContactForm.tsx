@@ -5,7 +5,7 @@ import { createContact } from "@/app/(home)/contact/actions";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { cn } from "@/lib/utils";
 
 export function ContactForm() {
@@ -20,16 +20,9 @@ export function ContactForm() {
       <form action={action}>
         <CardContent>
           <div className="flex flex-col gap-4">
-            <FormInput id="name" label="Name" placeholder={"Enter your name"} required />
-            <FormInput
-              label="Email"
-              id="email"
-              placeholder="Enter your email"
-              type="email"
-              autoComplete="email"
-              required
-            />
-            <FormInput id="message" label="Message" type="multiline" placeholder="Enter your message" required />
+            <Input id="name" label="Name" placeholder="Enter your name" required />
+            <Input label="Email" id="email" placeholder="Enter your email" type="email" autoComplete="email" required />
+            <Input id="message" label="Message" type="multiline" placeholder="Enter your message" required />
           </div>
         </CardContent>
         <CardFooter className="flex justify-between gap-4">

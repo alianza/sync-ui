@@ -4,7 +4,7 @@ import React, { useActionState, useEffect, useState } from "react";
 import { SubmitButton } from "@/components/SubmitButton";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { SignUpAction } from "@/app/(home)/signup/actions";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import Link from "next/link";
 import { handleAction } from "@/lib/client.utils";
@@ -44,7 +44,7 @@ function SignUpForm() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
-        <FormInput
+        <Input
           label="First Name"
           id="firstName"
           name="firstName"
@@ -55,7 +55,7 @@ function SignUpForm() {
           autoCorrect="off"
           required
         />
-        <FormInput
+        <Input
           label="Last Name"
           id="lastName"
           name="lastName"
@@ -66,7 +66,7 @@ function SignUpForm() {
           autoCorrect="off"
           required
         />
-        <FormInput
+        <Input
           label="Email"
           id="email"
           name="email"

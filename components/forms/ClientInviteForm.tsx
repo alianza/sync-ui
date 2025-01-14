@@ -4,7 +4,7 @@ import React, { useActionState } from "react";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { createClientInvite } from "@/app/(app)/dashboard/clients/new/actions";
 import { handleAction } from "@/lib/client.utils";
 import {
@@ -42,7 +42,7 @@ export function ClientInviteForm() {
         <form onSubmit={handleSubmit} onChange={() => {}}>
           <CardContent>
             <div className="flex flex-col gap-4">
-              <FormInput
+              <Input
                 label="Email"
                 id="inviteeEmail"
                 placeholder="Enter the client's email"
@@ -50,7 +50,7 @@ export function ClientInviteForm() {
                 autoComplete="email"
                 required
               />
-              <FormInput id="message" label="Message" type="multiline" placeholder="Enter your message" required />
+              <Input id="message" label="Message" type="multiline" placeholder="Enter your message" required />
             </div>
           </CardContent>
           <CardFooter className="flex justify-between gap-4">

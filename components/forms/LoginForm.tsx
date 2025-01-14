@@ -4,7 +4,7 @@ import { initialActionState, ResponseStatus } from "@/lib/types";
 import React, { useActionState } from "react";
 import { signInAction } from "@/app/(home)/login/actions";
 import { SubmitButton } from "@/components/SubmitButton";
-import { FormInput } from "@/components/forms/input/FormInput";
+import { Input } from "@/components/forms/input/Input";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import { handleAction } from "@/lib/client.utils";
 import { redirect } from "next/navigation";
@@ -21,7 +21,7 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
-        <FormInput
+        <Input
           label="Email"
           id="email"
           name="email"
