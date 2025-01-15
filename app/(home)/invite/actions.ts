@@ -79,8 +79,6 @@ export async function RejectInviteAction({ inviteeEmail, inviteID }: { inviteeEm
       { $set: { status: STATUS_ENUM.REJECTED } },
     );
 
-    console.log(`invite`, invite);
-
     if (!invite) return failResponse({ message: "Uitnodiging niet gevonden" });
 
     return successResponse({ message: "Uitnodiging succesvol afgewezen" });

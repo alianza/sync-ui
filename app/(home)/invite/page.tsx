@@ -14,7 +14,7 @@ export default async function Invite({ searchParams }: Props) {
   const { id } = await searchParams;
 
   const Layout = ({ title, description }: { title: string; description: string }) => (
-    <section className="container mx-auto flex min-h-screen w-full items-center justify-center px-4">
+    <section className="container mx-auto flex h-full w-full items-center justify-center px-4 py-12 md:px-6 md:py-24 lg:py-32">
       <Card>
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">{title}</CardTitle>
