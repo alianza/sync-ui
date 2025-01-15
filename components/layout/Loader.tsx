@@ -1,12 +1,17 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-type Props = { className?: string };
+type Props = { className?: string; fillSpace?: boolean };
 
-export default function Loader({ className }: Props): React.ReactElement {
+export default function Loader({ className, fillSpace }: Props): React.ReactElement {
   return (
-    <div className={cn("flex h-96 items-center justify-center", className)}>
-      <div className="h-12 w-12 animate-spin rounded-full border-2 border-l-primary" />
+    <div className={cn("flex items-center justify-center", className, fillSpace ? "aspect-square size-full" : "h-96")}>
+      <div
+        className={cn(
+          "animate-spin rounded-full border-4 border-l-primary border-r-primary border-t-primary",
+          fillSpace ? "size-full" : "size-12",
+        )}
+      />
     </div>
   );
 }
