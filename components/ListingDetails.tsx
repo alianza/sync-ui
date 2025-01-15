@@ -13,7 +13,7 @@ import {
   PencilIcon,
   SquareM,
   ThermometerSunIcon,
-  ToiletIcon,
+  Toilet,
   UserIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -99,7 +99,7 @@ export default function ListingDetails({ listing, isOwner = false }: { listing: 
                 <IconField Icon={MaximizeIcon} value={`${listing.rooms.roomCount} kamers`} />
                 <IconField Icon={BedIcon} value={`${listing.rooms.bedRoomCount} slaapkamers`} />
                 <IconField Icon={BathIcon} value={`${listing.rooms.bathroomCount} badkamers`} />
-                <IconField Icon={ToiletIcon} value={`${listing.rooms.toiletCount} toiletten`} />
+                <IconField Icon={Toilet} value={`${listing.rooms.toiletCount} toiletten`} />
                 <div>{listing.stories} verdiepingen</div>
               </div>
             </CardContent>
