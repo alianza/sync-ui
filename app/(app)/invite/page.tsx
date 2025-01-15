@@ -5,21 +5,30 @@ import ClientInvite from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import { UserDoc } from "@/models/User.type";
 import { serializeDoc } from "@/lib/server.utils";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 
 type Props = { searchParams: Promise<{ id: string }> };
 
 export default async function Invite({ searchParams }: Props) {
   const { id } = await searchParams;
 
+  const Layout = ({ title, description }: { title: string; description: string }) => (
+    <section className="container mx-auto flex min-h-screen w-full items-center justify-center px-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">{title}</CardTitle>
+          <CardDescription className="flex flex-col gap-4 text-center">{description}</CardDescription>
+        </CardHeader>
+      </Card>
+    </section>
+  );
+
   if (!isValidObjectId(id)) {
-    return (
-      <section className="flex w-full flex-col items-center py-12 md:py-24 lg:py-32 xl:py-48">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Invalid invite link</h1>
-        <span className="text-lg text-neutral-500 dark:text-neutral-400">
-          The invite link you are trying to access is invalid.
-        </span>
-      </section>
-    );
+    return Layout({
+      title: "Invalid invite link",
+      description: "The invite link you are trying to access is invalid.",
+    });
   }
 
   await dbConnect();
@@ -30,25 +39,17 @@ export default async function Invite({ searchParams }: Props) {
   >;
 
   if (!invite) {
-    return (
-      <section className="flex w-full flex-col items-center py-12 md:py-24 lg:py-32 xl:py-48">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Invite not found</h1>
-        <span className="text-lg text-neutral-500 dark:text-neutral-400">
-          The invite you are trying to access does not exist.
-        </span>
-      </section>
-    );
+    return Layout({
+      title: "Invite not found",
+      description: "The invite you are trying to access does not exist.",
+    });
   }
 
   if (invite.status !== "pending") {
-    return (
-      <section className="flex w-full flex-col items-center py-12 md:py-24 lg:py-32 xl:py-48">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Invite already accepted</h1>
-        <span className="text-lg text-neutral-500 dark:text-neutral-400">
-          The invite you are trying to access has already been accepted or has expired.
-        </span>
-      </section>
-    );
+    return Layout({
+      title: "Invite already accepted",
+      description: "The invite you are trying to access has already been accepted or has expired.",
+    });
   }
 
   return <InvitePage invite={invite} />;
