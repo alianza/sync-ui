@@ -24,14 +24,14 @@ function SignUpForm() {
     setState(actionState);
 
     if (actionState.status === ResponseStatus.success) {
-      toast({ title: "Successfully signed up!", description: "You can now log in." });
+      toast({ title: "Succesvol geregistreerd!", description: "Je kan nu inloggen." });
       setTimeout(() => router.push("/login"), 1000);
     }
   }, [actionState, router, toast]);
 
   useEffect(() => {
     if (password && confirmPassword && password !== confirmPassword) {
-      setState({ status: ResponseStatus.fail, message: "Passwords do not match" });
+      setState({ status: ResponseStatus.fail, message: "Wahtwoorden komen niet overeen" });
       setDisabled(true);
     } else {
       setState(initialActionState);
@@ -45,7 +45,7 @@ function SignUpForm() {
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4">
         <Input
-          label="First Name"
+          label="Voornaam"
           id="firstName"
           name="firstName"
           placeholder="John"
@@ -56,7 +56,7 @@ function SignUpForm() {
           required
         />
         <Input
-          label="Last Name"
+          label="Achternaam"
           id="lastName"
           name="lastName"
           placeholder="Doe"
@@ -78,33 +78,35 @@ function SignUpForm() {
           required
         />
         <PasswordInputToggle
+          label="Wachtwoord"
           id="password"
-          label="Password"
           minLength={8}
           required
           onChange={(e) => setPassword(e.target.value)}
         />
         <PasswordInputToggle
+          label="Bevestig wachtwoord"
           id="confirmPassword"
-          label="Confirm Password"
           minLength={8}
           required
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <SubmitButton label="Sign up" loadingLabel="Registering..." disabled={disabled} />
+
         {state.status !== ResponseStatus.pending && (
           <div className="flex">
             <p className="text-sm text-muted-foreground">{state.message}</p>
             {state.status === ResponseStatus.success && (
               <>
                 &nbsp;
-                <Link className="underline-hover text-sm" href={"/login"}>
-                  Login here.
+                <Link className="underline-hover text-sm" href="/login">
+                  Log hier in.
                 </Link>
               </>
             )}
           </div>
         )}
+
+        <SubmitButton label="Registreer" loadingLabel="Registreren..." disabled={disabled} />
       </div>
     </form>
   );
