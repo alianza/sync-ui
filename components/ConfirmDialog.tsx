@@ -12,6 +12,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { ConditionalWrap } from "@/lib/client.utils";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 type Props = {
   title?: string;
@@ -38,6 +40,8 @@ function ConfirmDialog({
   asChild,
   children,
 }: Props) {
+  if (!description) description = title; // If description is not provided, use title as description (for screen readers)
+
   return (
     <AlertDialog>
       <AlertDialogTrigger className={className} asChild={asChild}>
@@ -46,7 +50,12 @@ function ConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+          <ConditionalWrap
+            condition={description === title}
+            wrap={(children) => <VisuallyHidden>{children}</VisuallyHidden>}
+          >
+            <AlertDialogDescription>{description}</AlertDialogDescription>
+          </ConditionalWrap>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
