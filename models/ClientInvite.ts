@@ -45,9 +45,4 @@ const ClientInviteSchema = new mongoose.Schema<ClientInviteDoc>(
   { timestamps: true },
 );
 
-// methods
-ClientInviteSchema.methods.findInvite = function (email: string, inviter: mongoose.Types.ObjectId) {
-  return this.findOne({ inviteeEmail: email, inviter });
-};
-
 export default mongoose.models?.ClientInvite || mongoose.model<ClientInviteDoc>("ClientInvite", ClientInviteSchema);
