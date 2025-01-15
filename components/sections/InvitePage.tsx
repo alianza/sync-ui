@@ -12,7 +12,7 @@ type Props = {
 
 export async function InvitePage({ invite }: Props) {
   return (
-    <section className="container mx-auto flex min-h-screen items-center justify-center p-4">
+    <section className="container mx-auto flex items-center justify-center p-4 py-4 md:py-8 lg:py-16">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold">

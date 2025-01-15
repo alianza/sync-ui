@@ -10,7 +10,7 @@ import { handleAction } from "@/lib/client.utils";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import { UserDoc } from "@/models/User.type";
 import { MergeType } from "mongoose";
-import { AcceptInviteAction, RejectInviteAction } from "@/app/(app)/invite/actions";
+import { AcceptInviteAction, RejectInviteAction } from "@/app/(home)/invite/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
