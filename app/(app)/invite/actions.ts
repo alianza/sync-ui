@@ -76,8 +76,7 @@ export async function RejectInviteAction({ inviteeEmail, inviteID }: { inviteeEm
 
     const invite = await ClientInvite.findOneAndUpdate<ClientInviteDoc>(
       { _id: inviteId, status: STATUS_ENUM.PENDING, inviteeEmail: email },
-      // { $set: { status: STATUS_ENUM.REJECTED } },
-      {},
+      { $set: { status: STATUS_ENUM.REJECTED } },
     );
 
     console.log(`invite`, invite);

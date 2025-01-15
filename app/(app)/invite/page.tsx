@@ -45,10 +45,17 @@ export default async function Invite({ searchParams }: Props) {
     });
   }
 
-  if (invite.status !== "pending") {
+  if (invite.status === "accepted") {
     return Layout({
       title: "Invite already accepted",
       description: "The invite you are trying to access has already been accepted or has expired.",
+    });
+  }
+
+  if (invite.status === "rejected") {
+    return Layout({
+      title: "Invite has been rejected",
+      description: "The invite you are trying to access has been rejected.",
     });
   }
 
