@@ -4,6 +4,7 @@ import { MergeType } from "mongoose";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import InviteForm from "@/components/forms/InviteForm";
 import React from "react";
+import { LockIcon } from "lucide-react";
 
 type Props = {
   invite: MergeType<ClientInviteDoc, UserDoc>;
@@ -11,22 +12,28 @@ type Props = {
 
 export async function InvitePage({ invite }: Props) {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-      <Card className="mx-auto w-full max-w-md">
+    <section className="container mx-auto flex min-h-screen items-center justify-center p-4">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Accept invite</CardTitle>
-          <CardDescription className="flex flex-col gap-4 text-center">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold">
+            <span>Accept invite</span>
+            <LockIcon />
+          </CardTitle>
+          <CardDescription className="flex flex-col gap-4 whitespace-pre-line text-center">
             {invite.inviter?.firstName} {invite.inviter?.lastName} has invited you to join HuizenHub. {"\n"}
-            Enter your details below to create your account and accept the invite
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-center text-lg font-bold">Message</CardTitle>
-                <CardDescription className="text-center">{invite.message}</CardDescription>
-              </CardHeader>
-            </Card>
+            Enter your details below to create your account and accept the invite.
+            <span className="text-xs">Your information is secure and will not be shared.</span>
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-start text-lg font-bold">Message</CardTitle>
+              <CardDescription>
+                <p className="whitespace-pre-line text-start">{invite.message}</p>
+              </CardDescription>
+            </CardHeader>
+          </Card>
           <InviteForm invite={invite} />
         </CardContent>
       </Card>
