@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -26,8 +26,13 @@ export function ClientInviteForm() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
   const { toast } = useToast();
 
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const inviteLink = `${baseUrl}/invite?id=${state.data?._id}`;
+  const [inviteLink, setInviteLink] = React.useState("");
+
+  useEffect(() => {
+    if (state.status !== ResponseStatus.success) return;
+    const baseUrl = `${window.location.protocol}//${window.location.host}`;
+    setInviteLink(`${baseUrl}/invite?id=${state.data?._id}`);
+  }, [state]);
 
   return (
     <>
@@ -39,22 +44,29 @@ export function ClientInviteForm() {
             you.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit} onChange={() => {}}>
+        <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="flex flex-col gap-4">
               <Input
                 label="Email"
                 id="inviteeEmail"
-                placeholder="Enter the client's email"
+                placeholder="Voer het e-mailadres van de klant in"
                 type="email"
                 autoComplete="email"
                 required
               />
-              <Input id="message" label="Message" type="multiline" placeholder="Enter your message" required />
+              <Input
+                label="Bericht"
+                id="message"
+                type="multiline"
+                placeholder="Voeg een persoonlijk bericht toe"
+                className="min-h-32"
+                required
+              />
             </div>
           </CardContent>
           <CardFooter className="flex justify-between gap-4">
-            <SubmitButton label="Invite" loadingLabel="Inviting..." />
+            <SubmitButton label="Nodig uit" loadingLabel="Uitnodigen..." />
             {state?.message && (
               <p
                 className={cn("text-sm", state.status !== ResponseStatus.success ? "text-red-800" : "text-neutral-700")}
@@ -69,10 +81,12 @@ export function ClientInviteForm() {
         <AlertDialog defaultOpen key={state.message}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Successfully created client invite for: {state.data.inviteeEmail}</AlertDialogTitle>
+              <AlertDialogTitle>
+                Succesvol een uitnodiging aangemaakt voor: <span className="font-bold">{state.data.inviteeEmail}</span>
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Send them this link to sign up:{" "}
-                <a className="underline-hover" href={inviteLink}>
+                Stuur ze deze link om in te registreren:{" "}
+                <a className="underline-hover" href={inviteLink} target="_blank" rel="noopener noreferrer">
                   {inviteLink}
                 </a>
               </AlertDialogDescription>
@@ -81,14 +95,14 @@ export function ClientInviteForm() {
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(inviteLink);
-                  toast({ title: "Link copied to clipboard" });
+                  toast({ title: "Link gekopieerd" });
                 }}
                 variant="secondary"
               >
                 <Copy />
-                Copy link
+                Kopieer link
               </Button>
-              <AlertDialogAction>Got it!</AlertDialogAction>
+              <AlertDialogAction>Sluiten</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
