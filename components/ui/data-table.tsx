@@ -24,6 +24,7 @@ interface DataTableProps<TData, TValue> {
   filterColumn?: string;
   filterPlaceholder?: string;
   emptyComponent?: React.ReactNode;
+  infoLabel?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
   filterColumn,
   filterPlaceholder,
   emptyComponent,
+  infoLabel,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -46,10 +48,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
+    state: { sorting, columnFilters },
   });
 
   useEffect(() => {
@@ -58,14 +57,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-2">
-      {filterColumn && (
-        <Input
-          placeholder={filterPlaceholder || `Filter ${filterColumn}`}
-          value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-      )}
+      <div className="flex flex-wrap-reverse items-center justify-between gap-2">
+        {filterColumn && (
+          <Input
+            placeholder={filterPlaceholder || `Filter ${filterColumn}`}
+            value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
+            className="max-w-sm"
+          />
+        )}
+        {infoLabel && <span className="text-xs text-gray-500">{infoLabel}</span>}
+      </div>
 
       <div className="rounded-md border">
         <Table>
