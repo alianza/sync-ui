@@ -10,22 +10,28 @@ import User from "@/models/User";
 import { MergeType } from "mongoose";
 import { UserDoc } from "@/models/User.type";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { authGuard } from "@/lib/server.utils";
+import { authGuard, serializeDoc } from "@/lib/server.utils";
+import ClientInvite from "@/models/ClientInvite";
+import { enOrNoEn } from "@/lib/common.utils";
 
 export default async function ClientsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const dbUser = (await User.findById(session.user?.id).populate("clients"))?.toObject({
-    flattenObjectIds: true,
-  }) as MergeType<UserDoc, { clients: UserDoc[] }>;
+  const dbUser = serializeDoc(await User.findById(session.user?.id).populate("clients")) as MergeType<
+    UserDoc,
+    { clients: UserDoc[] }
+  >;
+
+  const pendingInvites = await ClientInvite.countDocuments({ inviter: session.user?.id, status: "pending" });
 
   if (!dbUser) redirect("/login");
 
   const newClientButton = (
     <Link href="/dashboard/clients/new">
       <Button>
-        <PlusIcon /> Nodig nieuwe klant uit
+        <PlusIcon />
+        Nodig nieuwe klant uit
       </Button>
     </Link>
   );
@@ -33,6 +39,11 @@ export default async function ClientsTable() {
   return (
     <div className="flex flex-col gap-2">
       <DataTable
+        infoLabel={
+          pendingInvites > 0
+            ? `Je hebt ${pendingInvites} uitnodiging${enOrNoEn(pendingInvites)} in afwachting`
+            : "Je hebt geen uitnodigingen in afwachting"
+        }
         columns={columns}
         data={dbUser.clients}
         filterColumn="email"
