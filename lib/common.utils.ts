@@ -26,6 +26,13 @@ export const includesIgnoreCase = (string: string = "", substring: string = ""):
 export const sOrNoS = (amount: number): string => (amount > 1 || amount === 0 ? "s" : "");
 
 /**
+ * Whether to add an 'en' to a word depending on the value of a number representing an amount
+ * @param amount {number} - The quantity of something
+ * @returns {string} - and 'en' or an empty string
+ */
+export const enOrNoEn = (amount: number): string => (amount > 1 || amount === 0 ? "en" : "");
+
+/**
  * Compare two objects to see if they are equal (shallow)
  * @param object1 {object} - The first object to compare
  * @param object2 {object} - The second object to compare
