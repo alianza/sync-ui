@@ -46,7 +46,11 @@ export const columns: ColumnDef<ListingDoc>[] = [
         <Button
           className="float-end text-[length:inherit]"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() =>
+            column.getIsSorted() === "desc"
+              ? column.clearSorting()
+              : column.toggleSorting(column.getIsSorted() === "asc")
+          }
         >
           Prijs
           <SortedIcon className="ml-2 size-4" />
