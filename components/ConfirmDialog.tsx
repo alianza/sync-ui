@@ -23,6 +23,7 @@ type Props = {
   onCancel?: () => void;
   className?: string;
   customAction?: React.ReactNode;
+  asChild?: boolean;
 };
 
 function ConfirmDialog({
@@ -34,11 +35,14 @@ function ConfirmDialog({
   onConfirm = () => {},
   onCancel = () => {},
   customAction,
+  asChild,
   children,
 }: Props) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className={className}>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger className={className} asChild={asChild}>
+        {children}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
