@@ -39,8 +39,6 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
       return failResponse({ message: formatZodError(error) });
     }
 
-    console.log(error);
-
     if (isMongooseDuplicateKeyError(error)) {
       return failResponse({ message: "A client invite with this email already exists" });
     }
