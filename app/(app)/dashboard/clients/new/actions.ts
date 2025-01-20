@@ -21,6 +21,10 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
     const session = await auth();
     if (!session) return errorResponse("You must be logged in to delete a client");
 
+    if (clientInviteData.inviteeEmail === session.user.email) {
+      return failResponse({ message: "Je kan jezelf niet uitnodigen" });
+    }
+
     await dbConnect();
     const clientInvite = await ClientInvite.create<ClientInviteDoc>({
       ...clientInviteData,
