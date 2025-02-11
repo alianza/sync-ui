@@ -61,9 +61,9 @@ export function MultiSelect({ id, label, name, placeholder, defaultValue, requir
       <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
         <div
           className={cn(
-            "group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring",
+            "group border-input ring-offset-background focus-within:ring-ring rounded-md border px-3 py-2 text-sm focus-within:ring-1",
             {
-              "hover:ring-primary-500 hover:ring-1 hover:ring-accent": !open,
+              "hover:ring-primary-500 hover:ring-accent hover:ring-1": !open,
             },
           )}
         >
@@ -72,7 +72,7 @@ export function MultiSelect({ id, label, name, placeholder, defaultValue, requir
               <Badge key={item.key} variant="secondary">
                 {item.key}
                 <button
-                  className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  className="ring-offset-background focus:ring-ring ml-1 rounded-full outline-hidden focus:ring-2 focus:ring-offset-2"
                   onKeyDown={(e) => e.key === "Enter" && handleUnselect(item)}
                   onMouseDown={(e) => {
                     e.preventDefault();
@@ -80,7 +80,7 @@ export function MultiSelect({ id, label, name, placeholder, defaultValue, requir
                   }}
                   onClick={() => handleUnselect(item)}
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  <X className="text-muted-foreground hover:text-foreground h-3 w-3" />
                 </button>
               </Badge>
             ))}
@@ -93,7 +93,7 @@ export function MultiSelect({ id, label, name, placeholder, defaultValue, requir
               onBlur={() => setOpen(false)}
               onFocus={() => setOpen(true)}
               placeholder={selected.length === 0 ? placeholder : `${selected.length} geselecteerd`}
-              className={cn("flex-1 bg-transparent outline-none placeholder:text-muted-foreground", {
+              className={cn("placeholder:text-muted-foreground flex-1 bg-transparent outline-hidden", {
                 "ml-2": selected.length > 0,
               })}
               required={required}
@@ -104,7 +104,7 @@ export function MultiSelect({ id, label, name, placeholder, defaultValue, requir
         <div className="relative">
           <CommandList>
             {open && selectables.length > 0 && (
-              <div className="absolute top-2 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+              <div className="bg-popover text-popover-foreground animate-in absolute top-2 z-10 w-full rounded-md border shadow-md outline-hidden">
                 <CommandGroup className="h-full overflow-auto">
                   {selectables.map((item) => (
                     <CommandItem

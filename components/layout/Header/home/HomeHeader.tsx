@@ -13,7 +13,7 @@ export const homeMenuItems = [
 
 export function HomeHeader() {
   return (
-    <header className="flex shrink flex-wrap items-center gap-8 bg-background p-4 shadow dark:border-b-2">
+    <header className="bg-background flex shrink flex-wrap items-center gap-8 p-4 shadow-sm dark:border-b-2">
       <HeaderLogo />
       <nav className="ml-auto hidden max-w-full flex-wrap gap-2 md:flex">
         <HomeNavItems />
