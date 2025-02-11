@@ -2,54 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  #nprogress .bar {
-    background: var(--foreground);
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .text-shadow-xs {
-    text-shadow: 0 0 2px var(--tw-shadow-color);
-  }
-
-  .text-shadow {
-    text-shadow: 0 0 2px var(--tw-shadow-color);
-  }
-
-  .text-shadow-xl {
-    text-shadow: 0 0 4px var(--tw-shadow-color);
-  }
-
-  .text-shadow-none {
-    text-shadow: none;
-  }
-
-  .scale-hover {
-    @apply transition-transform hover:scale-[1.02] active:scale-[.98] #{!important};
-  }
-
-  .scale-hover-xl {
-    @apply transition-transform hover:scale-110 active:scale-95 #{!important};
-  }
-
-  .underline-hover {
-    @apply underline decoration-transparent transition-colors duration-300 ease-in-out;
-
-    &:hover {
-      @apply duration-100 decoration-inherit;
-    }
-
-    @media (hover: none) {
-      @apply decoration-inherit;
-    }
-  }
-}
-
 @layer base {
   :root {
     --background: hsl(0 0% 100%);
@@ -126,11 +78,59 @@ body {
   }
 }
 
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-shadow-xs {
+    text-shadow: 0 0 2px theme(colors.primary.DEFAULT);
+  }
+
+  .text-shadow {
+    text-shadow: 0 0 2px theme(colors.primary.DEFAULT);
+  }
+
+  .text-shadow-xl {
+    text-shadow: 0 0 4px theme(colors.primary.DEFAULT);
+  }
+
+  .text-shadow-none {
+    text-shadow: none;
+  }
+
+  .scale-hover {
+    @apply transition-transform hover:scale-[1.02] active:scale-[.98] !important;
+  }
+
+  .scale-hover-xl {
+    @apply transition-transform hover:scale-110 active:scale-95 !important;
+  }
+
+  .underline-hover {
+    @apply underline decoration-transparent transition-colors duration-300 ease-in-out;
+
+    &:hover {
+      @apply duration-100 decoration-inherit;
+    }
+
+    @media (hover: none) {
+      /*@apply decoration-inherit;*/
+      text-decoration-color: inherit;
+    }
+  }
+}
+
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+
+      #nprogress .bar {
+        @apply bg-foreground;
+      }
   }
 }
