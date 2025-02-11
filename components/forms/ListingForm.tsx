@@ -34,7 +34,7 @@ export function ListingForm({ listing }: Props) {
   }, [state.status]);
 
   return (
-    <Card className="mx-auto max-w-screen-sm">
+    <Card className="mx-auto max-w-(--breakpoint-sm)">
       <CardHeader>
         <CardTitle>
           {editMode ? `Bewerk "${listing?.title || state?.data?.title}"` : "Maak een nieuwe woning aan"}

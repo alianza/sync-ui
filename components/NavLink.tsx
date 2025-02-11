@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface NavLinkProps {
   href: string;
@@ -17,7 +18,10 @@ const NavLink = ({ href, exact, label }: NavLinkProps) => {
   return (
     <Link
       href={href}
-      className={`underline-hover flex p-2 text-sm font-bold underline-offset-4 ${isActive ? "underline !decoration-inherit" : "no-underline"}`}
+      className={cn(
+        "flex p-2 text-sm font-bold underline-offset-4",
+        isActive ? "underline decoration-inherit!" : "underline-hover",
+      )}
     >
       {label}
     </Link>

@@ -36,7 +36,7 @@ export function ClientInviteForm() {
 
   return (
     <>
-      <Card className="mx-auto max-w-screen-sm">
+      <Card className="mx-auto max-w-(--breakpoint-sm)">
         <CardHeader>
           <CardTitle>Invite new client</CardTitle>
           <CardDescription>

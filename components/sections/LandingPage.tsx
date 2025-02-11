@@ -28,7 +28,7 @@ export function LandingPage() {
         </div>
       </section>
       <section className="w-full py-12 md:py-24 lg:py-32">
-        <div className="mx-auto max-w-screen-xl px-4 md:px-6">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 md:px-6">
           <h2 className="mb-12 scroll-m-8 text-center text-3xl font-bold tracking-tighter sm:text-5xl" id="features">
             Key Features
           </h2>
@@ -131,7 +131,7 @@ export function LandingPage() {
           <div className="w-full max-w-sm">
             <form className="flex items-center gap-2">
               <input
-                className="flex h-10 w-full max-w-lg flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full max-w-lg flex-1 rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Enter your email"
                 type="email"
               />

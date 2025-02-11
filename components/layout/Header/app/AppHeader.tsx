@@ -17,7 +17,7 @@ export const appMenuItems = [
 
 export function AppHeader({ session }: { session: Session }) {
   return (
-    <header className="flex items-center bg-background p-4 shadow dark:border-b-2">
+    <header className="bg-background flex items-center p-4 shadow-sm dark:border-b-2">
       <div className="flex h-full items-center gap-2">
         {/*<SidebarTrigger className="size-7" />*/}
         {/*<Separator orientation="vertical" className="grow" />*/}
