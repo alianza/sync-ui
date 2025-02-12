@@ -79,7 +79,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
-  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserDoc & { password: string };
+  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserDoc & {
+    password: string;
+    __v: number;
+  };
 
   if (!user) return null;
 
