@@ -42,7 +42,7 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
       await User.updateOne({ _id: session.user.id }, { $addToSet: { clients: user._id } });
       return successResponse({
         data: serializeDoc(user),
-        message: `Gebruiker met email: ${clientInviteData.inviteeEmail} bestaat al, toegevoegd aan je klanten`,
+        message: `Gebruiker met email: ${clientInviteData.inviteeEmail} bestaat al, deze is toegevoegd aan je klanten`,
       });
     }
 
