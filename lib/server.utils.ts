@@ -21,35 +21,47 @@ export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[]
   return doc.toObject({ flattenObjectIds: true }) as T;
 }
 
+type ResponseProps<T> = {
+  message?: string;
+  data?: T;
+  statusCode?: number; // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+};
+
 /**
  * Success response with message and data
- * @param message
- * @param data
+ * @param message default ""
+ * @param data default undefined
+ * @param statusCode default 200
  */
-export const successResponse = <T>({ message, data }: { message?: string; data?: T }): ServerResponse<T> => ({
+export const successResponse = <T>({ message, data, statusCode = 200 }: ResponseProps<T>): ServerResponse<T> => ({
   status: ResponseStatus.success,
+  statusCode,
   message,
   data,
 });
-
 /**
  * Fail response with message and data
  * @param message
  * @param data
+ * @param statusCode default 400
  */
-export const failResponse = <T>({ message, data }: { message?: string; data?: T }): ServerResponse<T> => ({
+export const failResponse = <T>({ message, data, statusCode = 400 }: ResponseProps<T>): ServerResponse<T> => ({
   status: ResponseStatus.fail,
   message,
   data,
+  statusCode,
 });
 
 /**
- * Error response with message
+ * Error response with message and data
  * @param message
+ * @param data
+ * @param statusCode default 500
  */
-export const errorResponse = <T>(message: T): ServerResponse<undefined> => ({
+export const errorResponse = <T>({ message, statusCode = 500 }: ResponseProps<T>): ServerResponse<T> => ({
   status: ResponseStatus.error,
-  message: String(message),
+  message,
+  statusCode,
 });
 
 export const isMongooseDuplicateKeyError = (error: unknown) => {
