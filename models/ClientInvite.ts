@@ -20,7 +20,6 @@ const ClientInviteSchema = new mongoose.Schema<ClientInviteDoc>(
         message: "Please provide a valid email address",
       },
       required: [true, "Please provide an email address"],
-      unique: true,
     },
     message: {
       type: String,
@@ -44,5 +43,7 @@ const ClientInviteSchema = new mongoose.Schema<ClientInviteDoc>(
   },
   { timestamps: true },
 );
+
+ClientInviteSchema.index({ inviteeEmail: 1, inviter: 1 }, { unique: true }); // Only one invite per inviter and invitee
 
 export default mongoose.models?.ClientInvite || mongoose.model<ClientInviteDoc>("ClientInvite", ClientInviteSchema);
