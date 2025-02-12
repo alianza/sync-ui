@@ -9,7 +9,6 @@ export interface UserDoc {
   clients?: string[];
   createdAt: Date;
   updatedAt: Date;
-  __v?: number;
 }
 
 export enum ROLES {
