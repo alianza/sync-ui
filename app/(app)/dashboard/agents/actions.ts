@@ -14,13 +14,13 @@ export async function deleteAgent(id: string, email: string) {
     try {
       await actionAuthGuard(session, { buyerOnly: true });
     } catch (error) {
-      return errorResponse("You must be logged in as a realtor to delete an agent");
+      return errorResponse({ message: "You must be logged in as a buyer to delete an agent" });
     }
 
-    if (!session) return errorResponse("You must be logged in to delete an agent");
+    if (!session) return errorResponse({ message: "You must be logged in to delete an agent" });
     const user = await User.findByIdAndUpdate(id, { $pull: { clients: session.user.id } });
 
-    if (!user) return errorResponse(`Agent with email: ${email} not found`);
+    if (!user) return errorResponse({ message: `Agent with email: ${email} not found` });
 
     // revalidatePath(`/dashboard/agents/${id}`);
     revalidatePath(`/dashboard/agents`);
@@ -30,6 +30,6 @@ export async function deleteAgent(id: string, email: string) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse(`An error occurred while deleting the agent: ${message}`);
+    return errorResponse({ message: `An error occurred while deleting the agent: ${message}` });
   }
 }

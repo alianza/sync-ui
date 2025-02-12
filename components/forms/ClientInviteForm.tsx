@@ -30,6 +30,7 @@ export function ClientInviteForm() {
 
   useEffect(() => {
     if (state.status !== ResponseStatus.success) return;
+    if (state.statusCode !== 201) return;
     const baseUrl = `${window.location.protocol}//${window.location.host}`;
     setInviteLink(`${baseUrl}/invite?id=${state.data?._id}`);
   }, [state]);
@@ -77,7 +78,7 @@ export function ClientInviteForm() {
           </CardFooter>
         </form>
       </Card>
-      {state.status === ResponseStatus.success && (
+      {state.status === ResponseStatus.success && state.statusCode === 201 && (
         <AlertDialog defaultOpen key={state.message}>
           <AlertDialogContent>
             <AlertDialogHeader>

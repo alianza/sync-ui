@@ -44,6 +44,6 @@ export async function SignUpAction(prevState: unknown, formData: FormData) {
       return failResponse({ message: "This email is already in use, please log in" });
     }
 
-    return errorResponse(error);
+    return errorResponse({ message: error?.toString() });
   }
 }

@@ -2,6 +2,7 @@
 
 import dbConnect from "@/lib/dbConnect";
 import {
+  actionAuthGuard,
   errorResponse,
   failResponse,
   formatZodError,
@@ -13,25 +14,45 @@ import { auth } from "@/auth";
 import ClientInvite, { clientInviteCreateSchema } from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import z from "zod";
+import User from "@/models/User";
+import { UserDoc } from "@/models/User.type";
+import { HydratedDocument } from "mongoose";
 
 export async function createClientInvite(prevState: unknown, formData: FormData) {
   try {
     const clientInviteData = clientInviteCreateSchema.parse(Object.fromEntries(formData));
 
     const session = await auth();
-    if (!session) return errorResponse("You must be logged in to delete a client");
+
+    try {
+      await actionAuthGuard(session, { realtorOnly: true });
+    } catch (error) {
+      return errorResponse({ message: "You must be logged in as a realtor to create a client invite" });
+    }
+    if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
 
     if (clientInviteData.inviteeEmail === session.user.email) {
       return failResponse({ message: "Je kan jezelf niet uitnodigen" });
     }
 
     await dbConnect();
-    const clientInvite = await ClientInvite.create<ClientInviteDoc>({
+
+    const user = await User.findOne<HydratedDocument<UserDoc>>({ email: clientInviteData.inviteeEmail });
+    if (user) {
+      await User.updateOne({ _id: session.user.id }, { $addToSet: { clients: user._id } });
+      return successResponse({
+        data: serializeDoc(user),
+        message: `Gebruiker met email: ${clientInviteData.inviteeEmail} bestaat al, toegevoegd aan je klanten`,
+      });
+    }
+
+    const clientInvite = await ClientInvite.create<HydratedDocument<ClientInviteDoc>>({
       ...clientInviteData,
-      inviter: session?.user?.id,
+      inviter: session.user.id,
     });
     return successResponse({
       data: serializeDoc(clientInvite),
+      statusCode: 201,
       message: `Successfully created client invite for email: ${clientInvite.inviteeEmail}`,
     });
   } catch (error) {
@@ -44,6 +65,6 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
     }
 
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse(`An error occurred while deleting the client: ${message}`);
+    return errorResponse({ message: `An error occurred while deleting the client: ${message}` });
   }
 }
