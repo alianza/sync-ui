@@ -28,11 +28,11 @@ export async function createListing(prevState: unknown, formData: FormData) {
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to to create a listing" });
       await actionAuthGuard(session, { realtorOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to create a listing" });
     }
-    if (!session) return errorResponse({ message: "You must be logged in to to create a listing" });
 
     await dbConnect();
     const listing = await Listing.create({ ...listingData, userId: session.user.id });
@@ -56,11 +56,11 @@ export async function deleteListing(id: string) {
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to delete a listing" });
       await actionAuthGuard(session, { realtorOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to delete a listing" });
     }
-    if (!session) return errorResponse({ message: "You must be logged in to delete a listing" });
 
     await dbConnect();
     const listing = await Listing.findOneAndDelete({ _id: id, userId: session.user.id });
@@ -84,11 +84,11 @@ export async function updateListing(prevState: unknown, formData: FormData) {
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
       await actionAuthGuard(session, { realtorOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to update a listing" });
     }
-    if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
 
     await dbConnect();
     const listing = await Listing.findOneAndUpdate({ _id: updateData._id, userId: session.user.id }, updateData, {

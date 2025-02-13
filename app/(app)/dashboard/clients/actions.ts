@@ -12,12 +12,12 @@ export async function deleteClient(id: string, email: string) {
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
       await actionAuthGuard(session, { realtorOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to delete a client" });
     }
 
-    if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
     const user = await User.findByIdAndUpdate(session.user.id, { $pull: { clients: id } });
 
     if (!user) return errorResponse({ message: `Client with email: ${email} not found` });

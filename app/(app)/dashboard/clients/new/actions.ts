@@ -25,11 +25,11 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
       await actionAuthGuard(session, { realtorOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to create a client invite" });
     }
-    if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
 
     if (clientInviteData.inviteeEmail === session.user.email) {
       return failResponse({ message: "Je kan jezelf niet uitnodigen" });
@@ -39,7 +39,20 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
 
     const user = await User.findOne<HydratedDocument<UserDoc>>({ email: clientInviteData.inviteeEmail });
     if (user) {
-      await User.updateOne({ _id: session.user.id }, { $addToSet: { clients: user._id } });
+      const res = (await User.findOneAndUpdate(
+        { _id: session.user.id },
+        { $addToSet: { clients: user._id } },
+      )) as HydratedDocument<UserDoc>; // Returns the original document
+
+      if (!res) return failResponse({ message: "Error, log opnieuw in en probeer het nog een keer" });
+
+      if (res?.clients?.includes(user._id)) {
+        return successResponse({
+          data: serializeDoc(user),
+          message: `Gebruiker met email: ${clientInviteData.inviteeEmail} is al een klant van jou`,
+        });
+      }
+
       return successResponse({
         data: serializeDoc(user),
         message: `Gebruiker met email: ${clientInviteData.inviteeEmail} bestaat al, deze is toegevoegd aan je klanten`,
@@ -61,10 +74,10 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
     }
 
     if (isMongooseDuplicateKeyError(error)) {
-      return failResponse({ message: "A client invite with this email already exists" });
+      return failResponse({ message: "Je hebt al een uitnodiging voor deze klant uitstaan" });
     }
 
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse({ message: `An error occurred while deleting the client: ${message}` });
+    return errorResponse({ message: `Error bij het aanmaken van uitnodiging: ${message}` });
   }
 }

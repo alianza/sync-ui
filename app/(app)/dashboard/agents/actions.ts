@@ -12,12 +12,12 @@ export async function deleteAgent(id: string, email: string) {
     const session = await auth();
 
     try {
+      if (!session) return errorResponse({ message: "You must be logged in to delete an agent" });
       await actionAuthGuard(session, { buyerOnly: true });
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a buyer to delete an agent" });
     }
 
-    if (!session) return errorResponse({ message: "You must be logged in to delete an agent" });
     const user = await User.findByIdAndUpdate(id, { $pull: { clients: session.user.id } });
 
     if (!user) return errorResponse({ message: `Agent with email: ${email} not found` });
