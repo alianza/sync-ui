@@ -1,4 +1,6 @@
-import { UserDoc } from "./User.type";
+import { UserDoc, UserObj } from "./User.type";
+import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 
 // todo: Remove the need for this duplication
 // consts are to get key value pairs from for instance for select options
@@ -74,8 +76,7 @@ export enum INSULATION_ENUM {
   muurIsolation = "muurIsolation",
 }
 
-export interface ListingDoc {
-  _id: string;
+interface Listing {
   title: string;
   streetName: string;
   streetNumber: string;
@@ -112,4 +113,13 @@ export interface ListingDoc {
   };
   ownership: string;
   userId: UserDoc;
+}
+
+export interface ListingDoc extends Listing, mongoose.Document {
+  _id: ObjectId;
+}
+
+export interface ListingObj extends Omit<Listing, "userId"> {
+  _id: string;
+  userId: UserObj;
 }
