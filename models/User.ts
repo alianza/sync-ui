@@ -3,6 +3,11 @@ import { ROLES, UserDoc } from "@/models/User.type";
 
 import "server-only";
 
+const ListingReferenceSchema = new mongoose.Schema({
+  listingId: { type: mongoose.Schema.Types.ObjectId, ref: "Listing", required: true },
+  linkedAt: { type: Date, default: Date.now },
+});
+
 const UserSchema = new mongoose.Schema<UserDoc>(
   {
     firstName: {
@@ -35,6 +40,10 @@ const UserSchema = new mongoose.Schema<UserDoc>(
     clients: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
+    },
+    listings: {
+      type: [ListingReferenceSchema],
+      default: [],
     },
     verified: {
       type: Boolean,
