@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingObj } from "@/models/Listing.type";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Eye, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
+import { ArrowUpDown, Eye, LinkIcon, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
 import Link from "next/link";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -20,7 +20,7 @@ import { capitalize } from "@/lib/common.utils";
 import { toast } from "@/hooks/use-toast";
 import { ResponseStatus } from "@/lib/types";
 
-export const columns: ColumnDef<ListingDoc>[] = [
+export const columns: ColumnDef<ListingObj>[] = [
   {
     accessorKey: "title",
     header: "Titel",
@@ -130,7 +130,7 @@ export const columns: ColumnDef<ListingDoc>[] = [
               </DropdownMenuItem>
             </Link>
             <ConfirmDialog
-              className="w-full cursor-default rounded hover:bg-muted"
+              className="hover:bg-muted w-full cursor-default rounded"
               onConfirm={async () => {
                 const { message, status } = await deleteListing(listing._id);
                 if (message) {
@@ -148,6 +148,12 @@ export const columns: ColumnDef<ListingDoc>[] = [
                 Verwijderen
               </DropdownMenuItem>
             </ConfirmDialog>
+            <Link href={`/dashboard/listings/link/${listing._id}`}>
+              <DropdownMenuItem>
+                <LinkIcon className="mr-1 size-3" />
+                Koppel woning
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );
