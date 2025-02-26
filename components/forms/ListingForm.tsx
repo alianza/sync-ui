@@ -4,7 +4,7 @@ import React, { useActionState, useEffect } from "react";
 import { createListing, updateListing } from "@/app/(app)/dashboard/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
-import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingObj } from "@/models/Listing.type";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { handleAction } from "@/lib/client.utils";
 import { FieldSet } from "@/components/forms/input/FieldSet";
@@ -14,7 +14,7 @@ import FormSelect from "@/components/forms/input/FormSelect";
 import { MultiSelect } from "@/components/ui/multi-select";
 
 interface Props {
-  listing?: ListingDoc;
+  listing?: ListingObj;
 }
 
 export function ListingForm({ listing }: Props) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingObj } from "@/models/Listing.type";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,7 @@ import { ArrowUpDown, Eye, MoreHorizontal, SortAsc, SortDesc } from "lucide-reac
 import Link from "next/link";
 import { capitalize } from "@/lib/common.utils";
 
-export const columns: ColumnDef<ListingDoc>[] = [
+export const columns: ColumnDef<ListingObj>[] = [
   {
     accessorKey: "title",
     header: "Titel",

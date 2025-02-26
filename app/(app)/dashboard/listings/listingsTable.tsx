@@ -7,14 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
-import { ListingDoc } from "@/models/Listing.type";
+import { ListingObj } from "@/models/Listing.type";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function ListingsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const listings = serializeDoc(await Listing.find({ userId: session.user?.id })) as ListingDoc[];
+  const listings = serializeDoc(await Listing.find({ userId: session.user?.id })) as ListingObj[];
 
   const newListingButton = (
     <Link href="/dashboard/listings/new">

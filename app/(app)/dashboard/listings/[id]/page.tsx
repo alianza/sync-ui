@@ -1,5 +1,5 @@
 import Listing from "@/models/Listing";
-import { ListingDoc } from "@/models/Listing.type";
+import { ListingObj } from "@/models/Listing.type";
 import dbConnect from "@/lib/dbConnect";
 import { isValidObjectId } from "mongoose";
 import React from "react";
@@ -27,7 +27,7 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
   await dbConnect();
   const listing = serializeDoc(
     await Listing.findOne({ _id: id, userId: session.user.id }).populate("userId"),
-  ) as ListingDoc;
+  ) as ListingObj;
 
   const isOwner = session.user.id === listing.userId._id;
 

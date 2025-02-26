@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import Loader from "./layout/Loader";
 
-export function SubmitButton({ label = "Submit", loadingLabel = "Sending...", disabled = false }) {
+type Props = {
+  label?: string | React.ReactNode;
+  loadingLabel?: string | React.ReactNode;
+  disabled?: boolean;
+};
+
+export function SubmitButton({ label = "Submit", loadingLabel = "Sending...", disabled = false }: Props) {
   const { pending } = useFormStatus();
 
   return (

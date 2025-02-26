@@ -36,6 +36,8 @@ export function DataTable<TData, TValue>({
   emptyComponent,
   infoLabel,
 }: DataTableProps<TData, TValue>) {
+  "use no memo";
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 

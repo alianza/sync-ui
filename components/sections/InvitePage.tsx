@@ -1,5 +1,5 @@
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import InviteForm from "@/components/forms/InviteForm";
@@ -7,7 +7,7 @@ import React from "react";
 import { LockIcon } from "lucide-react";
 
 type Props = {
-  invite: MergeType<ClientInviteDoc, UserDoc>;
+  invite: MergeType<ClientInviteDoc, UserObj>;
 };
 
 export async function InvitePage({ invite }: Props) {
@@ -19,7 +19,7 @@ export async function InvitePage({ invite }: Props) {
             <span>Accept invite</span>
             <LockIcon />
           </CardTitle>
-          <CardDescription className="flex flex-col gap-4 whitespace-pre-line text-center">
+          <CardDescription className="flex flex-col gap-4 text-center whitespace-pre-line">
             {invite.inviter?.firstName} {invite.inviter?.lastName} has invited you to join HuizenHub. {"\n"}
             Enter your details below to create your account and accept the invite.
             <span className="text-xs">Your information is secure and will not be shared.</span>
@@ -30,7 +30,7 @@ export async function InvitePage({ invite }: Props) {
             <CardHeader>
               <CardTitle className="text-start text-lg font-bold">Message</CardTitle>
               <CardDescription>
-                <p className="whitespace-pre-line text-start">{invite.message}</p>
+                <p className="text-start whitespace-pre-line">{invite.message}</p>
               </CardDescription>
             </CardHeader>
           </Card>

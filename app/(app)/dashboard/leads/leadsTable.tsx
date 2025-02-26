@@ -3,14 +3,14 @@ import { columns } from "./columns";
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import Listing from "@/models/Listing";
-import { ListingDoc } from "@/models/Listing.type";
+import { ListingObj } from "@/models/Listing.type";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function LeadsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const listings = serializeDoc(await Listing.find({})) as ListingDoc[];
+  const listings = serializeDoc(await Listing.find({})) as ListingObj[];
 
   return (
     <div className="flex flex-col gap-2">

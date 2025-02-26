@@ -16,10 +16,10 @@ import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "@/hooks/use-toast";
 import { ResponseStatus } from "@/lib/types";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { deleteClient } from "@/app/(app)/dashboard/clients/actions";
 
-export const columns: ColumnDef<UserDoc>[] = [
+export const columns: ColumnDef<UserObj>[] = [
   {
     accessorKey: "email",
     header: "Email",
@@ -89,7 +89,7 @@ export const columns: ColumnDef<UserDoc>[] = [
               </DropdownMenuItem>
             </Link>
             <ConfirmDialog
-              className="w-full cursor-default rounded hover:bg-muted"
+              className="hover:bg-muted w-full cursor-default rounded"
               onConfirm={async () => {
                 const { message, status } = await deleteClient(client._id, client.email);
                 if (message) {

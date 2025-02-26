@@ -1,4 +1,4 @@
-import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingObj } from "@/models/Listing.type";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BathIcon,
@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import Link from "next/link";
 
-export default function ListingDetails({ listing, isOwner = false }: { listing: ListingDoc; isOwner?: boolean }) {
+export default function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode} ${listing.city}`;
 
   return (

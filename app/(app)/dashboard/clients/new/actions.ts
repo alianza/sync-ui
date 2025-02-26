@@ -37,16 +37,16 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
 
     await dbConnect();
 
-    const user = await User.findOne<HydratedDocument<UserDoc>>({ email: clientInviteData.inviteeEmail });
+    const user = await User.findOne<UserDoc>({ email: clientInviteData.inviteeEmail });
     if (user) {
       const res = (await User.findOneAndUpdate(
         { _id: session.user.id },
         { $addToSet: { clients: user._id } },
-      )) as HydratedDocument<UserDoc>; // Returns the original document
+      )) as UserDoc; // Returns the original document
 
       if (!res) return failResponse({ message: "Error, log opnieuw in en probeer het nog een keer" });
 
-      if (res?.clients?.includes(user._id)) {
+      if (res?.clients?.includes(user._id.toString())) {
         return successResponse({
           data: serializeDoc(user),
           message: `Gebruiker met email: ${clientInviteData.inviteeEmail} is al een klant van jou`,

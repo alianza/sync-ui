@@ -3,7 +3,7 @@ import { InvitePage } from "@/components/sections/InvitePage";
 import dbConnect from "@/lib/dbConnect";
 import ClientInvite from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { serializeDoc } from "@/lib/server.utils";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
@@ -35,7 +35,7 @@ export default async function Invite({ searchParams }: Props) {
 
   const invite = serializeDoc(await ClientInvite.findById(id).populate("inviter")) as MergeType<
     ClientInviteDoc,
-    UserDoc
+    UserObj
   >;
 
   if (!invite) {

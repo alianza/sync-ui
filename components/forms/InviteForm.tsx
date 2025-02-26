@@ -8,7 +8,7 @@ import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggl
 import Link from "next/link";
 import { handleAction } from "@/lib/client.utils";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { AcceptInviteAction, RejectInviteAction } from "@/app/(home)/invite/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
 type Props = {
-  invite: MergeType<ClientInviteDoc, UserDoc>;
+  invite: MergeType<ClientInviteDoc, UserObj>;
 };
 
 function InviteForm({ invite }: Props) {
@@ -106,7 +106,7 @@ function InviteForm({ invite }: Props) {
 
         {state.status !== ResponseStatus.pending && (
           <div className="flex">
-            <p className="text-sm text-muted-foreground">{state.message}</p>
+            <p className="text-muted-foreground text-sm">{state.message}</p>
             {state.status === ResponseStatus.success && (
               <>
                 &nbsp;

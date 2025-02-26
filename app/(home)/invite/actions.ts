@@ -53,7 +53,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     const invites = await ClientInvite.find<HydratedDocument<ClientInviteDoc>>({
       inviteeEmail: email,
       status: STATUS_ENUM.PENDING,
-    }).populate<HydratedDocument<UserDoc>>("inviter");
+    }).populate<UserDoc>("inviter");
 
     const userResult = await User.updateMany(
       { _id: { $in: invites.map((invite) => invite.inviter._id) } },

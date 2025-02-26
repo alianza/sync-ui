@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import { MergeType } from "mongoose";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
 import ClientInvite from "@/models/ClientInvite";
@@ -19,13 +19,13 @@ export default async function ClientsTable() {
 
   await dbConnect();
   const dbUser = serializeDoc(await User.findById(session.user?.id).populate("clients")) as MergeType<
-    UserDoc,
-    { clients: UserDoc[] }
+    UserObj,
+    { clients: UserObj[] }
   >;
 
-  const pendingInvites = await ClientInvite.countDocuments({ inviter: session.user?.id, status: "pending" });
-
   if (!dbUser) redirect("/login");
+
+  const pendingInvites = await ClientInvite.countDocuments({ inviter: session.user?.id, status: "pending" });
 
   const newClientButton = (
     <Link href="/dashboard/clients/new">

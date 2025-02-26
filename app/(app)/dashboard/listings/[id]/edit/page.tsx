@@ -1,4 +1,4 @@
-import { ListingDoc } from "@/models/Listing.type";
+import { ListingObj } from "@/models/Listing.type";
 import Listing from "@/models/Listing";
 import dbConnect from "@/lib/dbConnect";
 import { ListingForm } from "@/components/forms/ListingForm";
@@ -40,7 +40,7 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
   }
 
   await dbConnect();
-  const listing = serializeDoc(await Listing.findOne({ _id: id, userId: session.user.id })) as ListingDoc;
+  const listing = serializeDoc(await Listing.findOne({ _id: id, userId: session.user.id })) as ListingObj;
 
   if (!listing) {
     return (

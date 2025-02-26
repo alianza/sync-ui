@@ -2,7 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import User from "@/models/User";
-import { ROLES, UserDoc } from "@/models/User.type";
+import { ROLES, UserDoc, UserObj } from "@/models/User.type";
 import dbConnect from "./lib/dbConnect";
 
 export async function saltAndHashPassword(password: string) {
@@ -27,8 +27,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: { email: {}, password: {} }, // You can specify which fields should be submitted, by adding keys to the `credentials` object. e.g. domain, username, password, 2FA token, etc.
       authorize: async (credentials) => {
         const user = await getUserFromDb(credentials.email?.toString() || "", credentials.password?.toString() || "");
-
-        // console.log(`user`, user);
 
         if (!user) {
           throw new Error("Invalid credentials."); // No user found, so this is their first attempt to login. Optionally, this is also the place you could do a user registration
@@ -79,7 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
-  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserDoc & {
+  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserObj & {
     password: string;
     __v: number;
   };

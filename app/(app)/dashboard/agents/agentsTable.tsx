@@ -3,7 +3,7 @@ import { columns } from "./columns";
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
+import { UserObj } from "@/models/User.type";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
 
 export default async function AgentsTable() {
@@ -11,7 +11,7 @@ export default async function AgentsTable() {
 
   await dbConnect();
 
-  const agents = serializeDoc(await User.find({ clients: { $elemMatch: { $eq: session.user?.id } } })) as UserDoc[];
+  const agents = serializeDoc(await User.find({ clients: { $elemMatch: { $eq: session.user?.id } } })) as UserObj[];
 
   return (
     <div className="flex flex-col gap-2">
