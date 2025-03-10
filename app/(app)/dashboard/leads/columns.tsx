@@ -16,7 +16,11 @@ import { ArrowUpDown, Eye, MoreHorizontal, SortAsc, SortDesc } from "lucide-reac
 import Link from "next/link";
 import { capitalize } from "@/lib/common.utils";
 
-export const columns: ColumnDef<ListingObj>[] = [
+export const columns: ColumnDef<
+  ListingObj & {
+    linkedAt: Date;
+  }
+>[] = [
   {
     accessorKey: "title",
     header: "Titel",
@@ -86,9 +90,17 @@ export const columns: ColumnDef<ListingObj>[] = [
       return isNaN(amount) ? "Onbekend" : new Intl.NumberFormat("nl-NL").format(amount);
     },
   },
+  // {
+  //   accessorKey: "stories",
+  //   header: "Verdiepingen",
+  // },
   {
-    accessorKey: "stories",
-    header: "Verdiepingen",
+    accessorKey: "linkedAt",
+    header: "Gekoppeld op",
+    accessorFn: (row) => {
+      const date = new Date(row.linkedAt);
+      return date.toLocaleDateString("nl-NL", { year: "numeric", month: "long", day: "numeric" });
+    },
   },
   {
     accessorKey: "district",
