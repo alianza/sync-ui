@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Eye, MoreHorizontal, SortAsc, SortDesc, Trash } from "lucide-react";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ResponseStatus } from "@/lib/types";
 import { UserObj } from "@/models/User.type";
 import { deleteAgent } from "@/app/(app)/dashboard/agents/actions";
@@ -93,12 +93,8 @@ export const columns: ColumnDef<UserObj>[] = [
               onConfirm={async () => {
                 const { message, status } = await deleteAgent(agent._id, agent.email);
                 if (message) {
-                  if (status === ResponseStatus.error) {
-                    toast({ title: "error", description: message, variant: "destructive" });
-                    return;
-                  }
-
-                  toast({ title: message });
+                  if (status === ResponseStatus.error) return toast.error(message);
+                  toast.success(message);
                 }
               }}
             >

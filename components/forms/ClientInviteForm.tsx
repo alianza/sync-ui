@@ -18,13 +18,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export function ClientInviteForm() {
   const [state, action] = useActionState(createClientInvite, initialActionState);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => handleAction(e, action);
-  const { toast } = useToast();
 
   const [inviteLink, setInviteLink] = React.useState("");
 
@@ -96,7 +95,7 @@ export function ClientInviteForm() {
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(inviteLink);
-                  toast({ title: "Link gekopieerd" });
+                  toast.info("Link gekopieerd");
                 }}
                 variant="secondary"
               >
