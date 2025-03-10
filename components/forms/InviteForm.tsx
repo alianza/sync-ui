@@ -35,7 +35,7 @@ function InviteForm({ invite }: Props) {
       toast.success("Succesvol uitnodiging geaccepteerd!", { description: "Je kan nu inloggen." });
       setTimeout(() => router.replace("/login"), 1000);
     }
-  }, [actionState, router, toast]);
+  }, [actionState, router]);
 
   useEffect(() => {
     if (password && confirmPassword && password !== confirmPassword) {

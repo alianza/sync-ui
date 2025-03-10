@@ -26,7 +26,7 @@ function SignUpForm() {
       toast.success("Succesvol geregistreerd!", { description: "Je kan nu inloggen." });
       setTimeout(() => router.push("/login"), 1000);
     }
-  }, [actionState, router, toast]);
+  }, [actionState, router]);
 
   useEffect(() => {
     if (password && confirmPassword && password !== confirmPassword) {
