@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const Textarea = ({ className, ...props }: TextareaProps) => {
+function Textarea({ className, ...props }: TextareaProps) {
   return (
     <textarea
       className={cn(
@@ -14,7 +14,6 @@ const Textarea = ({ className, ...props }: TextareaProps) => {
       {...props}
     />
   );
-};
-Textarea.displayName = "Textarea";
+}
 
 export { Textarea };
