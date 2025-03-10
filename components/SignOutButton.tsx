@@ -4,7 +4,7 @@ import React from "react";
 import { AlertDialogAction } from "./ui/alert-dialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { signOut } from "next-auth/react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 function SignOutButton() {
   // const [state, action] = useActionState(signOutAction, initialActionState);
@@ -16,8 +16,8 @@ function SignOutButton() {
         <AlertDialogAction
           onClick={async () => {
             await signOut({ redirectTo: "/login" })
-              .catch(() => toast({ title: "Failed to sign out" }))
-              .finally(() => toast({ title: "Successfully logged out!" }));
+              .catch(() => toast.error("Failed to sign out"))
+              .finally(() => toast.success("Successfully logged out!"));
           }}
           type="submit"
           className="text-start"

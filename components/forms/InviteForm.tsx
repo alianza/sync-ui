@@ -11,7 +11,7 @@ import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import { UserObj } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { AcceptInviteAction, RejectInviteAction } from "@/app/(home)/invite/actions";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -26,14 +26,13 @@ function InviteForm({ invite }: Props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [state, setState] = useState(actionState);
   const [disabled, setDisabled] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     setState(actionState);
 
     if (actionState.status === ResponseStatus.success) {
-      toast({ title: "Succesvol uitnodiging geaccepteerd!", description: "Je kan nu inloggen." });
+      toast.success("Succesvol uitnodiging geaccepteerd!", { description: "Je kan nu inloggen." });
       setTimeout(() => router.replace("/login"), 1000);
     }
   }, [actionState, router, toast]);
@@ -124,10 +123,10 @@ function InviteForm({ invite }: Props) {
             const response = await RejectInviteAction({ inviteeEmail: invite.inviteeEmail, inviteID: invite._id });
 
             if (response.status === ResponseStatus.success) {
-              toast({ title: "Uitnodiging afgewezen." });
+              toast.info("Uitnodiging afgewezen.");
               router.replace("/");
             } else {
-              toast({ title: "Niet gelukt uitnodiging af te wijzen", description: response.message });
+              toast.error("Niet gelukt uitnodiging af te wijzen", { description: response.message });
             }
           }}
           asChild

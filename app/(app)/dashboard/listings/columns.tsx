@@ -17,7 +17,7 @@ import Link from "next/link";
 import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { capitalize } from "@/lib/common.utils";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ResponseStatus } from "@/lib/types";
 
 export const columns: ColumnDef<ListingObj>[] = [
@@ -134,12 +134,9 @@ export const columns: ColumnDef<ListingObj>[] = [
               onConfirm={async () => {
                 const { message, status } = await deleteListing(listing._id);
                 if (message) {
-                  if (status === ResponseStatus.error) {
-                    toast({ title: "error", description: message, variant: "destructive" });
-                    return;
-                  }
+                  if (status === ResponseStatus.error) return toast.error(message);
 
-                  toast({ title: message });
+                  toast.success(message);
                 }
               }}
             >

@@ -8,7 +8,7 @@ import { Input } from "@/components/forms/input/Input";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import Link from "next/link";
 import { handleAction } from "@/lib/client.utils";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 function SignUpForm() {
@@ -17,21 +17,20 @@ function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [state, setState] = useState(actionState);
   const [disabled, setDisabled] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     setState(actionState);
 
     if (actionState.status === ResponseStatus.success) {
-      toast({ title: "Succesvol geregistreerd!", description: "Je kan nu inloggen." });
+      toast.success("Succesvol geregistreerd!", { description: "Je kan nu inloggen." });
       setTimeout(() => router.push("/login"), 1000);
     }
   }, [actionState, router, toast]);
 
   useEffect(() => {
     if (password && confirmPassword && password !== confirmPassword) {
-      setState({ status: ResponseStatus.fail, message: "Wahtwoorden komen niet overeen" });
+      setState({ status: ResponseStatus.fail, message: "Wachtwoorden komen niet overeen" });
       setDisabled(true);
     } else {
       setState(initialActionState);
@@ -94,7 +93,7 @@ function SignUpForm() {
 
         {state.status !== ResponseStatus.pending && (
           <div className="flex">
-            <p className="text-sm text-muted-foreground">{state.message}</p>
+            <p className="text-muted-foreground text-sm">{state.message}</p>
             {state.status === ResponseStatus.success && (
               <>
                 &nbsp;

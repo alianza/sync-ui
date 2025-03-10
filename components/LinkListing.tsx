@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { linkListing } from "@/app/(app)/dashboard/listings/link/[id]/actions";
 import { SubmitButton } from "@/components/SubmitButton";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 type Props = { listing: ListingObj; clients: UserObj[] };
 
@@ -34,7 +34,7 @@ export function LinkListing({ listing, clients }: Props) {
 
   useEffect(() => {
     if (state && state.status === ResponseStatus.success) {
-      toast({ title: state.message });
+      toast.success(state.message);
     }
   }, [state]);
 
