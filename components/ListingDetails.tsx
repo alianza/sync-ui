@@ -14,6 +14,7 @@ import {
   SquareM,
   ThermometerSunIcon,
   Toilet,
+  TrashIcon,
   UserIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -21,9 +22,42 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
+import { del, list, put } from "@vercel/blob";
+import { Input } from "@/components/forms/input/Input";
+import Image from "next/image";
 
-export default function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
-  const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode} ${listing.city}`;
+export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
+  async function uploadImage(formData: FormData) {
+    "use server";
+    const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
+    if (images.blobs.length >= 2) {
+      // throw new Error("Maximum of 10 images allowed per listing");
+      // return errorResponse({ message: "Maximum of 10 images allowed per listing" });
+    }
+    const imageFile = formData.get("image") as File;
+    const blob = await put(`listingMedia/images/${listing._id}/${imageFile.name}`, imageFile, { access: "public" });
+    revalidatePath(`/dashboard/listings/${listing._id}`);
+    console.log(`blob`, blob);
+    // return blob;
+    // return successResponse({ message: "upload success" });
+  } // todo: Create client forms for uploading and deleting images and use useActionState for the state, formAction and pending state See: https://nextjs.org/docs/app/building-your-application/routing/error-handling & https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+  // todo: add confirm dialog to delete image
+  async function deleteImage(formData: FormData) {
+    "use server";
+    const url = formData.get("url") as string;
+    console.log(`url`, url);
+    const result = await del(url);
+    console.log(`result`, result);
+    revalidatePath(`/dashboard/listings/${listing._id}`);
+    // return successResponse({ message: "delete success" });
+  }
+
+  const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
+
+  console.log(`images`, images);
+
+  const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode}, ${listing.city}`;
 
   return (
     <div className="mx-auto flex flex-col gap-2">
@@ -31,7 +65,10 @@ export default function ListingDetails({ listing, isOwner = false }: { listing: 
         <h1 className="text-3xl font-bold">{listing.title}</h1>
         {isOwner && (
           <Link href={`/dashboard/listings/${listing._id}/edit`} title="Bewerk woning">
-            <PencilIcon className="scale-hover-xl size-6 text-neutral-500 dark:text-neutral-400" />
+            <Button>
+              <span>Bewerk woning</span>
+              <PencilIcon className="scale-hover-xl size-4" />
+            </Button>
           </Link>
         )}
       </div>
@@ -69,7 +106,7 @@ export default function ListingDetails({ listing, isOwner = false }: { listing: 
               {listing.description && (
                 <>
                   <Separator className="my-4" />
-                  <p>{listing.description}</p>
+                  <pre className="font-sans text-wrap">{listing.description}</pre>
                 </>
               )}
             </CardContent>
@@ -183,6 +220,46 @@ export default function ListingDetails({ listing, isOwner = false }: { listing: 
               </a>
             </CardContent>
           </Card>
+
+          {/*card to display images if any*/}
+          <Card>
+            <CardHeader>
+              <CardTitle>Afbeeldingen</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                {images.blobs.map((image, index) => (
+                  <div className="relative" key={image.pathname}>
+                    <form action={deleteImage}>
+                      <input type="hidden" name="url" value={image.url} />
+                      <Button variant="destructive" className="absolute top-2 right-2" title="Verwijder afbeelding">
+                        <TrashIcon />
+                      </Button>
+                    </form>
+                    <Image
+                      src={image.url}
+                      width={200}
+                      height={200}
+                      alt={`${listing.title} image ${index + 1}`}
+                      className="w-full"
+                    />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Upload bestanden</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <form action={uploadImage} className="flex flex-col gap-2">
+                <Input label="Afbeelding" type="file" id="image" name="image" required />
+                <Button>Upload</Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
@@ -195,3 +272,25 @@ const IconField = ({ Icon, value }: { Icon: React.ComponentType<{ className?: st
     <span>{value}</span>
   </div>
 );
+
+const ImageDeleteButton = ({ pathname, listingId }: { pathname: string; listingId: string }) => {
+  "use client";
+
+  async function deleteImage(pathname: string) {
+    "use server";
+    await del(pathname);
+    revalidatePath(`/dashboard/listings/${listingId}`);
+    // return successResponse({ message: "delete success" });
+  }
+
+  return (
+    <Button
+      onClick={() => deleteImage(pathname)}
+      variant="destructive"
+      className="absolute top-2 right-2"
+      title="Verwijder afbeelding"
+    >
+      <TrashIcon />
+    </Button>
+  );
+};
