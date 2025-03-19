@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
   sassOptions: {
     silenceDeprecations: ["legacy-js-api"],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "l0r78fsrrgqfhiu2.public.blob.vercel-storage.com",
+        port: "",
+      },
+    ],
+  },
 };
 
 const bundleAnalyzerEnabled = process.env.ANALYZE === "true";
