@@ -18,6 +18,8 @@ const ENERGY_LABELS_ENUM = Object.keys(ENERGY_LABELS);
 const FEATURES_ENUM = Object.keys(FEATURES);
 const INSULATION_ENUM = Object.keys(INSULATION);
 
+const MAX_DESCRIPTION_LENGTH = 1500;
+
 export const listingCreateSchema = z.object({
   title: z.string().min(1),
   streetName: z.string().min(1),
@@ -27,7 +29,7 @@ export const listingCreateSchema = z.object({
   district: z.string().min(1),
   askingPrice: z.coerce.number().min(1),
   yearBuilt: z.coerce.number().min(1800).max(new Date().getFullYear()),
-  description: z.string().max(500),
+  description: z.string().max(MAX_DESCRIPTION_LENGTH),
   roofType: z.string().min(1),
   type: z.enum([TYPES_ENUM[0], ...TYPES_ENUM]),
   "measurements.squareMetersTotal": z.coerce.number().min(1),
@@ -104,7 +106,7 @@ const ListingSchema = new mongoose.Schema<ListingDoc>(
     description: {
       type: String,
       required: [true, "Geef een beschrijving op voor deze woning"],
-      maxlength: [500, "De beschrijving mag niet langer zijn dan 500 tekens"],
+      maxlength: [MAX_DESCRIPTION_LENGTH, "De beschrijving mag niet langer zijn dan 500 tekens"],
     },
     askingPrice: {
       type: Number,
