@@ -59,9 +59,6 @@ export default async function EditListingPage(props: { params: Promise<{ id: str
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">
       <div className="flex flex-col items-center justify-center gap-2 text-center">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">{listing.title}</h2>
-        <p className="max-w-4xl text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-          {listing.description}
-        </p>
       </div>
       <ListingForm listing={listing} />
     </section>
