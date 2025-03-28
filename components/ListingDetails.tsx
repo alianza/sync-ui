@@ -26,12 +26,13 @@ import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
 import { Input } from "@/components/forms/input/Input";
 import Image from "next/image";
+import { ImageDeleteButton } from "./ImageDeleteButton";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadImage(formData: FormData) {
     "use server";
     const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
-    if (images.blobs.length >= 2) {
+    if (images.blobs.length >= 10) {
       // throw new Error("Maximum of 10 images allowed per listing");
       // return errorResponse({ message: "Maximum of 10 images allowed per listing" });
     }
@@ -43,10 +44,9 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
     // return successResponse({ message: "upload success" });
   } // todo: Create client forms for uploading and deleting images and use useActionState for the state, formAction and pending state See: https://nextjs.org/docs/app/building-your-application/routing/error-handling & https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
   // todo: add confirm dialog to delete image
-  async function deleteImage(formData: FormData) {
+
+  async function deleteImageAction(url: string) {
     "use server";
-    const url = formData.get("url") as string;
-    console.log(`url`, url);
     const result = await del(url);
     console.log(`result`, result);
     revalidatePath(`/dashboard/listings/${listing._id}`);
@@ -228,23 +228,22 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
-                {images.blobs.map((image, index) => (
-                  <div className="relative" key={image.pathname}>
-                    <form action={deleteImage}>
-                      <input type="hidden" name="url" value={image.url} />
-                      <Button variant="destructive" className="absolute top-2 right-2" title="Verwijder afbeelding">
-                        <TrashIcon />
-                      </Button>
-                    </form>
-                    <Image
-                      src={image.url}
-                      width={200}
-                      height={200}
-                      alt={`${listing.title} image ${index + 1}`}
-                      className="w-full"
-                    />
-                  </div>
-                ))}
+                {images.blobs.length > 0 ? (
+                  images.blobs.map((image, index) => (
+                    <div className="relative" key={image.pathname}>
+                      <ImageDeleteButton deleteImageAction={deleteImageAction} url={image.url} />
+                      <Image
+                        src={image.url}
+                        width={200}
+                        height={200}
+                        alt={`${listing.title} image ${index + 1}`}
+                        className="w-full"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center text-gray-500">Geen afbeeldingen beschikbaar</div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -272,25 +271,3 @@ const IconField = ({ Icon, value }: { Icon: React.ComponentType<{ className?: st
     <span>{value}</span>
   </div>
 );
-
-const ImageDeleteButton = ({ pathname, listingId }: { pathname: string; listingId: string }) => {
-  "use client";
-
-  async function deleteImage(pathname: string) {
-    "use server";
-    await del(pathname);
-    revalidatePath(`/dashboard/listings/${listingId}`);
-    // return successResponse({ message: "delete success" });
-  }
-
-  return (
-    <Button
-      onClick={() => deleteImage(pathname)}
-      variant="destructive"
-      className="absolute top-2 right-2"
-      title="Verwijder afbeelding"
-    >
-      <TrashIcon />
-    </Button>
-  );
-};
