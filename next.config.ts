@@ -5,6 +5,9 @@ import { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true, // Not working with TanStack React Table pagination and sorting
+    serverActions: {
+      bodySizeLimit: "4.5mb", // Increased limit for server actions to accommodate larger payloads for file uploads
+    },
   },
   sassOptions: {
     silenceDeprecations: ["legacy-js-api"],
