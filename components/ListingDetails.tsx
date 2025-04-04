@@ -14,7 +14,6 @@ import {
   SquareM,
   ThermometerSunIcon,
   Toilet,
-  TrashIcon,
   UserIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -24,38 +23,41 @@ import React from "react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
-import { Input } from "@/components/forms/input/Input";
 import Image from "next/image";
 import { ImageDeleteButton } from "./ImageDeleteButton";
+import { errorResponse, successResponse } from "@/lib/server.utils";
+import ImageUploadForm from "@/components/ImageUploadForm";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadImage(formData: FormData) {
     "use server";
-    const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
-    if (images.blobs.length >= 10) {
-      // throw new Error("Maximum of 10 images allowed per listing");
-      // return errorResponse({ message: "Maximum of 10 images allowed per listing" });
+    try {
+      const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
+      if (images.blobs.length >= 10) {
+        return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
+      }
+      const imageFile = formData.get("image") as File;
+      await put(`listingMedia/images/${listing._id}/${imageFile.name}`, imageFile, { access: "public" });
+      revalidatePath(`/dashboard/listings/${listing._id}`);
+      return successResponse({ message: "Afbeelding succesvol toegevoegd." });
+    } catch (error) {
+      return errorResponse({ message: "Fout bij het uploaden van de afbeelding:" });
     }
-    const imageFile = formData.get("image") as File;
-    const blob = await put(`listingMedia/images/${listing._id}/${imageFile.name}`, imageFile, { access: "public" });
-    revalidatePath(`/dashboard/listings/${listing._id}`);
-    console.log(`blob`, blob);
-    // return blob;
-    // return successResponse({ message: "upload success" });
-  } // todo: Create client forms for uploading and deleting images and use useActionState for the state, formAction and pending state See: https://nextjs.org/docs/app/building-your-application/routing/error-handling & https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
-  // todo: add confirm dialog to delete image
-
-  async function deleteImageAction(url: string) {
-    "use server";
-    const result = await del(url);
-    console.log(`result`, result);
-    revalidatePath(`/dashboard/listings/${listing._id}`);
-    // return successResponse({ message: "delete success" });
   }
 
-  const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
+  async function deleteImageAction(formData: FormData) {
+    "use server";
+    const url = formData.get("url") as string;
+    try {
+      await del(url);
+      revalidatePath(`/dashboard/listings/${listing._id}`);
+      return successResponse({ message: "Afbeelding verwijderd." });
+    } catch (error) {
+      return errorResponse({ message: "Fout bij verwijderen afbeelding" });
+    }
+  }
 
-  console.log(`images`, images);
+  const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
 
   const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode}, ${listing.city}`;
 
@@ -242,7 +244,9 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
                     </div>
                   ))
                 ) : (
-                  <div className="flex items-center justify-center text-gray-500">Geen afbeeldingen beschikbaar</div>
+                  <div className="col-span-full flex items-center justify-center text-gray-500">
+                    Geen afbeeldingen beschikbaar
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -253,10 +257,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
               <CardTitle>Upload bestanden</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-              <form action={uploadImage} className="flex flex-col gap-2">
-                <Input label="Afbeelding" type="file" id="image" name="image" required />
-                <Button>Upload</Button>
-              </form>
+              <ImageUploadForm uploadImageAction={uploadImage} />
             </CardContent>
           </Card>
         </div>

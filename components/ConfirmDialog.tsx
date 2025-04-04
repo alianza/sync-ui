@@ -23,6 +23,7 @@ type Props = {
   children: React.ReactNode;
   onConfirm?: () => void;
   onCancel?: () => void;
+  onFormAction?: (formData: FormData) => void;
   className?: string;
   customAction?: React.ReactNode;
   asChild?: boolean;
@@ -59,7 +60,13 @@ function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
-          {customAction ? customAction : <AlertDialogAction onClick={onConfirm}>{confirmText}</AlertDialogAction>}
+          {customAction ? (
+            customAction
+          ) : (
+            <AlertDialogAction type="submit" onClick={onConfirm}>
+              {confirmText}
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
