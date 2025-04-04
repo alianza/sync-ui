@@ -29,7 +29,7 @@ import { errorResponse, successResponse } from "@/lib/server.utils";
 import ImageUploadForm from "@/components/ImageUploadForm";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
-  async function uploadImage(formData: FormData) {
+  async function uploadImage(prevState: unknown, formData: FormData) {
     "use server";
     try {
       const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
