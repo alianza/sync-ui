@@ -3,7 +3,7 @@
 import { Input } from "@/components/forms/input/Input";
 import React, { startTransition, useActionState } from "react";
 import { toast } from "sonner";
-import { initialActionState, ServerResponse } from "@/lib/types";
+import { initialActionState, ResponseStatus, ServerResponse } from "@/lib/types";
 import { SubmitButton } from "@/components/SubmitButton";
 
 export default function ImageUploadForm({
@@ -20,9 +20,9 @@ export default function ImageUploadForm({
   };
 
   React.useEffect(() => {
-    if (state.status === "success") {
+    if (state.status === ResponseStatus.success) {
       toast.success(state.message);
-    } else {
+    } else if (state.status === ResponseStatus.error) {
       toast.error(state.message || "Er is een fout opgetreden bij het uploaden van de afbeelding.");
     }
   }, [state]);
