@@ -23,10 +23,9 @@ import React from "react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
-import Image from "next/image";
-import { ImageDeleteButton } from "./ImageDeleteButton";
 import { errorResponse, successResponse } from "@/lib/server.utils";
 import ImageUploadForm from "@/components/ImageUploadForm";
+import ListingImages from "./ListingImages";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadImage(prevState: unknown, formData: FormData) {
@@ -223,32 +222,12 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardContent>
           </Card>
 
-          {/*card to display images if any*/}
           <Card>
             <CardHeader>
               <CardTitle>Afbeeldingen</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {images.blobs.length > 0 ? (
-                  images.blobs.map((image, index) => (
-                    <div className="relative" key={image.pathname}>
-                      <ImageDeleteButton deleteImageAction={deleteImageAction} url={image.url} />
-                      <Image
-                        src={image.url}
-                        width={200}
-                        height={200}
-                        alt={`${listing.title} image ${index + 1}`}
-                        className="w-full"
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-full flex items-center justify-center text-gray-500">
-                    Geen afbeeldingen beschikbaar
-                  </div>
-                )}
-              </div>
+              <ListingImages blobs={images.blobs} deleteImageAction={deleteImageAction} listingTitle={listing.title} />
             </CardContent>
           </Card>
 
