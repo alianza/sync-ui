@@ -40,7 +40,7 @@ export function ImageDeleteButton({
       description="Weet je zeker dat je deze afbeelding wilt verwijderen?"
       asChild
     >
-      <Button variant="destructive" className="absolute top-2 right-2 z-10" title="Verwijder afbeelding">
+      <Button variant="destructive" className="absolute top-2 right-2" title="Verwijder afbeelding">
         <TrashIcon />
       </Button>
     </ConfirmDialog>
