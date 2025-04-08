@@ -51,7 +51,7 @@ export default function ListingImages({
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="min-w-[calc(100vw-2rem)]">
+        <DialogContent className="max-h-[calc(100vh-2rem)] min-w-[calc(100vw-2rem)]">
           <DialogHeader>
             <VisuallyHidden>
               <DialogTitle>{listingTitle} Afbeeldingen</DialogTitle>
