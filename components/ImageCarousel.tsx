@@ -58,9 +58,7 @@ export function ImageCarousel({
     if (imageIndex < images.length - 1) newVisibility[imageIndex + 1] = true;
     setVisibility(newVisibility);
   };
-
-  console.log(`visibility`, visibility);
-
+  
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false; // Skip on initial mount as we'll handle it separately
@@ -234,7 +232,7 @@ export function ImageCarousel({
       aria-roledescription="carousel"
       aria-label="Image carousel"
     >
-      <div ref={scrollContainerRef} className="flex h-full w-full snap-x snap-mandatory overflow-hidden scroll-smooth">
+      <div ref={scrollContainerRef} className="flex h-full w-full snap-x snap-mandatory overflow-x-visible scroll-smooth">
         {images.map((src, index) => (
           <div
             key={index}
