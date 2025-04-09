@@ -232,7 +232,7 @@ export function ImageCarousel({
       aria-roledescription="carousel"
       aria-label="Image carousel"
     >
-      <div ref={scrollContainerRef} className="flex h-full w-full snap-x snap-mandatory overflow-x-visible scroll-smooth">
+      <div ref={scrollContainerRef} className="flex h-full w-full snap-x snap-mandatory overflow-x-scroll scroll-smooth">
         {images.map((src, index) => (
           <div
             key={index}
