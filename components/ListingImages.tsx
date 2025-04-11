@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { ServerResponse } from "@/lib/types";
 import { ListBlobResultBlob } from "@vercel/blob";
 import { ImageCarousel } from "@/components/ImageCarousel";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export default function ListingImages({
@@ -55,6 +55,9 @@ export default function ListingImages({
           <DialogHeader>
             <VisuallyHidden>
               <DialogTitle>{listingTitle} Afbeeldingen</DialogTitle>
+              <DialogDescription>
+                Afbeeldingen van {listingTitle}. Klik op het pijltje om naar de volgende afbeelding te gaan.
+              </DialogDescription>
             </VisuallyHidden>
           </DialogHeader>
           <ImageCarousel

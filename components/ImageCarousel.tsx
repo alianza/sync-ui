@@ -58,7 +58,7 @@ export function ImageCarousel({
     if (imageIndex < images.length - 1) newVisibility[imageIndex + 1] = true;
     setVisibility(newVisibility);
   };
-  
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false; // Skip on initial mount as we'll handle it separately
@@ -78,9 +78,7 @@ export function ImageCarousel({
 
       setCurrentIndex(imageIndex); // Update the current index immediately for indicators
 
-      if (!visibility[imageIndex]) {
-        updateVisibility(imageIndex); // Ensure the image is marked as visible
-      }
+      if (!visibility[imageIndex]) updateVisibility(imageIndex); // Ensure the image is marked as visible
 
       setTimeout(() => {
         if (scrollContainerRef.current && slideRefs.current[imageIndex]) {
@@ -111,15 +109,9 @@ export function ImageCarousel({
       });
     }, options);
 
-    slideRefs.current.forEach((slide) => {
-      if (slide) observer.observe(slide);
-    });
+    slideRefs.current.forEach((slide) => slide && observer.observe(slide));
 
-    return () => {
-      slideRefs.current.forEach((slide) => {
-        if (slide) observer.unobserve(slide);
-      });
-    };
+    return () => slideRefs.current.forEach((slide) => slide && observer.unobserve(slide));
   }, [visibility]); // Setup intersection observer for lazy loading
 
   // Handle scroll events to update current index
@@ -131,9 +123,7 @@ export function ImageCarousel({
       const slideWidth = scrollContainerRef.current.clientWidth;
       const newIndex = Math.round(scrollLeft / slideWidth);
 
-      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
-        setCurrentIndex(newIndex);
-      }
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) setCurrentIndex(newIndex);
     };
 
     const container = scrollContainerRef.current;
@@ -161,23 +151,16 @@ export function ImageCarousel({
     }
   }, []); // Empty dependency array means this runs once after mount
 
-  // Auto play functionality
   useEffect(() => {
-    if (autoPlay) {
-      startAutoPlay();
-    }
+    if (autoPlay) startAutoPlay(); // Autoplay functionality
 
     return () => {
-      if (autoPlayRef.current) {
-        clearInterval(autoPlayRef.current);
-      }
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     };
   }, [autoPlay, currentIndex, images.length]);
 
   function startAutoPlay() {
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-    }
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
 
     autoPlayRef.current = setInterval(() => {
       const nextIndex = (currentIndex + 1) % images.length;
@@ -232,7 +215,11 @@ export function ImageCarousel({
       aria-roledescription="carousel"
       aria-label="Image carousel"
     >
-      <div ref={scrollContainerRef} className="flex h-full w-full snap-x snap-mandatory overflow-x-scroll scroll-smooth">
+      <div
+        ref={scrollContainerRef}
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-scroll scroll-smooth"
+        style={{ scrollbarWidth: "none" }}
+      >
         {images.map((src, index) => (
           <div
             key={index}
