@@ -19,13 +19,15 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
 import { errorResponse, successResponse } from "@/lib/server.utils";
 import ImageUploadForm from "@/components/ImageUploadForm";
 import ListingImages from "./ListingImages";
+import { ServerResponse } from "@/lib/types";
+import Loader from "@/components/layout/Loader";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadImage(prevState: unknown, formData: FormData) {
@@ -55,8 +57,6 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
       return errorResponse({ message: "Fout bij verwijderen afbeelding" });
     }
   }
-
-  const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
 
   const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode}, ${listing.city}`;
 
@@ -227,7 +227,9 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
               <CardTitle>Afbeeldingen</CardTitle>
             </CardHeader>
             <CardContent>
-              <ListingImages blobs={images.blobs} deleteImageAction={deleteImageAction} listingTitle={listing.title} />
+              <Suspense fallback={<Loader className="h-auto" />}>
+                <Images listing={listing} deleteImageAction={deleteImageAction} />
+              </Suspense>
             </CardContent>
           </Card>
 
@@ -243,6 +245,18 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
       </div>
     </div>
   );
+}
+
+async function Images({
+  listing,
+  deleteImageAction,
+}: {
+  listing: ListingObj;
+  deleteImageAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+}) {
+  const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
+
+  return <ListingImages blobs={images.blobs} deleteImageAction={deleteImageAction} listingTitle={listing.title} />;
 }
 
 const IconField = ({ Icon, value }: { Icon: React.ComponentType<{ className?: string }>; value: React.ReactNode }) => (
