@@ -77,7 +77,9 @@
 }
 
 @theme inline {
+  /*noinspection ALL*/
   --font-sans: var(--font-geist-sans);
+  /*noinspection ALL*/
   --font-mono: var(--font-geist-mono);
 
   --color-background: var(--background);
@@ -134,11 +136,13 @@
     from {
       height: 0;
     }
+    /*noinspection ALL*/
     to {
       height: var(--radix-accordion-content-height);
     }
   }
   @keyframes accordion-up {
+    /*noinspection ALL*/
     from {
       height: var(--radix-accordion-content-height);
     }
@@ -165,6 +169,8 @@
     border-color: var(--color-gray-200, currentColor);
   }
 }
+
+@custom-variant touch (@media (hover: none));
 
 @utility text-balance {
   text-wrap: balance;
@@ -208,7 +214,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
@@ -225,18 +231,5 @@
   button:disabled,
   [role='button']:disabled {
     @apply cursor-default;
-  }
-}
-
-/*
-  ---break---
-*/
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }
