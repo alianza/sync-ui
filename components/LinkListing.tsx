@@ -15,6 +15,8 @@ type Props = { listing: ListingObj; clients: UserObj[] };
 
 export function LinkListing({ listing, clients }: Props) {
   const [state, action] = useActionState(linkListing, initialActionState);
+  const formRef = React.useRef<HTMLFormElement>(null);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -49,7 +51,7 @@ export function LinkListing({ listing, clients }: Props) {
           Selecteer klanten om {listing.title} aan te koppelen
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} ref={formRef}>
         <input type="hidden" name="listingId" value={listing._id} />
         <CardContent>
           <div className="flex flex-col gap-2">
@@ -76,6 +78,8 @@ export function LinkListing({ listing, clients }: Props) {
         </CardContent>
         <CardFooter>
           <SubmitButton
+            variant="outline"
+            className="w-full"
             loadingLabel="Koppelen..."
             label={
               <>

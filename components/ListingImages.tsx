@@ -8,6 +8,7 @@ import { ListBlobResultBlob } from "@vercel/blob";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function ListingImages({
   blobs,
@@ -18,6 +19,7 @@ export default function ListingImages({
   deleteImageAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
   listingTitle: string;
 }) {
+  const [parent, enableAnimations] = useAutoAnimate();
   const [currentImage, setCurrentImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -28,7 +30,7 @@ export default function ListingImages({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div ref={parent} className="grid grid-cols-2 gap-4">
         {blobs.length > 0 ? (
           blobs.map((image, index) => (
             <div className="scale-hover relative cursor-pointer" key={image.pathname}>
@@ -38,6 +40,7 @@ export default function ListingImages({
                 width={200}
                 height={200}
                 alt={`${listingTitle} image ${index + 1}`}
+                title={image.pathname.split("/").pop()}
                 className="w-full"
                 onClick={() => handleImageClick(image.url)}
               />

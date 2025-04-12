@@ -34,10 +34,15 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
     "use server";
     try {
       const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
-      if (images.blobs.length >= 10) {
-        return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
-      }
       const imageFile = formData.get("image") as File;
+
+      if (images.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
+      if (!imageFile) return errorResponse({ message: "Geen afbeelding geselecteerd." });
+      if (!imageFile.type.startsWith("image/"))
+        return errorResponse({ message: "Ongeldig bestandstype. Alleen afbeeldingen zijn toegestaan." });
+      if (images.blobs.some((image) => image.pathname.endsWith(imageFile.name)))
+        return errorResponse({ message: "Afbeelding met deze naam bestaat al." });
+
       await put(`listingMedia/images/${listing._id}/${imageFile.name}`, imageFile, { access: "public" });
       revalidatePath(`/dashboard/listings/${listing._id}`);
       return successResponse({ message: "Afbeelding succesvol toegevoegd." });
@@ -46,13 +51,13 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
     }
   }
 
-  async function deleteImageAction(formData: FormData) {
+  async function deleteImage(formData: FormData) {
     "use server";
-    const url = formData.get("url") as string;
     try {
+      const url = formData.get("url") as string;
       await del(url);
       revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({ message: "Afbeelding verwijderd." });
+      return successResponse({ message: "Afbeelding succesvol verwijderd." });
     } catch (error) {
       return errorResponse({ message: "Fout bij verwijderen afbeelding" });
     }
@@ -228,7 +233,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardHeader>
             <CardContent>
               <Suspense fallback={<Loader className="h-auto" />}>
-                <Images listing={listing} deleteImageAction={deleteImageAction} />
+                <Images listing={listing} deleteImageAction={deleteImage} />
               </Suspense>
             </CardContent>
           </Card>
@@ -254,7 +259,11 @@ async function Images({
   listing: ListingObj;
   deleteImageAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
 }) {
+  "use cache";
+
   const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
+
+  images.blobs.sort((a, b) => a.uploadedAt.getTime() - b.uploadedAt.getTime());
 
   return <ListingImages blobs={images.blobs} deleteImageAction={deleteImageAction} listingTitle={listing.title} />;
 }
