@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,6 +26,7 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder?: string;
   emptyComponent?: React.ReactNode;
   infoLabel?: string;
+  disableAnimations?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -35,11 +37,21 @@ export function DataTable<TData, TValue>({
   filterPlaceholder,
   emptyComponent,
   infoLabel,
+  disableAnimations = false,
 }: DataTableProps<TData, TValue>) {
   "use no memo";
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [parent, enableAnimations] = useAutoAnimate();
+
+  useEffect(() => {
+    if (disableAnimations) {
+      enableAnimations(false);
+    } else {
+      enableAnimations(true);
+    }
+  }, [disableAnimations]);
 
   const table = useReactTable({
     data,
@@ -84,7 +96,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody ref={parent}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>

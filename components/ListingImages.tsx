@@ -19,7 +19,7 @@ export default function ListingImages({
   deleteImageAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
   listingTitle: string;
 }) {
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
   const [currentImage, setCurrentImage] = useState<string | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
 

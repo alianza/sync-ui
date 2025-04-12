@@ -122,4 +122,6 @@ export interface ListingDoc extends Listing, mongoose.Document {
 export interface ListingObj extends Omit<Listing, "userId"> {
   _id: string;
   userId: UserObj;
+  createdAt: Date;
+  updatedAt: Date;
 }
