@@ -246,7 +246,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardHeader>
             <CardContent>
               <Suspense fallback={<Loader className="h-auto" />}>
-                <Images listing={listing} deleteAction={deleteFile} />
+                <Images listing={listing} deleteAction={isOwner ? deleteFile : null} />
               </Suspense>
             </CardContent>
           </Card>
@@ -257,7 +257,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardHeader>
             <CardContent>
               <Suspense fallback={<Loader className="h-auto" />}>
-                <Documents listing={listing} deleteAction={deleteFile} />
+                <Documents listing={listing} deleteAction={isOwner ? deleteFile : null} />
               </Suspense>
             </CardContent>
           </Card>
@@ -293,7 +293,7 @@ async function Images({
   deleteAction,
 }: {
   listing: ListingObj;
-  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+  deleteAction: ((formData: FormData) => Promise<ServerResponse<unknown>>) | null;
 }) {
   "use cache";
   const images = (await list({ prefix: `listingMedia/${listing._id}/images/` })) || { blobs: [] };
@@ -306,7 +306,7 @@ async function Documents({
   deleteAction,
 }: {
   listing: ListingObj;
-  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+  deleteAction: ((formData: FormData) => Promise<ServerResponse<unknown>>) | null;
 }) {
   "use cache";
   const documents = (await list({ prefix: `listingMedia/${listing._id}/documents/` })) || { blobs: [] };

@@ -20,7 +20,7 @@ export default function ListingDocuments({
   listingTitle,
 }: {
   blobs: ListBlobResultBlob[];
-  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+  deleteAction: ((formData: FormData) => Promise<ServerResponse<unknown>>) | null;
   listingTitle: string;
 }) {
   const [parent] = useAutoAnimate();
@@ -52,7 +52,7 @@ export default function ListingDocuments({
                 <Button variant="outline" className="grow" onClick={() => handleDocumentOpenClick(document.url)}>
                   Openen
                 </Button>
-                <DocumentDeleteButton deleteImageAction={deleteAction} url={document.url} />
+                {deleteAction && <DocumentDeleteButton deleteImageAction={deleteAction} url={document.url} />}
               </CardContent>
             </Card>
           ))

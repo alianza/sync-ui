@@ -20,7 +20,7 @@ export default function ListingImages({
   listingTitle,
 }: {
   blobs: ListBlobResultBlob[];
-  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+  deleteAction: ((formData: FormData) => Promise<ServerResponse<unknown>>) | null;
   listingTitle: string;
 }) {
   const [parent] = useAutoAnimate();
@@ -38,7 +38,7 @@ export default function ListingImages({
         {blobs.length > 0 ? (
           blobs.map((image, index) => (
             <div className="scale-hover relative cursor-pointer" key={image.pathname}>
-              <ImageDeleteButton deleteImageAction={deleteAction} url={image.url} />
+              {deleteAction && <ImageDeleteButton deleteImageAction={deleteAction} url={image.url} />}
               <Image
                 src={image.url}
                 width={200}
