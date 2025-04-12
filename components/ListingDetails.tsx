@@ -69,14 +69,14 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
 
   async function deleteFile(formData: FormData) {
     "use server";
-    const entity = formData.get("entity") as string | "image";
+    const entity = formData.get("entity") || "image";
     try {
       const url = formData.get("url") as string;
       await del(url);
       revalidatePath(`/dashboard/listings/${listing._id}`);
       return successResponse({ message: `${entity === "image" ? "Afbeelding" : "Document"} succesvol verwijderd.` });
     } catch (error) {
-      return errorResponse({ message: `Fout bij verwijderen ${entity === "image" ? "afbeelding" : "document"}` });
+      return errorResponse({ message: `Fout bij verwijderen ${entity === "image" ? "afbeelding" : "document"}.` });
     }
   }
 
