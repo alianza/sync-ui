@@ -24,42 +24,55 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
 import { errorResponse, successResponse } from "@/lib/server.utils";
-import ImageUploadForm from "@/components/ImageUploadForm";
+import FileUploadForm from "@/components/ImageUploadForm";
 import ListingImages from "./ListingImages";
 import { ServerResponse } from "@/lib/types";
 import Loader from "@/components/layout/Loader";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { Tooltip } from "@/components/ui/tooltip";
+import ListingDocuments from "@/components/ListingDocuments";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
-  async function uploadImage(prevState: unknown, formData: FormData) {
+  async function uploadFile(prevState: unknown, formData: FormData) {
     "use server";
     try {
-      const images = await list({ prefix: `listingMedia/images/${listing._id}/` });
-      const imageFile = formData.get("image") as File;
+      const file = formData.get("file") as File;
+      if (!file) return errorResponse({ message: "Geen afbeelding geselecteerd." });
+      const files = await list({ prefix: `listingMedia/documents/${listing._id}/` });
 
-      if (images.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
-      if (!imageFile) return errorResponse({ message: "Geen afbeelding geselecteerd." });
-      if (!imageFile.type.startsWith("image/"))
-        return errorResponse({ message: "Ongeldig bestandstype. Alleen afbeeldingen zijn toegestaan." });
-      if (images.blobs.some((image) => image.pathname.endsWith(imageFile.name)))
-        return errorResponse({ message: "Afbeelding met deze naam bestaat al." });
+      if (file.type.startsWith("image/")) {
+        if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
+        if (!file.type.startsWith("image/"))
+          return errorResponse({ message: "Ongeldig bestandstype. Alleen afbeeldingen zijn toegestaan." });
+        if (files.blobs.some((image) => image.pathname.endsWith(file.name)))
+          return errorResponse({ message: "Afbeelding met deze naam bestaat al." });
+        await put(`listingMedia/images/${listing._id}/${file.name}`, file, { access: "public" });
+      } else {
+        if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 documenten toegestaan." });
+        if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
+          return errorResponse({ message: "Document met deze naam bestaat al." });
+        await put(`listingMedia/documents/${listing._id}/${file.name}`, file, { access: "public" });
+      }
 
-      await put(`listingMedia/images/${listing._id}/${imageFile.name}`, imageFile, { access: "public" });
       revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({ message: "Afbeelding succesvol toegevoegd." });
+      return successResponse({
+        message: `${file.type.startsWith("image/") ? "Afbeelding" : "Document"} succesvol geüpload.`,
+      });
     } catch (error) {
       return errorResponse({ message: "Fout bij het uploaden van de afbeelding:" });
     }
   }
 
-  async function deleteImage(formData: FormData) {
+  async function deleteFile(formData: FormData) {
     "use server";
+    const entity = formData.get("entity") as string | "image";
     try {
       const url = formData.get("url") as string;
       await del(url);
       revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({ message: "Afbeelding succesvol verwijderd." });
+      return successResponse({ message: `${entity === "image" ? "Afbeelding" : "Document"} succesvol verwijderd.` });
     } catch (error) {
-      return errorResponse({ message: "Fout bij verwijderen afbeelding" });
+      return errorResponse({ message: `Fout bij verwijderen ${entity === "image" ? "afbeelding" : "document"}` });
     }
   }
 
@@ -233,17 +246,34 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             </CardHeader>
             <CardContent>
               <Suspense fallback={<Loader className="h-auto" />}>
-                <Images listing={listing} deleteImageAction={deleteImage} />
+                <Images listing={listing} deleteAction={deleteFile} />
               </Suspense>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
+              <CardTitle>Documenten</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Suspense fallback={<Loader className="h-auto" />}>
+                <Documents listing={listing} deleteAction={deleteFile} />
+              </Suspense>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row gap-1">
               <CardTitle>Upload bestanden</CardTitle>
+              <Tooltip
+                tooltipContent="Upload hier bestanden die je aan de woning wilt koppelen. Afbeeldingen, documenten, etc."
+                asChild
+              >
+                <QuestionMarkCircledIcon className="self-start" />
+              </Tooltip>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-              <ImageUploadForm uploadImageAction={uploadImage} />
+              <FileUploadForm fileUploadAction={uploadFile} />
             </CardContent>
           </Card>
         </div>
@@ -254,18 +284,28 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
 
 async function Images({
   listing,
-  deleteImageAction,
+  deleteAction,
 }: {
   listing: ListingObj;
-  deleteImageAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
 }) {
   "use cache";
-
   const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
-
   images.blobs.sort((a, b) => a.uploadedAt.getTime() - b.uploadedAt.getTime());
+  return <ListingImages blobs={images.blobs} deleteAction={deleteAction} listingTitle={listing.title} />;
+}
 
-  return <ListingImages blobs={images.blobs} deleteImageAction={deleteImageAction} listingTitle={listing.title} />;
+async function Documents({
+  listing,
+  deleteAction,
+}: {
+  listing: ListingObj;
+  deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
+}) {
+  "use cache";
+  const documents = (await list({ prefix: `listingMedia/documents/${listing._id}/` })) || { blobs: [] };
+  documents.blobs.sort((a, b) => a.uploadedAt.getTime() - b.uploadedAt.getTime());
+  return <ListingDocuments blobs={documents.blobs} deleteAction={deleteAction} listingTitle={listing.title} />;
 }
 
 const IconField = ({ Icon, value }: { Icon: React.ComponentType<{ className?: string }>; value: React.ReactNode }) => (

@@ -7,7 +7,11 @@ import { authGuard, serializeDoc } from "@/lib/server.utils";
 import ListingDetails from "@/components/ListingDetails";
 import { FileQuestion, FileWarning } from "lucide-react";
 
-export default async function ListingPage({ params: { id } }: { params: { id: string } }) {
+export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+
+  const { id } = params;
+
   const session = await authGuard({ realtorOnly: true });
 
   if (!isValidObjectId(id)) {

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipBase, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ViewVerticalIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 
@@ -444,10 +444,10 @@ function SidebarMenuButton({
   }
 
   return (
-    <Tooltip>
+    <TooltipBase>
       <TooltipTrigger asChild>{button}</TooltipTrigger>
       <TooltipContent side="right" align="center" hidden={state !== "collapsed" || isMobile} {...tooltip} />
-    </Tooltip>
+    </TooltipBase>
   );
 }
 

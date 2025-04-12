@@ -1,12 +1,13 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { NextConfig } from "next";
+import * as process from "node:process";
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true, // Not working with TanStack React Table pagination and sorting
     serverActions: {
-      bodySizeLimit: "4.5mb", // Increased limit for server actions to accommodate larger payloads for file uploads
+      bodySizeLimit: `${parseFloat(process.env.BLOB_MAX_FILE_SIZE || "4.5")}mb`, // Increased limit for server actions to accommodate larger payloads for file uploads
     },
     useCache: true,
   },
