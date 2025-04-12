@@ -46,12 +46,12 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
           return errorResponse({ message: "Ongeldig bestandstype. Alleen afbeeldingen zijn toegestaan." });
         if (files.blobs.some((image) => image.pathname.endsWith(file.name)))
           return errorResponse({ message: "Afbeelding met deze naam bestaat al." });
-        await put(`listingMedia/images/${listing._id}/${file.name}`, file, { access: "public" });
+        await put(`listingMedia/${listing._id}/images/${file.name}`, file, { access: "public" });
       } else {
         if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 documenten toegestaan." });
         if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
           return errorResponse({ message: "Document met deze naam bestaat al." });
-        await put(`listingMedia/documents/${listing._id}/${file.name}`, file, { access: "public" });
+        await put(`listingMedia/${listing._id}/documents/${file.name}`, file, { access: "public" });
       }
 
       revalidatePath(`/dashboard/listings/${listing._id}`);
@@ -290,7 +290,7 @@ async function Images({
   deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
 }) {
   "use cache";
-  const images = (await list({ prefix: `listingMedia/images/${listing._id}/` })) || { blobs: [] };
+  const images = (await list({ prefix: `listingMedia/${listing._id}/images/` })) || { blobs: [] };
   images.blobs.sort((a, b) => a.uploadedAt.getTime() - b.uploadedAt.getTime());
   return <ListingImages blobs={images.blobs} deleteAction={deleteAction} listingTitle={listing.title} />;
 }
@@ -303,7 +303,7 @@ async function Documents({
   deleteAction: (formData: FormData) => Promise<ServerResponse<unknown>>;
 }) {
   "use cache";
-  const documents = (await list({ prefix: `listingMedia/documents/${listing._id}/` })) || { blobs: [] };
+  const documents = (await list({ prefix: `listingMedia/${listing._id}/documents/` })) || { blobs: [] };
   documents.blobs.sort((a, b) => a.uploadedAt.getTime() - b.uploadedAt.getTime());
   return <ListingDocuments blobs={documents.blobs} deleteAction={deleteAction} listingTitle={listing.title} />;
 }
