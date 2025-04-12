@@ -14,7 +14,9 @@ export default async function ListingsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const listings = serializeDoc(await Listing.find({ userId: session.user?.id })) as ListingObj[];
+  const listings = serializeDoc(
+    await Listing.find({ userId: session.user?.id }, {}).sort({ createdAt: -1 }),
+  ) as ListingObj[];
 
   const newListingButton = (
     <Link href="/dashboard/listings/new">

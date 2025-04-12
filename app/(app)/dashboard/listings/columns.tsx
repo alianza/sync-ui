@@ -79,20 +79,12 @@ export const columns: ColumnDef<ListingObj>[] = [
     header: "Bouwjaar",
   },
   {
-    accessorKey: "rooms.roomCount",
-    header: "Kamers",
-  },
-  {
-    accessorKey: "measurements.squareMetersTotal",
-    header: "Oppervlakte",
+    accessorKey: "createdAt",
+    header: "Toegevoegd op",
     accessorFn: (row) => {
-      const amount = row.measurements.squareMetersTotal;
-      return isNaN(amount) ? "Onbekend" : new Intl.NumberFormat("nl-NL").format(amount);
+      const amount = row.createdAt ? new Date(row.createdAt).getTime() : null;
+      return amount ? new Intl.DateTimeFormat("nl-NL").format(amount) : "Geen datum";
     },
-  },
-  {
-    accessorKey: "stories",
-    header: "Verdiepingen",
   },
   {
     accessorKey: "district",
