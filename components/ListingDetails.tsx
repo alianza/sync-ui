@@ -38,7 +38,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
     try {
       const file = formData.get("file") as File;
       if (!file) return errorResponse({ message: "Geen afbeelding geselecteerd." });
-      const files = await list({ prefix: `listingMedia/documents/${listing._id}/` });
+      const files = await list({ prefix: `listingMedia/${listing._id}/documents/` });
 
       if (file.type.startsWith("image/")) {
         if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
