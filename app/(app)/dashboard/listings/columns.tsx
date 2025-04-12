@@ -79,16 +79,16 @@ export const columns: ColumnDef<ListingObj>[] = [
     header: "Bouwjaar",
   },
   {
+    accessorKey: "district",
+    header: "Wijk",
+  },
+  {
     accessorKey: "createdAt",
     header: "Toegevoegd op",
     accessorFn: (row) => {
       const amount = row.createdAt ? new Date(row.createdAt).getTime() : null;
-      return amount ? new Intl.DateTimeFormat("nl-NL").format(amount) : "Geen datum";
+      return amount ? new Intl.DateTimeFormat("nl-NL", { dateStyle: "long" }).format(amount) : "Geen datum";
     },
-  },
-  {
-    accessorKey: "district",
-    header: "Wijk",
   },
   {
     id: "actions",
