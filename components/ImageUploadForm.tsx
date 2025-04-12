@@ -43,6 +43,7 @@ export default function ImageUploadForm({
         id="file"
         name="file"
         required
+        className="leading-6"
       />
       <SubmitButton label="Uploaden" loadingLabel="Uploaden..." />
     </form>
