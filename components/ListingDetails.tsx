@@ -266,7 +266,13 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
             <CardHeader className="flex flex-row gap-1">
               <CardTitle>Upload bestanden</CardTitle>
               <Tooltip
-                tooltipContent="Upload hier bestanden die je aan de woning wilt koppelen. Afbeeldingen, documenten, etc."
+                tooltipContent={
+                  <div className="flex flex-col gap-1">
+                    <p>Upload hier bestanden die je aan de woning wilt koppelen.</p>
+                    <Separator className="bg-neutral-300" />
+                    <p>Afbeeldingen, documenten, etc.</p>
+                  </div>
+                }
                 asChild
               >
                 <QuestionMarkCircledIcon className="self-start" />
