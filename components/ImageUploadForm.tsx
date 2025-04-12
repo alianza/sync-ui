@@ -5,7 +5,6 @@ import React, { startTransition, useActionState } from "react";
 import { toast } from "sonner";
 import { initialActionState, ResponseStatus, ServerResponse } from "@/lib/types";
 import { SubmitButton } from "@/components/SubmitButton";
-import process from "node:process";
 
 export default function ImageUploadForm({
   fileUploadAction,
@@ -19,7 +18,7 @@ export default function ImageUploadForm({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const maxFileSize = parseFloat(process.env.BLOB_MAX_FILE_SIZE || "4.5") * 1024 * 1024; // 4.5MB
+    const maxFileSize = parseFloat(process.env.NEXT_PUBLIC_BLOB_MAX_FILE_SIZE || "4.5") * 1024 * 1024; // 4.5MB
     const file = formData.get("file") as File;
     if (file && file.size > maxFileSize) return toast.error("Het bestand is te groot. Maximaal 4.5MB.");
 
