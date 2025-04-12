@@ -63,7 +63,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
       revalidatePath(`/dashboard/listings/${listing._id}`);
       return successResponse({ message: `${fileTypeName} succesvol geüpload.` });
     } catch {
-      return errorResponse({ message: "Fout bij het uploaden van de afbeelding:" });
+      return errorResponse({ message: "Fout bij het uploaden van de afbeelding." });
     }
   }
 
