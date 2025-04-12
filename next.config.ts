@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "4.5mb", // Increased limit for server actions to accommodate larger payloads for file uploads
     },
+    useCache: true,
   },
   sassOptions: {
     silenceDeprecations: ["legacy-js-api"],
