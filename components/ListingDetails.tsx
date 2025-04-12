@@ -38,27 +38,31 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
     try {
       const file = formData.get("file") as File;
       if (!file) return errorResponse({ message: "Geen afbeelding geselecteerd." });
-      const files = await list({ prefix: `listingMedia/${listing._id}/documents/` });
 
-      if (file.type.startsWith("image/")) {
-        if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 afbeeldingen toegestaan." });
-        if (!file.type.startsWith("image/"))
-          return errorResponse({ message: "Ongeldig bestandstype. Alleen afbeeldingen zijn toegestaan." });
-        if (files.blobs.some((image) => image.pathname.endsWith(file.name)))
-          return errorResponse({ message: "Afbeelding met deze naam bestaat al." });
-        await put(`listingMedia/${listing._id}/images/${file.name}`, file, { access: "public" });
-      } else {
-        if (files.blobs.length >= 10) return errorResponse({ message: "Maximaal 10 documenten toegestaan." });
-        if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
-          return errorResponse({ message: "Document met deze naam bestaat al." });
-        await put(`listingMedia/${listing._id}/documents/${file.name}`, file, { access: "public" });
+      const isImage = file.type.startsWith("image/");
+      const folderName = isImage ? "images" : "documents";
+      const fileTypeName = isImage ? "Afbeelding" : "Document";
+
+      const files = await list({ prefix: `listingMedia/${listing._id}/${folderName}/` });
+
+      if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
+        return errorResponse({ message: `${fileTypeName} met deze naam bestaat al.` });
+
+      if (files.blobs.length >= 10)
+        return errorResponse({ message: `Maximaal 10 ${fileTypeName.toLowerCase()}en toegestaan.` });
+
+      if (
+        !isImage &&
+        !["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ].includes(file.type) // prettier-ignore
+      ) {
+        return errorResponse({ message: `Alleen ${fileTypeName.toLowerCase()}en zijn toegestaan.` });
       }
 
+      await put(`listingMedia/${listing._id}/${folderName}/${file.name}`, file, { access: "public" });
       revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({
-        message: `${file.type.startsWith("image/") ? "Afbeelding" : "Document"} succesvol geüpload.`,
-      });
-    } catch (error) {
+      return successResponse({ message: `${fileTypeName} succesvol geüpload.` });
+    } catch {
       return errorResponse({ message: "Fout bij het uploaden van de afbeelding:" });
     }
   }
