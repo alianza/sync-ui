@@ -2,7 +2,7 @@
 
 import dbConnect from "@/lib/dbConnect";
 import Listing, { listingCreateSchema, listingUpdateSchema } from "@/models/Listing";
-import { LISTING_TYPES_ENUM } from "@/models/Listing.type";
+import { LISTING_TYPES } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import {
   actionAuthGuard,
@@ -14,10 +14,11 @@ import {
 } from "@/lib/server.utils";
 import z from "zod";
 import { auth } from "@/auth";
+import { getKey } from "@/lib/common.utils";
 
 export async function createListing(prevState: unknown, formData: FormData) {
   try {
-    formData.set("type", formData.get("type") || LISTING_TYPES_ENUM.house);
+    formData.set("type", formData.get("type") || getKey(LISTING_TYPES, "house"));
 
     const data = Object.fromEntries(formData);
 

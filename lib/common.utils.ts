@@ -146,20 +146,6 @@ export const fuzzy = (string: string = "", term: string = "", ratio: number): bo
 };
 
 /**
- * Format an ISO date string to dd-mm-yyyy and optionally include the time
- * @param ISODate {string}
- * @param includeTime {boolean}
- * @returns {string} - Formatted date string
- */
-export const formatDate = (ISODate: string, includeTime: boolean = false): string => {
-  const date = new Date(ISODate);
-  const dateString = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  if (!includeTime) return dateString;
-  const timeString = `${date.getHours()}:${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()}`;
-  return dateString + " " + timeString;
-};
-
-/**
  * Get the current date in 'yyyy-mm-dd' format
  * @returns {string} - Date string
  */
@@ -206,3 +192,5 @@ export const formatFileSize = (bytes: number): string => {
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizes[i];
 };
+
+export const getKey = <T extends object, K extends keyof T>(_object: T, key: K): K => key;
