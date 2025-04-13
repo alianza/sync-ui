@@ -8,10 +8,11 @@ import { cn } from "@/lib/utils";
 interface NavLinkProps {
   href: string;
   exact?: boolean;
-  label: string;
+  label: React.ReactNode | string;
+  className?: string;
 }
 
-const NavLink = ({ href, exact, label }: NavLinkProps) => {
+const NavLink = ({ href, exact, label, className }: NavLinkProps) => {
   const pathname = usePathname();
   const isActive = exact ? pathname === href : pathname.startsWith(href);
 
@@ -21,6 +22,8 @@ const NavLink = ({ href, exact, label }: NavLinkProps) => {
       className={cn(
         "flex p-2 text-sm font-bold underline-offset-4",
         isActive ? "underline decoration-inherit!" : "underline-hover",
+        "decoration-transparent",
+        className,
       )}
     >
       {label}

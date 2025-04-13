@@ -26,12 +26,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="flex w-[300px] flex-col gap-4 sm:w-[400px]">
+      <SheetContent side="right" className="flex w-[300px] flex-col gap-8 sm:w-[400px]">
         <SheetTitle>Menu</SheetTitle>
         <SheetDescription className="sr-only">
           Navigate to different sections of the website using the links below.
         </SheetDescription>
-        <nav className="flex flex-col gap-2">{children}</nav>
+        <nav className="flex h-full flex-col gap-1">{children}</nav>
       </SheetContent>
     </Sheet>
   );

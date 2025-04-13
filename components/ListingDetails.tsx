@@ -84,7 +84,7 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
 
   return (
     <div className="mx-auto flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex justify-between gap-2 max-sm:flex-col">
         <h1 className="text-3xl font-bold">{listing.title}</h1>
         {isOwner && (
           <Link href={`/dashboard/listings/${listing._id}/edit`} title="Bewerk woning">

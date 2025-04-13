@@ -5,8 +5,9 @@ import { AlertDialogAction } from "./ui/alert-dialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-function SignOutButton() {
+function SignOutButton({ className }: { className?: string }) {
   // const [state, action] = useActionState(signOutAction, initialActionState);
   // const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => handleAction(e, action);
 
@@ -16,8 +17,8 @@ function SignOutButton() {
         <AlertDialogAction
           onClick={async () => {
             await signOut({ redirectTo: "/login" })
-              .catch(() => toast.error("Failed to sign out"))
-              .finally(() => toast.success("Successfully logged out!"));
+              .catch(() => toast.error("Uitloggen mislukt"))
+              .finally(() => toast.success("Uitgelogd"));
           }}
           type="submit"
           className="text-start"
@@ -27,7 +28,10 @@ function SignOutButton() {
       }
       title="Uitloggen"
       description="Weet je zeker dat je wilt uitloggen?"
-      className="underline-hover p-2 text-start text-sm font-bold underline-offset-4"
+      className={cn(
+        "underline-hover p-2 text-start text-sm font-bold decoration-transparent underline-offset-4",
+        className,
+      )}
     >
       Log uit
     </ConfirmDialog>

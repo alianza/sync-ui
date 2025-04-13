@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { Session } from "next-auth";
 import { ROLES } from "@/models/User.type";
 import SignOutButton from "@/components/SignOutButton";
+import { Separator } from "@/components/ui/separator";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
@@ -16,6 +17,8 @@ export const appMenuItems = [
 ];
 
 export function AppHeader({ session }: { session: Session }) {
+  const filteredMenuItems = appMenuItems.filter(({ role: itemRole }) => !itemRole || itemRole === session.user.role);
+
   return (
     <header className="bg-background flex items-center p-4 shadow-sm dark:border-b-2">
       <div className="flex h-full items-center gap-2">
@@ -25,27 +28,27 @@ export function AppHeader({ session }: { session: Session }) {
       </div>
 
       <nav className="ml-auto hidden gap-2 md:flex">
-        <AppNavItems role={session.user.role} />
+        {filteredMenuItems.map(({ href, label, exact }) => (
+          <NavLink key={href} href={href} label={label} exact={exact} />
+        ))}
+        <SignOutButton />
       </nav>
 
       <Suspense fallback={null}>
         <MobileNav>
-          <AppNavItems role={session.user.role} />
+          {filteredMenuItems.map(({ href, label, exact }) => (
+            <NavLink
+              key={href}
+              href={href}
+              label={label}
+              exact={exact}
+              className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+            />
+          ))}
+          <Separator className="mt-auto" />
+          <SignOutButton className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
         </MobileNav>
       </Suspense>
     </header>
-  );
-}
-
-function AppNavItems({ role }: { role: ROLES }) {
-  return (
-    <>
-      {appMenuItems
-        .filter(({ role: itemRole }) => !itemRole || itemRole === role)
-        .map(({ href, label, exact }, index) => (
-          <NavLink key={index} href={href} label={label} exact={exact} />
-        ))}
-      <SignOutButton />
-    </>
   );
 }
