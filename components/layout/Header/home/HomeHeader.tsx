@@ -44,7 +44,3 @@ export function HomeHeader() {
     </header>
   );
 }
-
-function HomeNavItems() {
-  return <></>;
-}

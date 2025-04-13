@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
 
 export function DynamicHomeHeaderLinks() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   return session ? (
     <>
@@ -19,7 +19,7 @@ export function DynamicHomeHeaderLinks() {
 }
 
 export function MobileDynamicHomeHeaderLinks() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   return session ? (
     <>
