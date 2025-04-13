@@ -26,10 +26,10 @@ export function MobileDynamicHomeHeaderLinks() {
       <NavLink
         href="/dashboard"
         label="Dashboard"
-        className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+        className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
       />
       <Separator className="mt-auto" />
-      <SignOutButton className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
+      <SignOutButton className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
     </>
   ) : (
     <NavLink href="/login" label="Login" />

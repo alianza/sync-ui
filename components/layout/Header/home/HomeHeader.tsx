@@ -31,7 +31,7 @@ export function HomeHeader() {
         <MobileNav>
           {homeMenuItems.map(({ href, label, exact }) => (
             <NavLink
-              className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+              className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
               key={href}
               href={href}
               label={label}

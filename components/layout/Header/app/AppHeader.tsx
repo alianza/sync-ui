@@ -42,11 +42,11 @@ export function AppHeader({ session }: { session: Session }) {
               href={href}
               label={label}
               exact={exact}
-              className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+              className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
             />
           ))}
           <Separator className="mt-auto" />
-          <SignOutButton className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
+          <SignOutButton className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
         </MobileNav>
       </Suspense>
     </header>
