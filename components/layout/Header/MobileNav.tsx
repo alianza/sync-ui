@@ -15,7 +15,8 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    setIsOpen(false); // Close the menu when the route changes
+    const timeout = setTimeout(() => setIsOpen(false), 300); // Close the menu when the route changes after a short delay
+    return () => clearTimeout(timeout);
   }, [pathname, searchParams]);
 
   return (
