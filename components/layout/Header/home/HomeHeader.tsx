@@ -20,27 +20,27 @@ export function HomeHeader() {
     <header className="bg-background flex shrink flex-wrap items-center gap-8 p-4 shadow-sm dark:border-b-2">
       <HeaderLogo />
       <nav className="ml-auto hidden max-w-full flex-wrap gap-2 md:flex">
-        {homeMenuItems.map(({ href, label, exact }, index) => (
-          <NavLink key={index} href={href} label={label} exact={exact} />
+        {homeMenuItems.map(({ href, label, exact }) => (
+          <NavLink key={href} href={href} label={label} exact={exact} />
         ))}
         <Suspense fallback={null}>
           <DynamicHomeHeaderLinks />
         </Suspense>
       </nav>
-      <MobileNav>
-        {homeMenuItems.map(({ href, label, exact }, index) => (
-          <NavLink
-            className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
-            key={index}
-            href={href}
-            label={label}
-            exact={exact}
-          />
-        ))}
-        <Suspense fallback={null}>
+      <Suspense fallback={null}>
+        <MobileNav>
+          {homeMenuItems.map(({ href, label, exact }) => (
+            <NavLink
+              className="hover:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+              key={href}
+              href={href}
+              label={label}
+              exact={exact}
+            />
+          ))}
           <MobileDynamicHomeHeaderLinks />
-        </Suspense>
-      </MobileNav>
+        </MobileNav>
+      </Suspense>
     </header>
   );
 }
