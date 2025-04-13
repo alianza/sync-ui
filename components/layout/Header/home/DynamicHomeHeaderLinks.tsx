@@ -32,6 +32,10 @@ export function MobileDynamicHomeHeaderLinks() {
       <SignOutButton className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out" />
     </>
   ) : (
-    <NavLink href="/login" label="Login" />
+    <NavLink
+      href="/login"
+      label="Login"
+      className="hover:bg-muted active:bg-muted rounded p-4 transition-colors duration-200 ease-in-out"
+    />
   );
 }
