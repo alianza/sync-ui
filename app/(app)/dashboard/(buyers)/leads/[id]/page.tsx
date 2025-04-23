@@ -8,7 +8,7 @@ import ListingDetails from "@/components/ListingDetails";
 import { FileQuestion, FileWarning } from "lucide-react";
 
 export default async function ListingPage(props: { params: Promise<{ id: string }> }) {
-  const session = await authGuard({ buyerOnly: true });
+  await authGuard({ buyerOnly: true });
 
   const { id } = await props.params;
 

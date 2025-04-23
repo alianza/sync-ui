@@ -5,7 +5,7 @@ import { initialActionState, ResponseStatus } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Input } from "@/components/forms/input/Input";
-import { createClientInvite } from "@/app/(app)/dashboard/clients/new/actions";
+import { createClientInvite } from "@/app/(app)/dashboard/(realtors)/clients/new/actions";
 import { handleAction } from "@/lib/client.utils";
 import {
   AlertDialog,

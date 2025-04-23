@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useActionState, useEffect } from "react";
-import { createListing, updateListing } from "@/app/(app)/dashboard/listings/actions";
+import { createListing, updateListing } from "@/app/(app)/dashboard/(realtors)/listings/actions";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
 import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingObj } from "@/models/Listing.type";

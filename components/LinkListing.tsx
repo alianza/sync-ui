@@ -7,7 +7,7 @@ import { LinkIcon } from "lucide-react";
 import { UserObj } from "@/models/User.type";
 import { Checkbox } from "@/components/ui/checkbox";
 import { initialActionState, ResponseStatus } from "@/lib/types";
-import { linkListing } from "@/app/(app)/dashboard/listings/link/[id]/actions";
+import { linkListing } from "@/app/(app)/dashboard/(realtors)/listings/[id]/link/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { toast } from "sonner";
 

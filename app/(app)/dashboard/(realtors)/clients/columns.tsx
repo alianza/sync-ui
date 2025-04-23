@@ -17,7 +17,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "sonner";
 import { ResponseStatus } from "@/lib/types";
 import { UserObj } from "@/models/User.type";
-import { deleteAgent } from "@/app/(app)/dashboard/agents/actions";
+import { deleteClient } from "@/app/(app)/dashboard/(realtors)/clients/actions";
 
 export const columns: ColumnDef<UserObj>[] = [
   {
@@ -66,10 +66,10 @@ export const columns: ColumnDef<UserObj>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const agent = row.original;
+      const client = row.original;
 
       return (
-        <DropdownMenu key={agent._id}>
+        <DropdownMenu key={client._id}>
           <DropdownMenuTrigger asChild className="float-end">
             <Button variant="ghost" className="size-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -78,20 +78,20 @@ export const columns: ColumnDef<UserObj>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acties</DropdownMenuLabel>
-            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(agent._id)}>*/}
+            {/*<DropdownMenuItem onClick={() => navigator.clipboard.writeText(client._id)}>*/}
             {/*  Kopieer link*/}
             {/*</DropdownMenuItem>*/}
             <DropdownMenuSeparator />
-            <Link href={`/dashboard/agents/${agent._id}`}>
+            <Link href={`/dashboard/clients/${client._id}`}>
               <DropdownMenuItem>
                 <Eye className="mr-1 size-3" />
-                Bekijk makelaar
+                Bekijk klant
               </DropdownMenuItem>
             </Link>
             <ConfirmDialog
               className="hover:bg-muted w-full cursor-default rounded"
               onConfirm={async () => {
-                const { message, status } = await deleteAgent(agent._id, agent.email);
+                const { message, status } = await deleteClient(client._id, client.email);
                 if (message) {
                   if (status === ResponseStatus.error) return toast.error(message);
                   toast.success(message);

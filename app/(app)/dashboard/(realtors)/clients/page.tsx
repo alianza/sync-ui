@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import Loader from "@/components/layout/Loader";
 import { authGuard } from "@/lib/server.utils";
-import ClientsTable from "@/app/(app)/dashboard/clients/clientsTable";
+import ClientsTable from "@/app/(app)/dashboard/(realtors)/clients/clientsTable";
 
 export const revalidate = 60;
 

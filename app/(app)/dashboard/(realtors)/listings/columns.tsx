@@ -14,7 +14,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Eye, LinkIcon, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
 import Link from "next/link";
-import { deleteListing } from "@/app/(app)/dashboard/listings/actions";
+import { deleteListing } from "@/app/(app)/dashboard/(realtors)/listings/actions";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { capitalize } from "@/lib/common.utils";
 import { toast } from "sonner";
@@ -137,7 +137,7 @@ export const columns: ColumnDef<ListingObj>[] = [
                 Verwijderen
               </DropdownMenuItem>
             </ConfirmDialog>
-            <Link href={`/dashboard/listings/link/${listing._id}`}>
+            <Link href={`/app/(app)/dashboard/(realtors)/listings/%5Bid%5D/link/${listing._id}`}>
               <DropdownMenuItem>
                 <LinkIcon className="mr-1 size-3" />
                 Koppel woning
