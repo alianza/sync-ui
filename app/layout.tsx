@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Sync-ui - HuizenHub",
-  description: "Revolutionizing the Dutch housing market with innovative technology and seamless experiences.",
+  description: "Revolutioneren van de Nederlandse woningmarkt met innovatieve technologie en een disruptieve aanpak.",
   manifest: "/site.webmanifest",
 };
 

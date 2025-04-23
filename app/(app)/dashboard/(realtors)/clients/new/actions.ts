@@ -69,9 +69,7 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
       message: `Successfully created client invite for email: ${clientInvite.inviteeEmail}`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     if (isMongooseDuplicateKeyError(error)) {
       return failResponse({ message: "Je hebt al een uitnodiging voor deze klant uitstaan" });

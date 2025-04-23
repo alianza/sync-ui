@@ -107,16 +107,25 @@ export async function authGuard({
 
 export const actionAuthGuard = async (
   session?: Session | null,
-  { realtorOnly, buyerOnly, adminOnly }: { realtorOnly?: boolean; buyerOnly?: boolean; adminOnly?: boolean } = {},
+  {
+    realtorOnly,
+    buyerOnly,
+    adminOnly,
+    roles,
+  }: {
+    realtorOnly?: boolean;
+    buyerOnly?: boolean;
+    adminOnly?: boolean;
+    roles?: ROLES[];
+  } = {},
 ) => {
-  if (!session || !session.user) {
-    throw new Error("Unauthorized");
-  }
+  if (!session || !session.user) throw new Error("Unauthorized");
 
   // check roles
   if (realtorOnly && session.user.role !== ROLES.REALTOR) throw new Error("Unauthorized");
   if (buyerOnly && session.user.role !== ROLES.BUYER) throw new Error("Unauthorized");
   if (adminOnly && session.user.role !== ROLES.ADMIN) throw new Error("Unauthorized");
+  if (roles && !roles.includes(session.user.role)) throw new Error("Unauthorized");
 
   return session;
 };

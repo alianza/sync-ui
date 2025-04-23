@@ -43,9 +43,7 @@ export async function createListing(prevState: unknown, formData: FormData) {
       message: `Successfully created listing with title '${listing.title}'`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse({ message: `An error occurred while creating the listing: ${message}` });
@@ -105,9 +103,7 @@ export async function updateListing(prevState: unknown, formData: FormData) {
       message: `Successfully updated listing with title '${updateData.title}'`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse({ message: `An error occurred while updating the listing: ${message}` });

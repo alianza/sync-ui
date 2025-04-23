@@ -33,8 +33,6 @@ export async function linkListing(prevState: unknown, formData: FormData) {
 
     const linkListingData = linkListingSchema.parse(data);
 
-    console.log(`listingData`, linkListingData);
-
     const session = await auth();
 
     try {
@@ -52,9 +50,7 @@ export async function linkListing(prevState: unknown, formData: FormData) {
 
     for (const userId of linkListingData.linkUserIds) {
       const user = await User.findById<UserDoc>(userId);
-      if (!user) {
-        return errorResponse({ message: `Gebruiker met id '${userId}' niet gevonden` });
-      }
+      if (!user) return errorResponse({ message: `Gebruiker met id '${userId}' niet gevonden` });
 
       const listingExists = user.listings?.some((listing) => listing.listingId.equals(linkListingData.listingId));
 
@@ -69,18 +65,14 @@ export async function linkListing(prevState: unknown, formData: FormData) {
       });
     }
 
-    if (!listing) {
-      return errorResponse({ message: `Listing met id '${linkListingData.listingId}' niet gevonden` });
-    }
+    if (!listing) return errorResponse({ message: `Listing met id '${linkListingData.listingId}' niet gevonden` });
 
     return successResponse({
       data: serializeDoc(listing),
       message: `Woning met titel '${listing.title}' succesvol gekoppeld`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse({ message: `Er is een fout opgetreden tijdens het koppelen van de woning: ${message}` });

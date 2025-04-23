@@ -72,9 +72,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     // return redirect("/login");
     return successResponse({ message: "Uitnodiging succesvol geaccepteerd!", data: serializeDoc(user) });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     if (isMongooseDuplicateKeyError(error)) {
       return failResponse({ message: "E-mailadres is al in gebruik, je kan inloggen" });
@@ -104,9 +102,7 @@ export async function RejectInviteAction({ inviteeEmail, inviteID }: { inviteeEm
 
     return successResponse({ message: "Uitnodiging succesvol afgewezen" });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return failResponse({ message: formatZodError(error) });
-    }
+    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
 
     return errorResponse({ message: error?.toString() });
   }
