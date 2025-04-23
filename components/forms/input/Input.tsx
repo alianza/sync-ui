@@ -2,8 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Input as ShadCnInput } from "@/components/ui/input";
 import { Textarea as ShadCnTextArea, TextareaProps } from "@/components/ui/textarea";
 import React from "react";
-import { cn } from "@/lib/utils";
-import { ConditionalWrap } from "@/lib/client.utils";
+import { cn, ConditionalWrap } from "@/lib/client.utils";
 
 interface Props {
   id: string;
@@ -29,7 +28,7 @@ export function Input({
     <ConditionalWrap
       condition={!!label}
       wrap={(children) => (
-        <Label htmlFor={id} className="group/label flex flex-col gap-1 text-sm font-medium text-foreground">
+        <Label htmlFor={id} className="group/label text-foreground flex flex-col gap-1 text-sm font-medium">
           <span>
             {label}
             {props.required && <span className="text-muted-foreground">*</span>}
@@ -45,7 +44,7 @@ export function Input({
             {children}
             <div
               className={cn("absolute inset-y-0 right-0 flex items-center pr-2.5 text-sm", {
-                "pointer-events-none group-hover/label:hidden group-hover:hidden": hideSuffixOnHover,
+                "pointer-events-none group-hover:hidden group-hover/label:hidden": hideSuffixOnHover,
               })}
             >
               {suffix}
@@ -57,7 +56,7 @@ export function Input({
           id={id}
           name={id || name}
           type={type}
-          className={cn("hover:ring-1 hover:ring-accent", props.className)}
+          className={cn("hover:ring-accent hover:ring-1", props.className)}
           {...props}
         />
       </ConditionalWrap>

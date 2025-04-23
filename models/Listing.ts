@@ -26,7 +26,7 @@ export const listingCreateSchema = z.object({
   yearBuilt: z.coerce.number().min(1800).max(new Date().getFullYear()),
   description: z.string().max(MAX_DESCRIPTION_LENGTH),
   roofType: z.string().min(1),
-  type: z.enum([TYPES_ENUM[0], ...TYPES_ENUM]),
+  type: z.enum([TYPES_ENUM[0], ...TYPES_ENUM]).default(getKey(LISTING_TYPES, "house")),
   "measurements.squareMetersTotal": z.coerce.number().min(1),
   "measurements.squareMetersLiving": z.coerce.number().default(0),
   "measurements.squareMetersOther": z.coerce.number().default(0),

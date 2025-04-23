@@ -5,7 +5,8 @@ import { AlertDialogAction } from "./ui/alert-dialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+
+import { cn } from "@/lib/client.utils";
 
 function SignOutButton({ className }: { className?: string }) {
   // const [state, action] = useActionState(signOutAction, initialActionState);

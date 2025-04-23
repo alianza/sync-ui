@@ -1,5 +1,12 @@
 import React, { startTransition } from "react";
+import { ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
+/**
+ * A utility function to handle form submission and button click events. Use this for form submission without resetting the form state.
+ * @param e
+ * @param action
+ */
 export const handleAction = (
   e: React.FormEvent<HTMLFormElement | HTMLButtonElement>,
   action: (data: FormData) => void,
@@ -22,3 +29,7 @@ export const ConditionalWrap = ({
   wrap: (children: React.ReactNode) => React.ReactNode;
   children: React.ReactNode;
 }) => (condition ? wrap(children) : children);
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

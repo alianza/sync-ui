@@ -29,7 +29,7 @@ export default function ImageUploadForm({
     if (state.status === ResponseStatus.success) {
       toast.success(state.message);
       formRef.current?.reset();
-    } else if (state.status === ResponseStatus.error) {
+    } else if (state.status !== ResponseStatus.pending) {
       toast.error(state.message || "Er is een fout opgetreden bij het uploaden van de afbeelding.");
     }
   }, [state]);
@@ -42,7 +42,7 @@ export default function ImageUploadForm({
         accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, image/*"
         id="file"
         name="file"
-        required
+        // required
         className="leading-6"
       />
       <SubmitButton label="Uploaden" loadingLabel="Uploaden..." />

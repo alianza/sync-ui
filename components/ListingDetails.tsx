@@ -23,7 +23,7 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { del, list, put } from "@vercel/blob";
-import { errorResponse, successResponse } from "@/lib/server.utils";
+import { errorResponse, failResponse, formatZodError, successResponse } from "@/lib/server.utils";
 import FileUploadForm from "@/components/ImageUploadForm";
 import ListingImages from "./ListingImages";
 import { ServerResponse } from "@/lib/types";
@@ -31,53 +31,83 @@ import Loader from "@/components/layout/Loader";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { Tooltip } from "@/components/ui/tooltip";
 import ListingDocuments from "@/components/ListingDocuments";
+import z from "zod";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadFile(prevState: unknown, formData: FormData) {
     "use server";
+
+    const maxFileSize = parseFloat(process.env.NEXT_PUBLIC_BLOB_MAX_FILE_SIZE || "4.5") * 1024 * 1024; // 4.5MB
+    const uploadFileSchema = z.object({
+      file: z.instanceof(File).refine((file) => file.size <= maxFileSize, {
+        message: `Bestand is te groot. Maximaal ${process.env.NEXT_PUBLIC_BLOB_MAX_FILE_SIZE || "4.5"}MB toegestaan.`,
+      }),
+    });
+
+    const parsedUploadFileSchema = uploadFileSchema.safeParse(Object.fromEntries(formData));
+
+    if (!parsedUploadFileSchema.success)
+      return failResponse({ message: formatZodError(parsedUploadFileSchema.error, { messageOnly: true }) });
+
+    const { file } = parsedUploadFileSchema.data;
+
+    if (file.size === 0) return errorResponse({ message: "Bestand is vereist." });
+
+    if (!file) return errorResponse({ message: "Geen afbeelding geselecteerd." });
+
+    const isImage = file.type.startsWith("image/");
+    const folderName = isImage ? "images" : "documents";
+    const fileTypeName = isImage ? "Afbeelding" : "Document";
+
+    const files = await list({ prefix: `listingMedia/${listing._id}/${folderName}/` });
+
+    if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
+      return errorResponse({ message: `${fileTypeName} met deze naam bestaat al.` });
+
+    if (files.blobs.length >= 10)
+      return errorResponse({ message: `Maximaal 10 ${fileTypeName.toLowerCase()}en toegestaan.` });
+
+    const allowedFileTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"] // prettier-ignore
+
+    if (!isImage && !allowedFileTypes.includes(file.type))
+      return errorResponse({ message: `Alleen ${fileTypeName.toLowerCase()}en zijn toegestaan.` });
+
     try {
-      const file = formData.get("file") as File;
-      if (!file) return errorResponse({ message: "Geen afbeelding geselecteerd." });
-
-      const isImage = file.type.startsWith("image/");
-      const folderName = isImage ? "images" : "documents";
-      const fileTypeName = isImage ? "Afbeelding" : "Document";
-
-      const files = await list({ prefix: `listingMedia/${listing._id}/${folderName}/` });
-
-      if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
-        return errorResponse({ message: `${fileTypeName} met deze naam bestaat al.` });
-
-      if (files.blobs.length >= 10)
-        return errorResponse({ message: `Maximaal 10 ${fileTypeName.toLowerCase()}en toegestaan.` });
-
-      if (
-        !isImage &&
-        !["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        ].includes(file.type) // prettier-ignore
-      ) {
-        return errorResponse({ message: `Alleen ${fileTypeName.toLowerCase()}en zijn toegestaan.` });
-      }
-
       await put(`listingMedia/${listing._id}/${folderName}/${file.name}`, file, { access: "public" });
-      revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({ message: `${fileTypeName} succesvol geüpload.` });
     } catch {
-      return errorResponse({ message: "Fout bij het uploaden van de afbeelding." });
+      return errorResponse({ message: `Fout bij het uploaden van de afbeelding` });
     }
+
+    revalidatePath(`/dashboard/listings/${listing._id}`);
+    return successResponse({ message: `${fileTypeName} succesvol geüpload.` });
   }
 
   async function deleteFile(formData: FormData) {
     "use server";
-    const entity = formData.get("entity") || "image";
+
+    const deleteFileSchema = z
+      .object({
+        entity: z
+          .enum(["image", "document"], { errorMap: () => ({ message: "Ongeldige bestands type." }) })
+          .default("image"),
+        url: z.string().url({ message: "Ongeldige bestands URL." }),
+      })
+      .required();
+    const parsedDeleteFileSchema = deleteFileSchema.safeParse(Object.fromEntries(formData));
+
+    if (!parsedDeleteFileSchema.success)
+      return failResponse({ message: formatZodError(parsedDeleteFileSchema.error, { messageOnly: true }) });
+
+    const { entity, url } = parsedDeleteFileSchema.data;
+
     try {
-      const url = formData.get("url") as string;
       await del(url);
-      revalidatePath(`/dashboard/listings/${listing._id}`);
-      return successResponse({ message: `${entity === "image" ? "Afbeelding" : "Document"} succesvol verwijderd.` });
     } catch (error) {
       return errorResponse({ message: `Fout bij verwijderen ${entity === "image" ? "afbeelding" : "document"}.` });
     }
+
+    revalidatePath(`/dashboard/listings/${listing._id}`);
+    return successResponse({ message: `${entity === "image" ? "Afbeelding" : "Document"} succesvol verwijderd.` });
   }
 
   const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode}, ${listing.city}`;

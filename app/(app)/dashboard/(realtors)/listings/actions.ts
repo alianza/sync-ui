@@ -2,7 +2,6 @@
 
 import dbConnect from "@/lib/dbConnect";
 import Listing, { listingCreateSchema, listingUpdateSchema } from "@/models/Listing";
-import { LISTING_TYPES } from "@/models/Listing.type";
 import { revalidatePath } from "next/cache";
 import {
   actionAuthGuard,
@@ -12,55 +11,50 @@ import {
   serializeDoc,
   successResponse,
 } from "@/lib/server.utils";
-import z from "zod";
 import { auth } from "@/auth";
-import { getKey } from "@/lib/common.utils";
 
 export async function createListing(prevState: unknown, formData: FormData) {
+  const parsedListingSchema = listingCreateSchema.safeParse(Object.fromEntries(formData));
+  if (!parsedListingSchema.success)
+    return failResponse({ message: formatZodError(parsedListingSchema.error, { messageOnly: true }) });
+
+  const listingData = parsedListingSchema.data;
+
+  // const nestedFormData = createNestedObject(listingData); // Nested paths are handles by Mongoose automatically
+
+  const session = await auth();
+
   try {
-    formData.set("type", formData.get("type") || getKey(LISTING_TYPES, "house"));
+    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te maken" });
+    await actionAuthGuard(session, { realtorOnly: true });
+  } catch (error) {
+    return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning aan te maken" });
+  }
 
-    const data = Object.fromEntries(formData);
-
-    const listingData = listingCreateSchema.parse(data);
-
-    // const nestedFormData = createNestedObject(listingData); // Nested paths are handles by Mongoose automatically
-
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to to create a listing" });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a realtor to create a listing" });
-    }
-
+  try {
     await dbConnect();
     const listing = await Listing.create({ ...listingData, userId: session.user.id });
-    // revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
-      message: `Successfully created listing with title '${listing.title}'`,
+      message: `Succesvol woning met naam '${listing.title}' aangemaakt.`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
-
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse({ message: `An error occurred while creating the listing: ${message}` });
+    return errorResponse({ message: `Fout bij het aanmaken van de woning: ${message}` });
   }
 }
 
 export async function deleteListing(id: string) {
+  const session = await auth();
+
   try {
-    const session = await auth();
+    if (!session) return errorResponse({ message: "You must be logged in to delete a listing" });
+    await actionAuthGuard(session, { realtorOnly: true });
+  } catch (error) {
+    return errorResponse({ message: "You must be logged in as a realtor to delete a listing" });
+  }
 
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to delete a listing" });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a realtor to delete a listing" });
-    }
-
+  try {
     await dbConnect();
     const listing = await Listing.findOneAndDelete({ _id: id, userId: session.user.id });
     revalidatePath(`/dashboard/listings`);
@@ -75,20 +69,22 @@ export async function deleteListing(id: string) {
 }
 
 export async function updateListing(prevState: unknown, formData: FormData) {
+  const parsedListingUpdateSchema = listingUpdateSchema.safeParse(Object.fromEntries(formData));
+  if (!parsedListingUpdateSchema.success)
+    return failResponse({ message: formatZodError(parsedListingUpdateSchema.error, { messageOnly: true }) });
+
+  const updateData = parsedListingUpdateSchema.data;
+
+  const session = await auth();
+
   try {
-    const data = Object.fromEntries(formData);
+    if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
+    await actionAuthGuard(session, { realtorOnly: true });
+  } catch (error) {
+    return errorResponse({ message: "You must be logged in as a realtor to update a listing" });
+  }
 
-    const updateData = listingUpdateSchema.parse(data);
-
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a realtor to update a listing" });
-    }
-
+  try {
     await dbConnect();
     const listing = await Listing.findOneAndUpdate({ _id: updateData._id, userId: session.user.id }, updateData, {
       new: true,
@@ -103,8 +99,6 @@ export async function updateListing(prevState: unknown, formData: FormData) {
       message: `Successfully updated listing with title '${updateData.title}'`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
-
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse({ message: `An error occurred while updating the listing: ${message}` });
   }

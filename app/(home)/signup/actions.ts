@@ -23,23 +23,24 @@ const registerSchema = z.object({
 });
 
 export async function SignUpAction(prevState: unknown, formData: FormData) {
+  const parsedRegisterSchema = registerSchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsedRegisterSchema.success)
+    return errorResponse({ message: formatZodError(parsedRegisterSchema.error, { messageOnly: true }) });
+
+  const { firstName, lastName, email, password, confirmPassword } = parsedRegisterSchema.data;
+
+  if (password !== confirmPassword) return failResponse({ message: "Passwords do not match" });
+
+  const hashedPassword = await saltAndHashPassword(password);
+
   try {
-    const { firstName, lastName, email, password, confirmPassword } = registerSchema.parse(
-      Object.fromEntries(formData),
-    );
-
-    if (password !== confirmPassword) return failResponse({ message: "Passwords do not match" });
-
-    const hashedPassword = await saltAndHashPassword(password);
-
     await dbConnect();
     const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: ROLES.REALTOR });
     return successResponse({ message: "Successfully signed up!", data: serializeDoc(user) });
   } catch (error) {
-    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
-
     if (isMongooseDuplicateKeyError(error)) {
-      return failResponse({ message: "This email is already in use, please log in" });
+      return errorResponse({ message: "This email is already in use, please log in" });
     }
 
     return errorResponse({ message: error?.toString() });

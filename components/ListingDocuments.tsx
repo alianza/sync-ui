@@ -99,6 +99,7 @@ export function DocumentDeleteButton({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const res = await deleteImageAction(formData);
+
     if (res.status === ResponseStatus.success) {
       toast.success(res.message);
     } else {
@@ -110,7 +111,7 @@ export function DocumentDeleteButton({
     <ConfirmDialog
       customAction={
         <form onSubmit={handleDelete}>
-          <AlertDialogAction type="submit" className="text-start">
+          <AlertDialogAction type="submit" className="w-full">
             Bevestigen
           </AlertDialogAction>
           <input type="hidden" name="url" value={url} />

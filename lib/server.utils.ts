@@ -76,12 +76,19 @@ const formatZodIssue = (issue: ZodIssue): string => {
 };
 
 // Format the Zod error message with only the current error
-export const formatZodError = (error: ZodError) => {
+export const formatZodError = (error: ZodError, options: { messageOnly?: boolean } = {}) => {
+  const defaultOptions = { messageOnly: false };
+  options = { ...defaultOptions, ...options };
+
   const { issues } = error;
 
   const errors = [];
 
   for (const currentIssue of issues) {
+    if (options.messageOnly) {
+      errors.push(currentIssue.message);
+      continue;
+    }
     errors.push(formatZodIssue(currentIssue));
   }
 

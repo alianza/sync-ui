@@ -6,7 +6,8 @@ import { initialActionState, ResponseStatus } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitButton } from "@/components/SubmitButton";
 import { Input } from "@/components/forms/input/Input";
-import { cn } from "@/lib/utils";
+
+import { cn } from "@/lib/client.utils";
 
 export function ContactForm() {
   const [state, action] = useActionState(createContact, initialActionState);

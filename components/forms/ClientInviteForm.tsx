@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { SubmitButton } from "@/components/SubmitButton";
 import { Input } from "@/components/forms/input/Input";
 import { createClientInvite } from "@/app/(app)/dashboard/(realtors)/clients/new/actions";
-import { handleAction } from "@/lib/client.utils";
+import { cn, handleAction } from "@/lib/client.utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 export function ClientInviteForm() {
   const [state, action] = useActionState(createClientInvite, initialActionState);

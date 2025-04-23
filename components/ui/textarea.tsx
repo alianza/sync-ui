@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client.utils";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 

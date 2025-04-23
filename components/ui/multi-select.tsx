@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+
+import { cn } from "@/lib/client.utils";
 
 type Item = Record<"key" | "value", string>;
 

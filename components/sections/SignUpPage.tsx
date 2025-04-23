@@ -21,7 +21,7 @@ export async function SignUpPage() {
             </Link>
           </div>
         </CardFooter>
-      </Card>{" "}
+      </Card>
     </section>
   );
 }

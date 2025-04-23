@@ -7,7 +7,7 @@ import { SignUpAction } from "@/app/(home)/signup/actions";
 import { Input } from "@/components/forms/input/Input";
 import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggle";
 import Link from "next/link";
-import { handleAction } from "@/lib/client.utils";
+import { cn, handleAction } from "@/lib/client.utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +24,7 @@ function SignUpForm() {
 
     if (actionState.status === ResponseStatus.success) {
       toast.success("Succesvol geregistreerd!", { description: "Je kan nu inloggen." });
-      setTimeout(() => router.push("/login"), 1000);
+      setTimeout(() => router.push("/login"), 1500);
     }
   }, [actionState, router]);
 
@@ -93,7 +93,13 @@ function SignUpForm() {
 
         {state.status !== ResponseStatus.pending && (
           <div className="flex">
-            <p className="text-muted-foreground text-sm">{state.message}</p>
+            <p
+              className={cn("text-muted-foreground text-sm", {
+                "text-destructive": actionState.status === ResponseStatus.error,
+              })}
+            >
+              {state.message}
+            </p>
             {state.status === ResponseStatus.success && (
               <>
                 &nbsp;
