@@ -37,6 +37,36 @@ export const INSULATION = {
   muurIsolation: "Muurisolatie",
 };
 
+export const STATUS = {
+  draft: "Concept",
+  available: "Beschikbaar",
+  offer_received: "Aanbod ontvangen",
+  under_option: "Onder optie",
+  reserved: "Gereserveerd",
+  sale_pending_conditions: "Verkoop onder voorwaarden",
+  sold: "Verkocht",
+};
+
+export const STATUS_COLOR = {
+  draft: "bg-gray-500",
+  available: "bg-green-500",
+  offer_received: "bg-yellow-500",
+  under_option: "bg-blue-500",
+  reserved: "bg-orange-500",
+  sale_pending_conditions: "bg-purple-500",
+  sold: "bg-red-500",
+};
+
+export const STATUS_TEXT = {
+  draft: "De woning is nog niet gepubliceerd.",
+  available: "De woning is beschikbaar voor verkoop.",
+  offer_received: "Er is een bod gedaan op de woning.",
+  under_option: "De woning is onder optie.",
+  reserved: "De woning is gereserveerd.",
+  sale_pending_conditions: "De verkoop is onder voorwaarden.",
+  sold: "De woning is verkocht.",
+};
+
 interface Listing {
   title: string;
   streetName: string;
@@ -73,7 +103,7 @@ interface Listing {
     CV: string;
   };
   ownership: string;
-  isPublic: boolean;
+  status: keyof typeof STATUS;
   userId: UserDoc;
 }
 
