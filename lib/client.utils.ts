@@ -28,7 +28,7 @@ export const ConditionalWrap = ({
   condition: boolean;
   wrap: (children: React.ReactNode) => React.ReactNode;
   children: React.ReactNode;
-}) => (condition ? wrap(children) : children);
+}) => (condition ? wrap(children) : children); // Wrap children with a function if condition is true
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
