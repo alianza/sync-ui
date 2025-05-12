@@ -8,7 +8,6 @@ import User from "@/models/User";
 
 export async function deleteClient(id: string, email: string) {
   try {
-    await dbConnect();
     const session = await auth();
 
     try {
@@ -17,6 +16,8 @@ export async function deleteClient(id: string, email: string) {
     } catch (error) {
       return errorResponse({ message: "You must be logged in as a realtor to delete a client" });
     }
+
+    await dbConnect();
 
     const user = await User.findByIdAndUpdate(session.user.id, { $pull: { clients: id } });
 
