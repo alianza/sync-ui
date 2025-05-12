@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import z from "zod";
 
 import "server-only";
-import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc } from "@/models/Listing.type";
+import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingDoc, STATUS } from "@/models/Listing.type";
 import { ObjectId } from "mongodb";
 import { getKey } from "@/lib/common.utils";
 
@@ -12,6 +12,7 @@ const TYPES_ENUM = Object.keys(LISTING_TYPES) as Array<keyof typeof LISTING_TYPE
 const ENERGY_LABELS_ENUM = Object.keys(ENERGY_LABELS) as Array<keyof typeof ENERGY_LABELS>;
 const FEATURES_ENUM = Object.keys(FEATURES) as Array<keyof typeof FEATURES>;
 const INSULATION_ENUM = Object.keys(INSULATION) as Array<keyof typeof INSULATION>;
+const STATUS_ENUM = Object.keys(STATUS) as Array<keyof typeof STATUS>;
 
 const MAX_DESCRIPTION_LENGTH = 1500;
 
@@ -49,7 +50,7 @@ export const listingCreateSchema = z.object({
   "energy.waterHeating": z.string(),
   "energy.CV": z.string(),
   ownership: z.string().min(1),
-  isPublic: z.boolean().default(false),
+  status: z.enum([STATUS_ENUM[0], ...STATUS_ENUM]).default(getKey(STATUS, "draft")),
   // userId: z.string(),
 });
 
@@ -234,10 +235,14 @@ const ListingSchema = new mongoose.Schema<ListingDoc>(
       type: String,
       required: [true, "Geef een eigendomstype op voor deze woning"],
     },
-    isPublic: {
-      type: Boolean,
-      required: [true, "Geef aan of de woning openbaar is"],
-      default: false,
+    status: {
+      type: String,
+      required: true,
+      enum: {
+        values: STATUS_ENUM,
+        message: '"{VALUE}" is geen geldige status',
+      },
+      default: "draft",
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
