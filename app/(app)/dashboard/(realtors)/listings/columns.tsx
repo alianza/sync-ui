@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { LISTING_TYPES, ListingObj } from "@/models/Listing.type";
+import { LISTING_TYPES, ListingObj, STATUS, STATUS_COLOR, STATUS_TEXT } from "@/models/Listing.type";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Eye, LinkIcon, MoreHorizontal, Pencil, SortAsc, SortDesc, Trash } from "lucide-react";
+import { ArrowUpDown, Eye, LinkIcon, MoreHorizontal, Pencil, Send, SortAsc, SortDesc, Trash } from "lucide-react";
 import Link from "next/link";
-import { deleteListing } from "@/app/(app)/dashboard/(realtors)/listings/actions";
+import { deleteListing, updateListingStatus } from "@/app/(app)/dashboard/(realtors)/listings/actions";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { capitalize } from "@/lib/common.utils";
 import { toast } from "sonner";
 import { ResponseStatus } from "@/lib/types";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export const columns: ColumnDef<ListingObj>[] = [
   {
@@ -79,15 +80,72 @@ export const columns: ColumnDef<ListingObj>[] = [
     header: "Bouwjaar",
   },
   {
-    accessorKey: "district",
-    header: "Wijk",
+    accessorKey: "status",
+    // add sorting
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      const SortedIcon = !isSorted ? ArrowUpDown : isSorted === "asc" ? SortAsc : SortDesc;
+      return (
+        <Button
+          className="float-end text-[length:inherit]"
+          variant="ghost"
+          onClick={() =>
+            column.getIsSorted() === "desc"
+              ? column.clearSorting()
+              : column.toggleSorting(column.getIsSorted() === "asc")
+          }
+        >
+          Status
+          <SortedIcon className="ml-2 size-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status = row.getValue("status")?.toString();
+      const statusLabel = STATUS[status as keyof typeof STATUS] || capitalize(status);
+      const color = STATUS_COLOR[status as keyof typeof STATUS_COLOR] || "bg-gray-500";
+      const statusExplanation = STATUS_TEXT[status as keyof typeof STATUS_TEXT] || "";
+      return (
+        <div className="flex items-center gap-2">
+          <Tooltip tooltipContent={statusExplanation} asChild>
+            <div className={`size-4 rounded-full p-1 ${color} bg-clip-content`} />
+          </Tooltip>
+          <span>{statusLabel}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
-    header: "Toegevoegd op",
     accessorFn: (row) => {
       const amount = row.createdAt ? new Date(row.createdAt).getTime() : null;
       return amount ? new Intl.DateTimeFormat("nl-NL", { dateStyle: "long" }).format(amount) : "Geen datum";
+    },
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      const SortedIcon = !isSorted ? ArrowUpDown : isSorted === "asc" ? SortAsc : SortDesc;
+      return (
+        <Button
+          className="float-end text-[length:inherit]"
+          variant="ghost"
+          onClick={() =>
+            column.getIsSorted() === "desc"
+              ? column.clearSorting()
+              : column.toggleSorting(column.getIsSorted() === "asc")
+          }
+        >
+          Toegevoegd op
+          <SortedIcon className="ml-2 size-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const amount = row.getValue("createdAt") ? new Date(row.getValue("createdAt")).getTime() : null;
+      const formatted = amount
+        ? new Intl.DateTimeFormat("nl-NL", { dateStyle: "long" }).format(new Date(amount))
+        : "Geen datum";
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
@@ -121,13 +179,38 @@ export const columns: ColumnDef<ListingObj>[] = [
                 Bewerk woning
               </DropdownMenuItem>
             </Link>
+            {(listing.status === "available" || listing.status === "offer_received") && (
+              <Link href={`/dashboard/listings/${listing._id}/link/`}>
+                <DropdownMenuItem>
+                  <LinkIcon className="mr-1 size-3" />
+                  Koppel woning
+                </DropdownMenuItem>
+              </Link>
+            )}
+            {listing.status === "draft" && (
+              <ConfirmDialog
+                className="hover:bg-muted w-full cursor-default rounded"
+                onConfirm={async () => {
+                  const { message, status } = await updateListingStatus(listing._id, "available");
+                  if (message) {
+                    if (status === ResponseStatus.error) return toast.error(message);
+                    toast.success(message);
+                  }
+                }}
+              >
+                <DropdownMenuItem className="pointer-events-none">
+                  <Send className="mr-1 size-3" />
+                  Publiceer woning
+                </DropdownMenuItem>
+              </ConfirmDialog>
+            )}
             <ConfirmDialog
               className="hover:bg-muted w-full cursor-default rounded"
+              description={`${listing.title} wordt verwijderd.`}
               onConfirm={async () => {
                 const { message, status } = await deleteListing(listing._id);
                 if (message) {
                   if (status === ResponseStatus.error) return toast.error(message);
-
                   toast.success(message);
                 }
               }}
@@ -137,12 +220,6 @@ export const columns: ColumnDef<ListingObj>[] = [
                 Verwijderen
               </DropdownMenuItem>
             </ConfirmDialog>
-            <Link href={`/app/(app)/dashboard/(realtors)/listings/%5Bid%5D/link/${listing._id}`}>
-              <DropdownMenuItem>
-                <LinkIcon className="mr-1 size-3" />
-                Koppel woning
-              </DropdownMenuItem>
-            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );
