@@ -24,15 +24,20 @@ const linkListingSchema = z.object({
 });
 
 export async function linkListing(prevState: unknown, formData: FormData) {
+  const data = {
+    listingId: formData.get("listingId"),
+    linkUserIds: formData.getAll("linkUserIds[]"),
+    unlinkUserIds: formData.getAll("unlinkUserIds[]"),
+  };
+
+  const parsedLinkListingSchema = linkListingSchema.safeParse(data);
+
+  if (!parsedLinkListingSchema.success)
+    return failResponse({ message: formatZodError(parsedLinkListingSchema.error, { messageOnly: true }) });
+
+  const linkListingData = parsedLinkListingSchema.data;
+
   try {
-    const data = {
-      listingId: formData.get("listingId"),
-      linkUserIds: formData.getAll("linkUserIds[]"),
-      unlinkUserIds: formData.getAll("unlinkUserIds[]"),
-    };
-
-    const linkListingData = linkListingSchema.parse(data);
-
     const session = await auth();
 
     try {
@@ -47,6 +52,14 @@ export async function linkListing(prevState: unknown, formData: FormData) {
     // revalidatePath(`/dashboard/listings`);
 
     const listing = await Listing.findById<ListingDoc>(linkListingData.listingId);
+
+    if (!listing) return errorResponse({ message: `Listing met id '${linkListingData.listingId}' niet gevonden` });
+
+    if (listing.status !== "available" && listing.status !== "offer_received") {
+      return errorResponse({
+        message: `Listing met id '${linkListingData.listingId}' is niet beschikbaar om te koppelen.`,
+      });
+    }
 
     for (const userId of linkListingData.linkUserIds) {
       const user = await User.findById<UserDoc>(userId);
@@ -64,8 +77,6 @@ export async function linkListing(prevState: unknown, formData: FormData) {
         $pull: { listings: { listingId: linkListingData.listingId } },
       });
     }
-
-    if (!listing) return errorResponse({ message: `Listing met id '${linkListingData.listingId}' niet gevonden` });
 
     return successResponse({
       data: serializeDoc(listing),
