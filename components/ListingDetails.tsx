@@ -1,4 +1,13 @@
-import { ENERGY_LABELS, FEATURES, INSULATION, LISTING_TYPES, ListingObj } from "@/models/Listing.type";
+import {
+  ENERGY_LABELS,
+  FEATURES,
+  INSULATION,
+  LISTING_TYPES,
+  ListingObj,
+  STATUS,
+  STATUS_COLOR,
+  STATUS_TEXT,
+} from "@/models/Listing.type";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BathIcon,
@@ -32,6 +41,7 @@ import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { Tooltip } from "@/components/ui/tooltip";
 import ListingDocuments from "@/components/ListingDocuments";
 import z from "zod";
+import { capitalize } from "@/lib/common.utils";
 
 export default async function ListingDetails({ listing, isOwner = false }: { listing: ListingObj; isOwner?: boolean }) {
   async function uploadFile(prevState: unknown, formData: FormData) {
@@ -112,10 +122,30 @@ export default async function ListingDetails({ listing, isOwner = false }: { lis
 
   const fullAddress = `${listing.streetName} ${listing.streetNumber}, ${listing.postalCode}, ${listing.city}`;
 
+  const statusLabel = STATUS[listing.status] || capitalize(listing.status);
+  const color = STATUS_COLOR[listing.status] || "bg-gray-500";
+  const statusExplanation = STATUS_TEXT[listing.status] || "";
+
   return (
     <div className="mx-auto flex flex-col gap-2">
       <div className="flex justify-between gap-2 max-sm:flex-col">
-        <h1 className="text-3xl font-bold">{listing.title}</h1>
+        <div className="flex flex-row gap-2">
+          <h1 className="text-3xl font-bold">{listing.title}</h1>
+          <div className="flex flex-row items-center gap-2">
+            <Tooltip
+              tooltipContent={
+                <div className="flex flex-col gap-1">
+                  <b>{statusLabel}</b>
+                  <Separator className="bg-neutral-300" />
+                  <p>{statusExplanation}</p>
+                </div>
+              }
+              asChild
+            >
+              <div className={`size-4 rounded-full p-1 ${color} bg-clip-content`} />
+            </Tooltip>
+          </div>
+        </div>
         {isOwner && (
           <Link href={`/dashboard/listings/${listing._id}/edit`} title="Bewerk woning">
             <Button>
