@@ -12,6 +12,8 @@ import {
   successResponse,
 } from "@/lib/server.utils";
 import { auth } from "@/auth";
+import { ObjectId } from "mongodb";
+import { STATUS } from "@/models/Listing.type";
 
 export async function createListing(prevState: unknown, formData: FormData) {
   const parsedListingSchema = listingCreateSchema.safeParse(Object.fromEntries(formData));
@@ -48,10 +50,10 @@ export async function deleteListing(id: string) {
   const session = await auth();
 
   try {
-    if (!session) return errorResponse({ message: "You must be logged in to delete a listing" });
+    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning te verwijderen" });
     await actionAuthGuard(session, { realtorOnly: true });
   } catch (error) {
-    return errorResponse({ message: "You must be logged in as a realtor to delete a listing" });
+    return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning te verwijderen" });
   }
 
   try {
@@ -78,10 +80,10 @@ export async function updateListing(prevState: unknown, formData: FormData) {
   const session = await auth();
 
   try {
-    if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
+    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te passen" });
     await actionAuthGuard(session, { realtorOnly: true });
   } catch (error) {
-    return errorResponse({ message: "You must be logged in as a realtor to update a listing" });
+    return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning aan te passen" });
   }
 
   try {
@@ -101,5 +103,38 @@ export async function updateListing(prevState: unknown, formData: FormData) {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return errorResponse({ message: `An error occurred while updating the listing: ${message}` });
+  }
+}
+
+export async function updateListingStatus(listingId: string, status: keyof typeof STATUS) {
+  if (!ObjectId.isValid(listingId)) return failResponse({ message: "Ongeldig woning ID" });
+
+  const session = await auth();
+
+  try {
+    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om de status van een woning aan te passen" });
+    await actionAuthGuard(session, { realtorOnly: true });
+  } catch (error) {
+    return errorResponse({ message: "Je moet ingelogd zijn als makelaar om de status van een woning aan te passen" });
+  }
+
+  try {
+    await dbConnect();
+    const listing = await Listing.findOneAndUpdate(
+      { _id: new ObjectId(listingId), userId: session.user.id },
+      { status },
+      { new: true },
+    );
+
+    if (!listing) return failResponse({ message: "Woning niet gevonden" });
+
+    revalidatePath(`/dashboard/listings/${listing._id}`);
+    return successResponse({
+      data: serializeDoc(listing),
+      message: `Succesvol de status van woning '${listing.title}' aangepast naar '${status}'`,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return errorResponse({ message: `Er ging iets mis bij het updaten van de status van de woning: ${message}` });
   }
 }
