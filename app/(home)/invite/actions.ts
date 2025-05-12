@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  actionAuthGuard,
   errorResponse,
   failResponse,
   formatZodError,
@@ -10,7 +11,7 @@ import {
 } from "@/lib/server.utils";
 import User from "@/models/User";
 import { ROLES, UserDoc } from "@/models/User.type";
-import { saltAndHashPassword } from "@/auth";
+import { auth, saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
@@ -49,25 +50,20 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     const user = await User.create({ firstName, lastName, email, password: hashedPassword, role: ROLES.BUYER });
     await User.updateOne({ _id: invite.inviter._id }, { $addToSet: { clients: user._id } });
 
-    // Accept additional invites if any
     const invites = await ClientInvite.find<HydratedDocument<ClientInviteDoc>>({
       inviteeEmail: email,
       status: STATUS_ENUM.PENDING,
-    }).populate<UserDoc>("inviter");
+    }).populate<UserDoc>("inviter"); // Get all pending invites for the user
 
-    const userResult = await User.updateMany(
+    await User.updateMany(
       { _id: { $in: invites.map((invite) => invite.inviter._id) } },
       { $addToSet: { clients: user._id } },
-      { new: true },
-    );
-    console.log("Successfully added user to inviter's clients", userResult);
+    ); // Add the new user to the inviter's clients
 
-    const inviteResult = await ClientInvite.updateMany(
+    await ClientInvite.updateMany(
       { inviteeEmail: email, status: STATUS_ENUM.PENDING },
       { $set: { status: STATUS_ENUM.ACCEPTED, acceptedAt: new Date() } },
-      { new: true },
-    );
-    console.log("Successfully accepted additional invites", inviteResult);
+    ); // Update all pending invites for the user
 
     // return redirect("/login");
     return successResponse({ message: "Uitnodiging succesvol geaccepteerd!", data: serializeDoc(user) });
@@ -83,6 +79,15 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
 }
 
 export async function RejectInviteAction({ inviteeEmail, inviteID }: { inviteeEmail: string; inviteID: string }) {
+  const session = await auth();
+
+  try {
+    if (!session) return errorResponse({ message: "You must be logged in to update a listing" });
+    await actionAuthGuard(session, { realtorOnly: true });
+  } catch (error) {
+    return errorResponse({ message: "You must be logged in as a realtor to update a listing" });
+  }
+
   try {
     const { email, inviteId } = z
       .object({ email: z.string().email(), inviteId: z.string().refine(ObjectId.isValid) })
