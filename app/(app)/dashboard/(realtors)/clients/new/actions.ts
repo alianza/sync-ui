@@ -13,30 +13,31 @@ import {
 import { auth } from "@/auth";
 import ClientInvite, { clientInviteCreateSchema } from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import z from "zod";
 import User from "@/models/User";
 import { UserDoc } from "@/models/User.type";
 import { HydratedDocument } from "mongoose";
 
 export async function createClientInvite(prevState: unknown, formData: FormData) {
+  const parsedClientInviteData = clientInviteCreateSchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsedClientInviteData.success)
+    return failResponse({ message: formatZodError(parsedClientInviteData.error, { messageOnly: true }) });
+
+  const clientInviteData = parsedClientInviteData.data;
+
+  const session = await auth();
+  if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
+
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
+    return errorResponse({ message: "You must be logged in as a realtor to create a client invite" });
+
+  if (clientInviteData.inviteeEmail === session.user.email) {
+    return failResponse({ message: "Je kan jezelf niet uitnodigen" });
+  }
+
   try {
-    const clientInviteData = clientInviteCreateSchema.parse(Object.fromEntries(formData));
-
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a realtor to create a client invite" });
-    }
-
-    if (clientInviteData.inviteeEmail === session.user.email) {
-      return failResponse({ message: "Je kan jezelf niet uitnodigen" });
-    }
-
     await dbConnect();
-
     const user = await User.findOne<UserDoc>({ email: clientInviteData.inviteeEmail });
     if (user) {
       const res = (await User.findOneAndUpdate(
@@ -69,8 +70,6 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
       message: `Successfully created client invite for email: ${clientInvite.inviteeEmail}`,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) return failResponse({ message: formatZodError(error) });
-
     if (isMongooseDuplicateKeyError(error)) {
       return failResponse({ message: "Je hebt al een uitnodiging voor deze klant uitstaan" });
     }

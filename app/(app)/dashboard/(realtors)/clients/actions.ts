@@ -7,30 +7,27 @@ import { auth } from "@/auth";
 import User from "@/models/User";
 
 export async function deleteClient(id: string, email: string) {
+  const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een klant te verwijderen." });
+
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
+    return errorResponse({ message: "Je moet ingelogd zijn als een makelaar om een klant te verwijderen" });
+
   try {
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to delete a client" });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a realtor to delete a client" });
-    }
-
     await dbConnect();
 
     const user = await User.findByIdAndUpdate(session.user.id, { $pull: { clients: id } });
-
-    if (!user) return errorResponse({ message: `Client with email: ${email} not found` });
+    if (!user) return errorResponse({ message: `Klant met email: ${email} niet gevonden` });
 
     // revalidatePath(`/dashboard/clients/${id}`);
     revalidatePath(`/dashboard/clients`);
     return successResponse({
       data: serializeDoc(user),
-      message: `Successfully deleted client with email: ${email}`,
+      message: `Klant met email: ${email} succesvol verwijderd`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse({ message: `An error occurred while deleting the client: ${message}` });
+    return errorResponse({ message: `Fout bij het verwijderen van de klant: ${message}` });
   }
 }

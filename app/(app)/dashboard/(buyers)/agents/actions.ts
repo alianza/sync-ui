@@ -7,30 +7,26 @@ import { auth } from "@/auth";
 import User from "@/models/User";
 
 export async function deleteAgent(id: string, email: string) {
+  const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een agent te verwijderen." });
+
+  const authResult = await actionAuthGuard(session, { buyerOnly: true });
+  if (!authResult.success)
+    return errorResponse({ message: "Je moet ingelogd zijn als een koper om een agent te verwijderen" });
+
   try {
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "You must be logged in to delete an agent" });
-      await actionAuthGuard(session, { buyerOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "You must be logged in as a buyer to delete an agent" });
-    }
-
     await dbConnect();
-
     const user = await User.findByIdAndUpdate(id, { $pull: { clients: session.user.id } });
-
-    if (!user) return errorResponse({ message: `Agent with email: ${email} not found` });
+    if (!user) return errorResponse({ message: `Agent met email: ${email} niet gevonden` });
 
     // revalidatePath(`/dashboard/agents/${id}`);
     revalidatePath(`/dashboard/agents`);
     return successResponse({
       data: serializeDoc(user),
-      message: `Successfully deleted agent with email: ${email}`,
+      message: `Agent with email: ${email} succesvol verwijderd`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return errorResponse({ message: `An error occurred while deleting the agent: ${message}` });
+    return errorResponse({ message: `Fout bij het verwijderen van de agent: ${message}` });
   }
 }

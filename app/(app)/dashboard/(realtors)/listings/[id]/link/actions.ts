@@ -37,20 +37,15 @@ export async function linkListing(prevState: unknown, formData: FormData) {
 
   const linkListingData = parsedLinkListingSchema.data;
 
+  const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning te koppelen." });
+
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
+    return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning te koppelen" });
+
   try {
-    const session = await auth();
-
-    try {
-      if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning te koppelen." });
-      await actionAuthGuard(session, { realtorOnly: true });
-    } catch (error) {
-      return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning te koppelen" });
-    }
-
     await dbConnect();
-
-    // revalidatePath(`/dashboard/listings`);
-
     const listing = await Listing.findById<ListingDoc>(linkListingData.listingId);
 
     if (!listing) return errorResponse({ message: `Listing met id '${linkListingData.listingId}' niet gevonden` });
@@ -78,6 +73,7 @@ export async function linkListing(prevState: unknown, formData: FormData) {
       });
     }
 
+    // revalidatePath(`/dashboard/listings`);
     return successResponse({
       data: serializeDoc(listing),
       message: `Woning met titel '${listing.title}' succesvol gekoppeld`,

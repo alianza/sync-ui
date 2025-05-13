@@ -13,7 +13,7 @@ import {
 } from "@/lib/server.utils";
 import { auth } from "@/auth";
 import { ObjectId } from "mongodb";
-import { STATUS } from "@/models/Listing.type";
+import { ListingDoc, STATUS } from "@/models/Listing.type";
 
 export async function createListing(prevState: unknown, formData: FormData) {
   const parsedListingSchema = listingCreateSchema.safeParse(Object.fromEntries(formData));
@@ -25,13 +25,11 @@ export async function createListing(prevState: unknown, formData: FormData) {
   // const nestedFormData = createNestedObject(listingData); // Nested paths are handles by Mongoose automatically
 
   const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te maken" });
 
-  try {
-    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te maken" });
-    await actionAuthGuard(session, { realtorOnly: true });
-  } catch (error) {
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
     return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning aan te maken" });
-  }
 
   try {
     await dbConnect();
@@ -48,13 +46,11 @@ export async function createListing(prevState: unknown, formData: FormData) {
 
 export async function deleteListing(id: string) {
   const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning te verwijderen" });
 
-  try {
-    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning te verwijderen" });
-    await actionAuthGuard(session, { realtorOnly: true });
-  } catch (error) {
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
     return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning te verwijderen" });
-  }
 
   try {
     await dbConnect();
@@ -78,13 +74,11 @@ export async function updateListing(prevState: unknown, formData: FormData) {
   const updateData = parsedListingUpdateSchema.data;
 
   const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te passen" });
 
-  try {
-    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om een woning aan te passen" });
-    await actionAuthGuard(session, { realtorOnly: true });
-  } catch (error) {
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
     return errorResponse({ message: "Je moet ingelogd zijn als makelaar om een woning aan te passen" });
-  }
 
   try {
     await dbConnect();
@@ -110,28 +104,28 @@ export async function updateListingStatus(listingId: string, status: keyof typeo
   if (!ObjectId.isValid(listingId)) return failResponse({ message: "Ongeldig woning ID" });
 
   const session = await auth();
+  if (!session) return errorResponse({ message: "Je moet ingelogd zijn om de status van een woning aan te passen" });
 
-  try {
-    if (!session) return errorResponse({ message: "Je moet ingelogd zijn om de status van een woning aan te passen" });
-    await actionAuthGuard(session, { realtorOnly: true });
-  } catch (error) {
+  const authResult = await actionAuthGuard(session, { realtorOnly: true });
+  if (!authResult.success)
     return errorResponse({ message: "Je moet ingelogd zijn als makelaar om de status van een woning aan te passen" });
-  }
 
   try {
     await dbConnect();
-    const listing = await Listing.findOneAndUpdate(
+    const listing = (await Listing.findOneAndUpdate(
       { _id: new ObjectId(listingId), userId: session.user.id },
       { status },
-      { new: true },
-    );
+    )) as ListingDoc;
 
     if (!listing) return failResponse({ message: "Woning niet gevonden" });
+
+    if (listing.status === status)
+      return errorResponse({ message: `De status van woning '${listing.title}' is al '${status}'` });
 
     revalidatePath(`/dashboard/listings/${listing._id}`);
     return successResponse({
       data: serializeDoc(listing),
-      message: `Succesvol de status van woning '${listing.title}' aangepast naar '${status}'`,
+      message: `Succesvol de status van woning '${listing.title}' aangepast naar ${STATUS[status]}`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
