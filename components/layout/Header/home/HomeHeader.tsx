@@ -9,9 +9,9 @@ import { Suspense } from "react";
 
 export const homeMenuItems = [
   { href: "/", label: "Home", exact: true },
-  { href: "/#features", label: "Features" },
+  { href: "/#features", label: "Functionaliteiten" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "Over" },
   { href: "/contact", label: "Contact" },
 ];
 

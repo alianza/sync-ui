@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },
-  { href: "/dashboard/listings", label: "Listings", icon: ScrollText, role: ROLES.REALTOR },
-  { href: "/dashboard/clients", label: "Clients", icon: Users, role: ROLES.REALTOR },
+  { href: "/dashboard/listings", label: "Woningen", icon: ScrollText, role: ROLES.REALTOR },
+  { href: "/dashboard/clients", label: "Klanten", icon: Users, role: ROLES.REALTOR },
   { href: "/dashboard/agents", label: "Makelaars", icon: Users, role: ROLES.BUYER },
   { href: "/dashboard/leads", label: "Leads", icon: Users, role: ROLES.BUYER },
 ];
