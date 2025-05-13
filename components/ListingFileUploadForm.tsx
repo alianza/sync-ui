@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { initialActionState, ResponseStatus, ServerResponse } from "@/lib/types";
 import { SubmitButton } from "@/components/SubmitButton";
 
-export default function ImageUploadForm({
+export default function ListingFileUploadForm({
   fileUploadAction,
 }: {
   fileUploadAction: (prevState: unknown, formData: FormData) => Promise<ServerResponse<unknown>>;
@@ -42,7 +42,7 @@ export default function ImageUploadForm({
         accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, image/*"
         id="file"
         name="file"
-        // required
+        required
         className="leading-6"
       />
       <SubmitButton label="Uploaden" loadingLabel="Uploaden..." />

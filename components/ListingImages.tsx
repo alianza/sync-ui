@@ -37,7 +37,7 @@ export default function ListingImages({
       <div ref={parent} className="grid grid-cols-2 gap-4">
         {blobs.length > 0 ? (
           blobs.map((image, index) => (
-            <div className="scale-hover relative cursor-pointer" key={image.pathname}>
+            <div className="relative" key={image.pathname}>
               {deleteAction && <ImageDeleteButton deleteImageAction={deleteAction} url={image.url} />}
               <Image
                 src={image.url}
@@ -45,7 +45,7 @@ export default function ListingImages({
                 height={200}
                 alt={`${listingTitle} image ${index + 1}`}
                 title={image.pathname.split("/").pop()}
-                className="w-full"
+                className="scale-hover w-full cursor-pointer"
                 onClick={() => handleImageClick(image.url)}
               />
             </div>
@@ -67,11 +67,7 @@ export default function ListingImages({
               </DialogDescription>
             </VisuallyHidden>
           </DialogHeader>
-          <ImageCarousel
-            onlyScrollOnFirstLoad
-            images={blobs.map((image) => image.url)}
-            currentImageUrl={currentImage}
-          />
+          <ImageCarousel images={blobs.map((image) => image.url)} currentImageUrl={currentImage} />
         </DialogContent>
       </Dialog>
     </>
@@ -111,7 +107,7 @@ export function ImageDeleteButton({
       description="Weet je zeker dat je deze afbeelding wilt verwijderen?"
       asChild
     >
-      <Button variant="destructive" className="absolute top-2 right-2" title="Verwijder afbeelding">
+      <Button variant="destructive" className="absolute top-2 right-2 z-10" title="Verwijder afbeelding">
         <TrashIcon />
       </Button>
     </ConfirmDialog>
