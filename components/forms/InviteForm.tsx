@@ -88,7 +88,7 @@ function InviteForm({ invite }: Props) {
           readOnly
         />
         <PasswordInputToggle
-          label="Waachtwoord"
+          label="Wachtwoord"
           id="password"
           minLength={8}
           required
