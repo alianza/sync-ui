@@ -87,7 +87,7 @@ export const columns: ColumnDef<ListingObj>[] = [
       const SortedIcon = !isSorted ? ArrowUpDown : isSorted === "asc" ? SortAsc : SortDesc;
       return (
         <Button
-          className="float-end text-[length:inherit]"
+          className="text-[length:inherit]"
           variant="ghost"
           onClick={() =>
             column.getIsSorted() === "desc"
