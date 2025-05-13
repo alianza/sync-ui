@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,8 +42,22 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   "use no memo";
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const initialSorting = (() => {
+    const sortParam = searchParams.get("sort");
+    if (!sortParam) return [];
+    const parsedSort = JSON.parse(sortParam);
+    const sortColumn = Object.keys(parsedSort)[0];
+    if (!(columns as { accessorKey: string }[]).find(({ accessorKey }) => accessorKey === sortColumn)) return [];
+    if (parsedSort[sortColumn] !== "asc" && parsedSort[sortColumn] !== "desc") return [];
+    return [{ id: sortColumn, desc: parsedSort[sortColumn] === "desc" }];
+  })();
+  const initialPage = parseInt(searchParams.get("page") ?? "1");
+
+  const [sorting, setSorting] = useState<SortingState>(initialSorting);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [parent, enableAnimations] = useAutoAnimate();
 
   useEffect(() => {
@@ -51,7 +66,7 @@ export function DataTable<TData, TValue>({
     } else {
       enableAnimations(true);
     }
-  }, [disableAnimations]);
+  }, [disableAnimations, enableAnimations]);
 
   const table = useReactTable({
     data,
@@ -63,7 +78,23 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, columnFilters },
+    onStateChange: (updater) => {
+      const newState = typeof updater === "function" ? updater(table.getState()) : updater;
+      const currentPage = newState.pagination.pageIndex + 1;
+      const newSorting = newState.sorting[0];
+
+      const params = new URLSearchParams(searchParams);
+      if (currentPage > 1) params.set("page", `${currentPage}`);
+      else params.delete("page");
+      if (newSorting) params.set("sort", JSON.stringify({ [newSorting.id]: newSorting.desc ? "desc" : "asc" }));
+      else params.delete("sort");
+      window.history.pushState(null, "", `${pathname}?${params}`); // Update the URL without reloading
+    },
   });
+
+  useEffect(() => {
+    if (initialPage) table.setPageIndex(initialPage - 1);
+  }, []);
 
   useEffect(() => {
     if (pageSize) table.setPageSize(pageSize);
