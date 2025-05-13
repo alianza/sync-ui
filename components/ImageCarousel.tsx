@@ -15,7 +15,6 @@ interface ImageCarouselProps {
   showIndicators?: boolean;
   showArrows?: boolean;
   currentImageUrl?: string;
-  onlyScrollOnFirstLoad?: boolean;
 }
 
 export function ImageCarousel({
@@ -26,71 +25,40 @@ export function ImageCarousel({
   showIndicators = true,
   showArrows = true,
   currentImageUrl,
-  onlyScrollOnFirstLoad = false,
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibility, setVisibility] = useState<boolean[]>(Array(images.length).fill(false));
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitialMount = useRef(true);
 
-  // Initialize slide refs
   useEffect(() => {
     slideRefs.current = slideRefs.current.slice(0, images.length);
-  }, [images.length]);
-
-  // // Set initial visibility
-  // useEffect(() => {
-  //   const newVisibility = [...visibility];
-  //   newVisibility[0] = true;
-  //
-  //   // Preload adjacent images
-  //   if (images.length > 1) newVisibility[1] = true;
-  //
-  //   setVisibility(newVisibility);
-  // }, []);
+  }, [images.length]); // Initialize slide refs
 
   const updateVisibility = (imageIndex: number) => {
     const newVisibility = [...visibility];
     newVisibility[imageIndex] = true;
-    // Preload adjacent images
-    if (imageIndex > 0) newVisibility[imageIndex - 1] = true;
-    if (imageIndex < images.length - 1) newVisibility[imageIndex + 1] = true;
+    if (imageIndex > 0) newVisibility[imageIndex - 1] = true; // Load previous image
+    if (imageIndex < images.length - 1) newVisibility[imageIndex + 1] = true; // Load next image
     setVisibility(newVisibility);
   };
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false; // Skip on initial mount as we'll handle it separately
-
-      if (currentImageUrl && images.includes(currentImageUrl)) {
-        const initialIndex = images.indexOf(currentImageUrl);
-        setCurrentIndex(initialIndex); // Set initial index based on currentImageUrl if provided
-        updateVisibility(initialIndex);
-      }
-      return;
-    }
-
     if (currentImageUrl && images.includes(currentImageUrl)) {
-      if (!isInitialMount.current && onlyScrollOnFirstLoad) return;
-
       const imageIndex = images.indexOf(currentImageUrl);
-
       setCurrentIndex(imageIndex); // Update the current index immediately for indicators
 
       if (!visibility[imageIndex]) updateVisibility(imageIndex); // Ensure the image is marked as visible
 
-      setTimeout(() => {
-        if (scrollContainerRef.current && slideRefs.current[imageIndex]) {
-          scrollContainerRef.current.scrollTo({
-            left: imageIndex * scrollContainerRef.current.clientWidth,
-            behavior: "smooth",
-          }); // Direct DOM manipulation for more reliable scrolling
-        }
-      }, 50); // Use a small timeout to ensure DOM is ready
+      if (scrollContainerRef.current && slideRefs.current[imageIndex]) {
+        scrollContainerRef.current.scrollTo({
+          left: imageIndex * scrollContainerRef.current.clientWidth,
+          behavior: "smooth",
+        }); // Direct DOM manipulation for more reliable scrolling
+      }
     }
-  }, [currentImageUrl, images, visibility]); // Handle currentImageUrl changes - more reliable approach
+  }, [currentImageUrl, images]); // Handle currentImageUrl changes - more reliable approach
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -104,18 +72,15 @@ export function ImageCarousel({
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const index = Number(entry.target.getAttribute("data-index"));
-        if (entry.isIntersecting && !visibility[index]) {
-          updateVisibility(index);
-        }
+        if (entry.isIntersecting && !visibility[index]) updateVisibility(index);
       });
     }, options);
 
     slideRefs.current.forEach((slide) => slide && observer.observe(slide));
 
     return () => slideRefs.current.forEach((slide) => slide && observer.unobserve(slide));
-  }, [visibility]); // Setup intersection observer for lazy loading
+  }, []); // Setup intersection observer for lazy loading
 
-  // Handle scroll events to update current index
   useEffect(() => {
     const handleScroll = () => {
       if (!scrollContainerRef.current) return;
@@ -130,27 +95,22 @@ export function ImageCarousel({
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener("scroll", handleScroll);
-      return () => container.removeEventListener("scroll", handleScroll);
     }
-  }, [currentIndex, images.length]);
+    return () => (container ? container.removeEventListener("scroll", handleScroll) : undefined);
+  }, [currentIndex, images.length]); // Handle scroll events to update current index
 
-  // Initial scroll setup - runs once after component mounts
   useEffect(() => {
-    // If currentImageUrl is provided, scroll to that image
     if (currentImageUrl && images.includes(currentImageUrl)) {
       const imageIndex = images.indexOf(currentImageUrl);
 
-      // Wait for DOM to be ready
-      setTimeout(() => {
-        if (scrollContainerRef.current) {
-          scrollContainerRef.current.scrollTo({
-            left: imageIndex * scrollContainerRef.current.clientWidth,
-            behavior: "auto", // Use 'auto' for initial scroll to avoid animation issues
-          });
-        }
-      }, 100);
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({
+          left: imageIndex * scrollContainerRef.current.clientWidth,
+          behavior: "auto", // Use 'auto' for initial scroll to avoid animation issues
+        });
+      }
     }
-  }, []); // Empty dependency array means this runs once after mount
+  }, []); // Initial scroll setup - runs once after component mounts
 
   useEffect(() => {
     if (autoPlay) startAutoPlay(); // Autoplay functionality
@@ -171,9 +131,7 @@ export function ImageCarousel({
 
   function scrollToIndex(index: number) {
     if (index < 0 || index >= images.length) return;
-
     setCurrentIndex(index); // Update the current index immediately for indicators
-
     if (!visibility[index]) updateVisibility(index); // Ensure the image is visible
 
     if (scrollContainerRef.current) {
@@ -186,15 +144,9 @@ export function ImageCarousel({
     if (autoPlay) startAutoPlay();
   }
 
-  function goToNext() {
-    const nextIndex = (currentIndex + 1) % images.length;
-    scrollToIndex(nextIndex);
-  }
+  const goToNext = () => scrollToIndex((currentIndex + 1) % images.length); // Go to next image (looping)
 
-  function goToPrevious() {
-    const prevIndex = (currentIndex - 1 + images.length) % images.length;
-    scrollToIndex(prevIndex);
-  }
+  const goToPrevious = () => scrollToIndex((currentIndex - 1 + images.length) % images.length); // Go to previous image (looping)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
