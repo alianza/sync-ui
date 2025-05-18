@@ -54,7 +54,6 @@ export function DataTable<TData, TValue>({
     if (parsedSort[sortColumn] !== "asc" && parsedSort[sortColumn] !== "desc") return [];
     return [{ id: sortColumn, desc: parsedSort[sortColumn] === "desc" }];
   })();
-  const initialPage = parseInt(searchParams.get("page") ?? "1");
 
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -84,17 +83,38 @@ export function DataTable<TData, TValue>({
       const newSorting = newState.sorting[0];
 
       const params = new URLSearchParams(searchParams);
+      const oldParams = new URLSearchParams(searchParams);
       if (currentPage > 1) params.set("page", `${currentPage}`);
       else params.delete("page");
       if (newSorting) params.set("sort", JSON.stringify({ [newSorting.id]: newSorting.desc ? "desc" : "asc" }));
       else params.delete("sort");
+      if (params.toString() === oldParams.toString()) return;
       window.history.pushState(null, "", `${pathname}?${params}`); // Update the URL without reloading
     },
   });
 
   useEffect(() => {
-    if (initialPage) table.setPageIndex(initialPage - 1);
-  }, []);
+    const newPage = parseInt(searchParams.get("page") ?? "1");
+    if (newPage && newPage !== table.getState().pagination.pageIndex + 1) table.setPageIndex(newPage - 1);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const sortParam = searchParams.get("sort");
+    if (!sortParam) return;
+
+    const parsedSort = JSON.parse(sortParam);
+    const sortColumn = Object.keys(parsedSort)[0];
+    const sortDirection = parsedSort[sortColumn] === "desc";
+    const newSorting = [{ id: sortColumn, desc: sortDirection }];
+
+    if (!(columns as { accessorKey: string }[]).find(({ accessorKey }) => accessorKey === sortColumn)) return;
+
+    if (newSorting.length && (newSorting[0].id !== sorting[0]?.id || newSorting[0].desc !== sorting[0]?.desc)) {
+      setSorting(newSorting);
+    } else if (!newSorting.length && sorting.length) {
+      setSorting([]);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (pageSize) table.setPageSize(pageSize);
