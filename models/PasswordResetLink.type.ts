@@ -14,7 +14,7 @@ export interface PasswordResetLinkDoc extends PasswordResetLink, mongoose.Docume
   updatedAt: Date;
 }
 
-export interface PasswordResetLinkObj extends Omit<PasswordResetLink, "userId"> {
+export interface PasswordResetLinkObj extends Omit<PasswordResetLink, "user"> {
   _id: string;
   user: UserObj;
   createdAt: Date;
