@@ -33,3 +33,5 @@ export const ConditionalWrap = ({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const getBaseUrl = () => `${window.location.protocol}//${window.location.host}`;

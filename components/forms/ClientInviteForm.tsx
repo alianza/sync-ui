@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { SubmitButton } from "@/components/SubmitButton";
 import { Input } from "@/components/forms/input/Input";
 import { createClientInvite } from "@/app/(app)/dashboard/(realtors)/clients/new/actions";
-import { cn, handleAction } from "@/lib/client.utils";
+import { cn, getBaseUrl, handleAction } from "@/lib/client.utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,8 +29,7 @@ export function ClientInviteForm() {
   useEffect(() => {
     if (state.status !== ResponseStatus.success) return;
     if (state.statusCode !== 201) return;
-    const baseUrl = `${window.location.protocol}//${window.location.host}`;
-    setInviteLink(`${baseUrl}/invite?id=${state.data?._id}`);
+    setInviteLink(`${getBaseUrl()}/invite?id=${state.data?._id}`);
   }, [state]);
 
   return (

@@ -8,9 +8,9 @@ export default function Login() {
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
       <Card className="mx-auto w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Login to HuizenHub</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold">Login bij HuizenHub</CardTitle>
           <CardDescription className="text-center">
-            Enter your email and password to access your account
+            Voer uw e-mailadres en wachtwoord in om toegang te krijgen tot uw account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -19,13 +19,13 @@ export default function Login() {
         <CardFooter className="flex flex-col gap-4">
           <div className="text-center text-sm">
             <Link href="/forgot-password" className="underline-hover text-primary">
-              Forgot your password?
+              Wachtwoord vergeten?
             </Link>
           </div>
           <div className="text-center text-sm">
-            Don't have an account?{" "}
+            Geen account?{" "}
             <Link href="/signup" className="underline-hover text-primary">
-              Sign up
+              Aanmelden
             </Link>
           </div>
         </CardFooter>
