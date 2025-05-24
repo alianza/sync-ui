@@ -31,7 +31,11 @@ export async function uploadListingFile(formData: FormData, listingId: string) {
 
   const files = await list({ prefix: `listingMedia/${listingId}/${folderName}/` });
 
-  if (files.blobs.some((doc) => doc.pathname.endsWith(file.name)))
+  if (
+    files.blobs.some((doc) =>
+      doc.pathname.replace(/-\w+\.\w+$/, `.${doc.pathname.split(".").pop()}`).endsWith(file.name),
+    ) // Check if a file with the same name already exists (excluding random suffix added by Vercel Blob)
+  )
     return errorResponse({ message: `${fileTypeName} met deze naam bestaat al.` });
 
   if (files.blobs.length >= 10)
@@ -43,7 +47,10 @@ export async function uploadListingFile(formData: FormData, listingId: string) {
     return errorResponse({ message: `Alleen ${fileTypeName.toLowerCase()}en zijn toegestaan.` });
 
   try {
-    await put(`listingMedia/${listingId}/${folderName}/${file.name}`, file, { access: "public" });
+    await put(`listingMedia/${listingId}/${folderName}/${file.name}`, file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
   } catch {
     return errorResponse({ message: `Fout bij het uploaden van de afbeelding` });
   }
