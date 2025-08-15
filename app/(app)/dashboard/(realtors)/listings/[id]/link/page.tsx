@@ -2,10 +2,9 @@ import React from "react";
 import { LinkListing } from "@/components/LinkListing";
 import Listing from "@/models/Listing";
 import { ListingDoc, ListingObj } from "@/models/Listing.type";
-import { isValidObjectId, MergeType } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
-import User from "@/models/User";
-import { UserObj } from "@/models/User.type";
+import User, { UserType } from "@/models/User";
 import dbConnect from "@/lib/dbConnect";
 import { FileQuestion, FileWarning } from "lucide-react";
 
@@ -38,10 +37,17 @@ export default async function LinkListingPage({ params }: { params: Promise<{ id
     );
   }
 
-  const dbUser = serializeDoc(await User.findById(session.user?.id).populate("clients")) as MergeType<
-    UserObj,
-    { clients: UserObj[] }
-  >;
+  const dbUser = await User.findById(session.user?.id).populate<{ clients: UserType[] }>("clients");
+
+  if (!dbUser) {
+    return (
+      <ErrorSection
+        icon={<FileQuestion size={128} />}
+        title="Gebruiker niet gevonden"
+        message="De gebruiker die deze actie probeert uit te voeren bestaat niet."
+      />
+    );
+  }
 
   return (
     <section className="container mx-auto flex w-full flex-col gap-12 px-4 py-12 md:px-6 md:py-24 lg:py-32">

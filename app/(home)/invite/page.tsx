@@ -2,12 +2,12 @@ import { isValidObjectId, MergeType } from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import ClientInvite from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import { UserObj } from "@/models/User.type";
 import { serializeDoc } from "@/lib/server.utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
 import { LockIcon } from "lucide-react";
 import InviteForm from "@/components/forms/InviteForm";
+import { UserType } from "@/models/User";
 
 type Props = { searchParams: Promise<{ id: string }> };
 
@@ -36,7 +36,7 @@ export default async function Invite({ searchParams }: Props) {
 
   const invite = serializeDoc(await ClientInvite.findById(id).populate("inviter")) as MergeType<
     ClientInviteDoc,
-    UserObj
+    UserType
   >;
 
   if (!invite) {

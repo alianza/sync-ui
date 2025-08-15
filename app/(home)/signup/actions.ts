@@ -9,10 +9,10 @@ import {
   successResponse,
 } from "@/lib/server.utils";
 import User from "@/models/User";
-import { ROLES } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
+import { ROLES } from "@/models/User.type";
 
 const registerSchema = z.object({
   firstName: z.string().min(1),

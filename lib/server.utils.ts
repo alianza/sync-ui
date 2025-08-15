@@ -4,12 +4,13 @@ import { ZodError, ZodIssue } from "zod";
 import { capitalize } from "@/lib/common.utils";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { ROLES } from "@/models/User.type";
 import { Session } from "next-auth";
 
 import "server-only";
 
-export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[] | null): T | T[] {
+import { ROLES } from "@/models/User.type";
+
+export function serializeDoc<T>(doc: HydratedDocument<T> | HydratedDocument<T>[] | null | undefined): T | T[] {
   if (!doc) {
     return doc as T;
   }

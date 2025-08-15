@@ -8,16 +8,16 @@ import { PasswordInputToggle } from "@/components/forms/input/PasswordInputToggl
 import Link from "next/link";
 import { handleAction } from "@/lib/client.utils";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
-import { UserObj } from "@/models/User.type";
 import { MergeType } from "mongoose";
 import { AcceptInviteAction, RejectInviteAction } from "@/app/(home)/invite/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { UserType } from "@/models/User";
 
 type Props = {
-  invite: MergeType<ClientInviteDoc, UserObj>;
+  invite: MergeType<ClientInviteDoc, UserType>;
 };
 
 function InviteForm({ invite }: Props) {
@@ -101,7 +101,7 @@ function InviteForm({ invite }: Props) {
           required
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <input type="hidden" name="inviteId" value={invite._id} />
+        <input type="hidden" name="inviteId" value={invite._id.toString()} />
 
         {state.status !== ResponseStatus.pending && (
           <div className="flex">
@@ -120,7 +120,10 @@ function InviteForm({ invite }: Props) {
         <SubmitButton label="Registreer" loadingLabel="Registreren..." disabled={disabled} />
         <ConfirmDialog
           onConfirm={async () => {
-            const response = await RejectInviteAction({ inviteeEmail: invite.inviteeEmail, inviteID: invite._id });
+            const response = await RejectInviteAction({
+              inviteeEmail: invite.inviteeEmail,
+              inviteID: invite._id.toString(),
+            });
 
             if (response.status === ResponseStatus.success) {
               toast.info("Uitnodiging afgewezen.");

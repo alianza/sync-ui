@@ -1,9 +1,9 @@
-import { UserDoc, UserObj } from "./User.type";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import { UserType } from "@/models/User";
 
 interface PasswordResetLink {
-  user: UserDoc;
+  user: UserType;
   token: string;
   consumedAt?: Date;
 }
@@ -16,7 +16,7 @@ export interface PasswordResetLinkDoc extends PasswordResetLink, mongoose.Docume
 
 export interface PasswordResetLinkObj extends Omit<PasswordResetLink, "user"> {
   _id: string;
-  user: UserObj;
+  user: UserType;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -4,9 +4,10 @@ import { MobileNav } from "@/components/layout/Header/MobileNav";
 import { Home, ScrollText, Users } from "lucide-react";
 import { Suspense } from "react";
 import { Session } from "next-auth";
-import { ROLES } from "@/models/User.type";
 import SignOutButton from "@/components/SignOutButton";
 import { Separator } from "@/components/ui/separator";
+
+import { ROLES } from "@/models/User.type";
 
 export const appMenuItems = [
   { href: "/dashboard", label: "Dashboard", exact: true, icon: Home },

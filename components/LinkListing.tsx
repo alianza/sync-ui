@@ -4,14 +4,14 @@ import { ListingObj } from "@/models/Listing.type";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import React, { startTransition, useActionState, useEffect } from "react";
 import { LinkIcon } from "lucide-react";
-import { UserObj } from "@/models/User.type";
 import { Checkbox } from "@/components/ui/checkbox";
 import { initialActionState, ResponseStatus } from "@/lib/types";
 import { linkListing } from "@/app/(app)/dashboard/(realtors)/listings/[id]/link/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { toast } from "sonner";
+import { UserType } from "@/models/User";
 
-type Props = { listing: ListingObj; clients: UserObj[] };
+type Props = { listing: ListingObj; clients: UserType[] };
 
 export function LinkListing({ listing, clients }: Props) {
   const [state, action] = useActionState(linkListing, initialActionState);
@@ -28,8 +28,10 @@ export function LinkListing({ listing, clients }: Props) {
     const userIds = data.getAll("userIds[]");
     userIds.forEach((userId) => parsedFormData.append("linkUserIds[]", userId));
 
-    const unlinkUserIds = clients.filter((client) => !userIds.includes(client._id)).map((client) => client._id);
-    unlinkUserIds.forEach((userId) => parsedFormData.append("unlinkUserIds[]", userId));
+    const unlinkUserIds = clients
+      .filter((client) => !userIds.includes(client._id.toString()))
+      .map((client) => client._id);
+    unlinkUserIds.forEach((userId) => parsedFormData.append("unlinkUserIds[]", userId.toString()));
 
     startTransition(() => action(parsedFormData));
   };
@@ -40,7 +42,7 @@ export function LinkListing({ listing, clients }: Props) {
     }
   }, [state]);
 
-  const isLinkedToClient = (client: UserObj) =>
+  const isLinkedToClient = (client: UserType) =>
     client.listings!.some((clientListing) => clientListing.listingId === listing._id);
 
   return (
@@ -56,16 +58,16 @@ export function LinkListing({ listing, clients }: Props) {
         <CardContent>
           <div className="flex flex-col gap-2">
             {clients.map((client) => (
-              <div key={client._id} className="items-top flex space-x-2">
+              <div key={client._id.toString()} className="items-top flex space-x-2">
                 <Checkbox
-                  id={client._id}
+                  id={client._id.toString()}
                   name="userIds[]"
-                  value={client._id}
+                  value={client._id.toString()}
                   defaultChecked={isLinkedToClient(client)}
                 />
                 <div className="grid gap-1.5 leading-none">
                   <label
-                    htmlFor={client._id}
+                    htmlFor={client._id.toString()}
                     className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {client.firstName} {client.lastName}

@@ -6,11 +6,9 @@ import { PlusIcon } from "lucide-react";
 import React from "react";
 import { redirect } from "next/navigation";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
-import { MergeType } from "mongoose";
-import { UserObj } from "@/models/User.type";
+import User, { UserType } from "@/models/User";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { authGuard, serializeDoc } from "@/lib/server.utils";
+import { authGuard } from "@/lib/server.utils";
 import ClientInvite from "@/models/ClientInvite";
 import { enOrNoEn } from "@/lib/common.utils";
 
@@ -18,12 +16,11 @@ export default async function ClientsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const dbUser = serializeDoc(await User.findById(session.user?.id).populate("clients")) as MergeType<
-    UserObj,
-    { clients: UserObj[] }
-  >;
+  const dbUserDoc = await User.findById(session.user?.id).populate<{ clients: UserType[] }>("clients");
 
-  if (!dbUser) redirect("/login");
+  if (!dbUserDoc) redirect("/login");
+
+  const dbUser = dbUserDoc.toObject({ flattenObjectIds: true });
 
   const pendingInvites = await ClientInvite.countDocuments({ inviter: session.user?.id, status: "pending" });
 

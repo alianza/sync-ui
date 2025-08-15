@@ -8,8 +8,8 @@ import {
   serializeDoc,
   successResponse,
 } from "@/lib/server.utils";
-import User from "@/models/User";
-import { ROLES, UserDoc } from "@/models/User.type";
+import User, { UserType } from "@/models/User";
+import { ROLES } from "@/models/User.type";
 import { saltAndHashPassword } from "@/auth";
 import z from "zod";
 import dbConnect from "@/lib/dbConnect";
@@ -44,7 +44,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     const invite = await ClientInvite.findOneAndUpdate<ClientInviteDoc>(
       { _id: inviteId, status: STATUS_ENUM.PENDING, inviteeEmail: email },
       { $set: { status: STATUS_ENUM.ACCEPTED, acceptedAt: new Date() } },
-    ).populate<UserDoc>("inviter");
+    ).populate<UserType>("inviter");
 
     if (!invite) return failResponse({ message: "Uitnodiging niet gevonden" });
 
@@ -54,7 +54,7 @@ export async function AcceptInviteAction(prevState: unknown, formData: FormData)
     const invites = await ClientInvite.find<HydratedDocument<ClientInviteDoc>>({
       inviteeEmail: email,
       status: STATUS_ENUM.PENDING,
-    }).populate<UserDoc>("inviter"); // Get all pending invites for the user
+    }).populate<UserType>("inviter"); // Get all pending invites for the user
 
     await User.updateMany(
       { _id: { $in: invites.map((invite) => invite.inviter._id) } },

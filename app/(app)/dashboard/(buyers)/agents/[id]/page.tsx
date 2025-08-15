@@ -1,8 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-import { UserObj } from "@/models/User.type";
 import { isValidObjectId } from "mongoose";
-import { authGuard, serializeDoc } from "@/lib/server.utils";
+import { authGuard } from "@/lib/server.utils";
 import React from "react";
 import { FileQuestion, FileWarning } from "lucide-react";
 
@@ -22,7 +21,7 @@ export default async function ClientsPage(props: { params: Promise<{ id: string 
   }
 
   await dbConnect();
-  const agent = serializeDoc(await User.findById(id)) as UserObj;
+  const agent = await User.findById(id).lean();
 
   if (!agent) {
     return (

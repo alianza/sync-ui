@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import { ROLES, UserDoc } from "@/models/User.type";
+import mongoose, { InferSchemaType } from "mongoose";
+import { createModel } from "@/lib/typedModelFactory";
+import { ROLES } from "@/models/User.type";
 
 import "server-only";
 
@@ -8,16 +9,10 @@ const ListingReferenceSchema = new mongoose.Schema({
   linkedAt: { type: Date, default: Date.now },
 });
 
-const UserSchema = new mongoose.Schema<UserDoc>(
+const UserSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      required: [true, "Please provide your first name."],
-    },
-    lastName: {
-      type: String,
-      required: [true, "Please provide your last name."],
-    },
+    firstName: { type: String, required: [true, "Please provide your first name."] },
+    lastName: { type: String, required: [true, "Please provide your last name."] },
     email: {
       type: String,
       validator: function (value: string) {
@@ -32,25 +27,20 @@ const UserSchema = new mongoose.Schema<UserDoc>(
       minlength: [8, "Password must be at least 6 characters long."],
       select: false,
     },
-    role: {
-      type: String,
-      enum: Object.values(ROLES),
-      default: ROLES.BUYER,
-    },
-    clients: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-    },
-    listings: {
-      type: [ListingReferenceSchema],
-      default: [],
-    },
-    verified: {
-      type: Boolean,
-      default: false,
-    },
+    role: { type: String, enum: Object.values(ROLES), default: ROLES.BUYER },
+    clients: { type: [mongoose.Schema.Types.ObjectId], ref: "User" },
+    listings: { type: [ListingReferenceSchema], default: [] },
+    verified: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
 
-export default mongoose.models?.User || mongoose.model<UserDoc>("User", UserSchema);
+// type ListingRefType = InferSchemaType<typeof ListingReferenceSchema>; // noinspection JSUnusedLocalSymbols
+
+const User = createModel("User", UserSchema);
+
+export type UserType = InferSchemaType<typeof User.schema> & { _id: mongoose.Schema.Types.ObjectId };
+export type UserLeanType = Omit<UserType, keyof import("mongoose").Document> & { _id: mongoose.Schema.Types.ObjectId };
+export type UserObjType = Omit<UserType, keyof import("mongoose").Document> & { _id: string };
+
+export default User;

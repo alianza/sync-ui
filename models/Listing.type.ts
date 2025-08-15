@@ -1,6 +1,6 @@
-import { UserDoc, UserObj } from "./User.type";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import { UserDoc, UserObj } from "@/models/User.type";
 
 export const LISTING_TYPES = {
   standalone: "Alleenstaand",

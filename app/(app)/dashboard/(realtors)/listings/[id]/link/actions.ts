@@ -15,7 +15,6 @@ import dbConnect from "@/lib/dbConnect";
 import z from "zod";
 import { ObjectId } from "mongodb";
 import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
 
 const linkListingSchema = z.object({
   listingId: z.string().refine(ObjectId.isValid, { message: "Ongeldig listing id" }),
@@ -57,10 +56,10 @@ export async function linkListing(prevState: unknown, formData: FormData) {
     }
 
     for (const userId of linkListingData.linkUserIds) {
-      const user = await User.findById<UserDoc>(userId);
+      const user = await User.findById(userId);
       if (!user) return errorResponse({ message: `Gebruiker met id '${userId}' niet gevonden` });
 
-      const listingExists = user.listings?.some((listing) => listing.listingId.equals(linkListingData.listingId));
+      const listingExists = user.listings?.some((listing) => String(listing.listingId) === linkListingData.listingId);
 
       if (!listingExists) {
         await User.findByIdAndUpdate(userId, { $addToSet: { listings: { listingId: linkListingData.listingId } } });
@@ -68,9 +67,7 @@ export async function linkListing(prevState: unknown, formData: FormData) {
     }
 
     for (const userId of linkListingData.unlinkUserIds) {
-      await User.findByIdAndUpdate<UserDoc>(userId, {
-        $pull: { listings: { listingId: linkListingData.listingId } },
-      });
+      await User.findByIdAndUpdate(userId, { $pull: { listings: { listingId: linkListingData.listingId } } });
     }
 
     // revalidatePath(`/dashboard/listings`);

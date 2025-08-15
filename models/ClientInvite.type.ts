@@ -1,4 +1,4 @@
-import { UserDoc } from "./User.type";
+import { UserType } from "@/models/User";
 
 export enum STATUS_ENUM {
   PENDING = "pending",
@@ -9,7 +9,7 @@ export enum STATUS_ENUM {
 export interface ClientInviteDoc {
   inviteeEmail: string;
   message?: string;
-  inviter: UserDoc;
+  inviter: UserType;
   status: STATUS_ENUM;
   acceptedAt?: Date;
   createdAt: Date;

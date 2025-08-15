@@ -3,24 +3,28 @@ import { columns } from "./columns";
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
 import { ListingObj } from "@/models/Listing.type";
-import { authGuard, serializeDoc } from "@/lib/server.utils";
+import { authGuard } from "@/lib/server.utils";
 import User from "@/models/User";
-import { UserObj } from "@/models/User.type";
-import { MergeType } from "mongoose";
 
 export default async function LeadsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const userLeads = serializeDoc(await User.findById(session.user?.id).populate("listings.listingId")) as MergeType<
-    UserObj,
-    { listings: { listingId: ListingObj; linkedAt: Date }[] }
-  >;
+  const userLeads = await User.findById(session.user?.id)
+    .populate<{ listings: { listingId: ListingObj; linkedAt: Date }[] }>("listings.listingId")
+    .lean();
 
-  const listings = userLeads.listings.map((listing) => ({
-    ...listing.listingId,
-    id: listing.listingId._id,
-    linkedAt: listing.linkedAt,
+  if (!userLeads) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2">
+        <p className="text-lg">Geen leads gevonden.</p>
+      </div>
+    );
+  }
+
+  const listings: (ListingObj & { linkedAt: Date })[] = userLeads.listings.map(({ listingId, linkedAt }) => ({
+    ...(listingId as ListingObj),
+    linkedAt,
   }));
 
   return (

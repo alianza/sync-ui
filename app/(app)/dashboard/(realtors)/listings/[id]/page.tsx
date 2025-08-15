@@ -39,7 +39,7 @@ export default async function ListingPage(props: { params: Promise<{ id: string 
     );
   }
 
-  const isOwner = session.user.id === listing.userId._id;
+  const isOwner = session.user?.id === listing.userId._id.toString();
 
   return (
     <section className="container mx-auto w-full px-4 py-12 md:px-6 md:py-24 lg:py-32">

@@ -14,7 +14,6 @@ import { auth } from "@/auth";
 import ClientInvite, { clientInviteCreateSchema } from "@/models/ClientInvite";
 import { ClientInviteDoc } from "@/models/ClientInvite.type";
 import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
 import { HydratedDocument } from "mongoose";
 
 export async function createClientInvite(prevState: unknown, formData: FormData) {
@@ -38,16 +37,15 @@ export async function createClientInvite(prevState: unknown, formData: FormData)
 
   try {
     await dbConnect();
-    const user = await User.findOne<UserDoc>({ email: clientInviteData.inviteeEmail });
+    const user = await User.findOne({ email: clientInviteData.inviteeEmail });
     if (user) {
-      const res = (await User.findOneAndUpdate(
-        { _id: session.user.id },
-        { $addToSet: { clients: user._id } },
-      )) as UserDoc; // Returns the original document
+      const update = await User.updateOne({ _id: session.user.id }, { $addToSet: { clients: user._id } });
 
-      if (!res) return failResponse({ message: "Error, log opnieuw in en probeer het nog een keer" });
+      if (update.matchedCount === 0) {
+        return failResponse({ message: "Error, log opnieuw in en probeer het nog een keer" });
+      }
 
-      if (res?.clients?.includes(user._id.toString())) {
+      if (update.modifiedCount === 0) {
         return successResponse({
           data: serializeDoc(user),
           message: `Gebruiker met email: ${clientInviteData.inviteeEmail} is al een klant van jou`,

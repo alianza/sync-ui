@@ -7,7 +7,6 @@ import { Resend } from "resend";
 import { forgotPasswordTemplate } from "@/lib/emailTemplates";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-import { UserDoc } from "@/models/User.type";
 import bcryptjs from "bcryptjs";
 import PasswordResetLink, { passwordResetLinkCreateSchema } from "@/models/PasswordResetLink";
 import { headers } from "next/headers";
@@ -42,7 +41,7 @@ export async function forgotPasswordAction(prevState: unknown, formData: FormDat
 
   try {
     await dbConnect();
-    const user = await User.findOne<UserDoc>({ email });
+    const user = await User.findOne({ email });
     if (!user)
       return failResponse({
         message: "Er bestaat geen gebruiker met dit e-mailadres. Check je e-mail adres en probeer het opnieuw.",

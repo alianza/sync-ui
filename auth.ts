@@ -1,8 +1,8 @@
 import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import User from "@/models/User";
-import { ROLES, UserDoc, UserObj } from "@/models/User.type";
+import User, { UserType } from "@/models/User";
+import { ROLES } from "@/models/User.type";
 import dbConnect from "./lib/dbConnect";
 
 export async function saltAndHashPassword(password: string) {
@@ -26,6 +26,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} }, // You can specify which fields should be submitted, by adding keys to the `credentials` object. e.g. domain, username, password, 2FA token, etc.
       authorize: async (credentials) => {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required."); // If credentials are not provided, throw an error
+        }
+
         const user = await getUserFromDb(credentials.email?.toString() || "", credentials.password?.toString() || "");
 
         if (!user) {
@@ -33,13 +37,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         return {
-          id: user._id,
+          id: user._id.toString(),
           email: user.email,
           role: user.role,
-          token: "hello",
           // alias: `${user.firstName}+${user.lastName}`,
           name: `${user.firstName}+${user.lastName}`,
-        }; // return user object with their profile data
+        };
       },
     }),
   ],
@@ -51,16 +54,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (!token.account) {
         await dbConnect();
-        const dbUser = (await User.findOne({ email: token.email }).select("role").lean()) as {
-          _id: string;
-          role: string;
-          __v: number;
-        };
+        const dbUser = await User.findOne({ email: token.email }).select("role").lean();
+        if (!dbUser) {
+          throw new Error("User not found in database.");
+        }
         token.account = dbUser;
         token.role = dbUser.role;
         token.id = dbUser._id.toString();
       } else {
-        const dbUser = token.account as UserDoc;
+        const dbUser = token.account as UserType;
         token.role = dbUser.role;
         token.id = dbUser._id;
       }
@@ -77,10 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 async function getUserFromDb(email: string, password: string) {
   await dbConnect();
-  const user = (await User.findOne<UserDoc>({ email }).select("+password").lean()) as UserObj & {
-    password: string;
-    __v: number;
-  };
+  const user = await User.findOne({ email }).select("+password").lean();
 
   if (!user) return null;
 
