@@ -9,9 +9,9 @@ import { initialActionState, ResponseStatus } from "@/lib/types";
 import { linkListing } from "@/app/(app)/dashboard/(realtors)/listings/[id]/link/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { toast } from "sonner";
-import { UserType } from "@/models/User";
+import { UserObjType } from "@/models/User";
 
-type Props = { listing: ListingObj; clients: UserType[] };
+type Props = { listing: ListingObj; clients: UserObjType[] };
 
 export function LinkListing({ listing, clients }: Props) {
   const [state, action] = useActionState(linkListing, initialActionState);
@@ -42,8 +42,8 @@ export function LinkListing({ listing, clients }: Props) {
     }
   }, [state]);
 
-  const isLinkedToClient = (client: UserType) =>
-    client.listings!.some((clientListing) => clientListing.listingId === listing._id);
+  const isLinkedToClient = (client: UserObjType) =>
+    client.listings!.some((clientListing) => clientListing.listingId.toString() === listing._id);
 
   return (
     <Card>

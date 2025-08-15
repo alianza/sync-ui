@@ -2,7 +2,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import React from "react";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import User, { UserObjType } from "@/models/User";
 import { authGuard } from "@/lib/server.utils";
 
 export default async function AgentsTable() {
@@ -10,9 +10,8 @@ export default async function AgentsTable() {
 
   await dbConnect();
 
-  // const agents1 = serializeDoc(await User.find({ clients: { $elemMatch: { $eq: session.user?.id } } }));
   const agentsDocs = await User.find({ clients: { $elemMatch: { $eq: session.user?.id } } });
-  const agents = agentsDocs.map((d) => d.toObject({ flattenObjectIds: true }));
+  const agents: UserObjType[] = agentsDocs.map((agent) => agent.toObject<UserObjType>({ flattenObjectIds: true }));
 
   return (
     <div className="flex flex-col gap-2">

@@ -17,9 +17,9 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "sonner";
 import { ResponseStatus } from "@/lib/types";
 import { deleteAgent } from "@/app/(app)/dashboard/(buyers)/agents/actions";
-import { UserLeanType } from "@/models/User";
+import { UserObjType } from "@/models/User";
 
-export const columns: ColumnDef<UserLeanType>[] = [
+export const columns: ColumnDef<UserObjType>[] = [
   {
     accessorKey: "email",
     header: "Email",

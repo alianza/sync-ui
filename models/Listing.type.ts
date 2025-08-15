@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-import { UserDoc, UserObj } from "@/models/User.type";
+import { UserObjType, UserType } from "@/models/User";
 
 export const LISTING_TYPES = {
   standalone: "Alleenstaand",
@@ -104,7 +104,7 @@ interface Listing {
   };
   ownership: string;
   status: keyof typeof STATUS;
-  userId: UserDoc;
+  userId: UserType;
 }
 
 export interface ListingDoc extends Listing, mongoose.Document {
@@ -115,7 +115,7 @@ export interface ListingDoc extends Listing, mongoose.Document {
 
 export interface ListingObj extends Omit<Listing, "userId"> {
   _id: string;
-  userId: UserObj;
+  userId: UserObjType;
   createdAt: Date;
   updatedAt: Date;
 }

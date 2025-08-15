@@ -16,11 +16,7 @@ import { ArrowUpDown, Eye, MoreHorizontal, SortAsc, SortDesc } from "lucide-reac
 import Link from "next/link";
 import { capitalize } from "@/lib/common.utils";
 
-export const columns: ColumnDef<
-  ListingObj & {
-    linkedAt: Date;
-  }
->[] = [
+export const columns: ColumnDef<ListingObj & { linkedAt: Date }>[] = [
   {
     accessorKey: "title",
     header: "Titel",

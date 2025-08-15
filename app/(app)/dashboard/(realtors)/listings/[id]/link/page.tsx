@@ -4,7 +4,7 @@ import Listing from "@/models/Listing";
 import { ListingDoc, ListingObj } from "@/models/Listing.type";
 import { isValidObjectId } from "mongoose";
 import { authGuard, serializeDoc } from "@/lib/server.utils";
-import User, { UserType } from "@/models/User";
+import User, { UserObjType } from "@/models/User";
 import dbConnect from "@/lib/dbConnect";
 import { FileQuestion, FileWarning } from "lucide-react";
 
@@ -37,7 +37,19 @@ export default async function LinkListingPage({ params }: { params: Promise<{ id
     );
   }
 
-  const dbUser = await User.findById(session.user?.id).populate<{ clients: UserType[] }>("clients");
+  const dbUser = await User.findById(session.user?.id).populate<{ clients: UserObjType[] }>("clients");
+
+  if (!dbUser) {
+    return (
+      <ErrorSection
+        icon={<FileQuestion size={128} />}
+        title="Gebruiker niet gevonden"
+        message="De gebruiker die deze actie probeert uit te voeren bestaat niet."
+      />
+    );
+  }
+
+  const dbUserObj = dbUser.toObject({ flattenObjectIds: true });
 
   if (!dbUser) {
     return (
@@ -58,7 +70,7 @@ export default async function LinkListingPage({ params }: { params: Promise<{ id
         </p>
       </div>
       <section className="w-full">
-        <LinkListing listing={listing} clients={dbUser.clients} />
+        <LinkListing listing={listing} clients={dbUserObj.clients} />
       </section>
     </section>
   );

@@ -10,9 +10,9 @@ export default async function LeadsTable() {
   const session = await authGuard();
 
   await dbConnect();
-  const userLeads = await User.findById(session.user?.id)
-    .populate<{ listings: { listingId: ListingObj; linkedAt: Date }[] }>("listings.listingId")
-    .lean();
+  const userLeads = await User.findById(session.user?.id).populate<{
+    listings: { listingId: ListingObj; linkedAt: Date }[];
+  }>("listings.listingId");
 
   if (!userLeads) {
     return (
@@ -22,7 +22,9 @@ export default async function LeadsTable() {
     );
   }
 
-  const listings: (ListingObj & { linkedAt: Date })[] = userLeads.listings.map(({ listingId, linkedAt }) => ({
+  const userLeadsSerialized = userLeads?.toObject({ flattenObjectIds: true });
+
+  const listings: (ListingObj & { linkedAt: Date })[] = userLeadsSerialized.listings.map(({ listingId, linkedAt }) => ({
     ...(listingId as ListingObj),
     linkedAt,
   }));
